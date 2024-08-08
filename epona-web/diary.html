@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Epona - Diário</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Epona</h1>
+        <nav>
+            <button onclick="window.location.href='index.html'"><i class="fas fa-home"></i> Home</button>
+            <button onclick="window.location.href='calendar.html'"><i class="fas fa-calendar-alt"></i> Calendário</button>
+            <button onclick="window.location.href='timer.html'"><i class="fas fa-stopwatch"></i> Timer</button>
+            <button onclick="window.location.href='goals.html'"><i class="fas fa-trophy"></i> Metas</button>
+        </nav>
+    </header>
+    <main>
+        <section id="diary">
+            <h2>Diário</h2>
+            <textarea id="diaryInput" rows="10" placeholder="Escreva suas reflexões aqui..."></textarea>
+            <button onclick="saveEntry()">Salvar Entrada</button>
+            <h2>Entradas</h2>
+            <ul id="diaryList"></ul>
+        </section>
+    </main>
+    <script src="js/script.js"></script>
+    <script>
+        function saveEntry() {
+            const input = document.getElementById('diaryInput');
+            const entryText = input.value;
+            if (entryText) {
+                const listItem = document.createElement('li');
+                listItem.textContent = entryText;
+                document.getElementById('diaryList').appendChild(listItem);
+                input.value = '';
+            }
+        }
+    </script>
+</body>
+</html>

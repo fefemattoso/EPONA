@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Epona - Home</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>Epona</h1>
+        <nav>
+            <button onclick="window.location.href='calendar.html'"><i class="fas fa-calendar-alt"></i> Calendário</button>
+            <button onclick="window.location.href='timer.html'"><i class="fas fa-stopwatch"></i> Timer</button>
+            <button onclick="window.location.href='goals.html'"><i class="fas fa-trophy"></i> Metas</button>
+            <button onclick="window.location.href='diary.html'"><i class="fas fa-book"></i> Diário</button>
+        </nav>
+    </header>
+    <main>
+        <section id="task-section">
+            <h2>Lista de Tarefas</h2>
+            <input type="text" id="taskInput" placeholder="Digite sua tarefa">
+            <button onclick="addTask()">Adicionar Tarefa</button>
+            <ul id="taskList"></ul>
+        </section>
+        <section id="points-section">
+            <h2>Pontuação Acumulativa</h2>
+            <p>Pontos: <span id="points">0</span></p>
+        </section>
+        <section id="customization-section">
+            <h2>Personalização</h2>
+            <label for="themeColor">Escolha a cor do tema:</label>
+            <input type="color" id="themeColor" name="themeColor" value="#4a5d23">
+            <button onclick="changeThemeColor()">Aplicar Cor</button>
+        </section>
+    </main>
+    <script src="js/script.js"></script>
+</body>
+</html>

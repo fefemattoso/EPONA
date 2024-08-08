@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Epona - Calendário</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Epona</h1>
+        <nav>
+            <button onclick="window.location.href='index.html'"><i class="fas fa-home"></i> Home</button>
+            <button onclick="window.location.href='timer.html'"><i class="fas fa-stopwatch"></i> Timer</button>
+            <button onclick="window.location.href='goals.html'"><i class="fas fa-trophy"></i> Metas</button>
+            <button onclick="window.location.href='diary.html'"><i class="fas fa-book"></i> Diário</button>
+        </nav>
+    </header>
+    <main>
+        <div id="calendar-container">
+            <div id='calendar'></div>
+            <div id="add-event">
+                <h2>Adicionar Lembrete</h2>
+                <input type="text" id="eventTitle" placeholder="Título do Lembrete">
+                <input type="date" id="eventDate">
+                <button onclick="addEvent()">Adicionar ao Calendário</button>
+            </div>
+        </div>
+    </main>
+    <script src="js/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: [
+                    // Eventos iniciais podem ser adicionados aqui
+                ]
+            });
+            calendar.render();
+
+            window.addEvent = function() {
+                const title = document.getElementById('eventTitle').value;
+                const date = document.getElementById('eventDate').value;
+                if (title && date) {
+                    calendar.addEvent({
+                        title: title,
+                        start: date,
+                        allDay: true
+                    });
+                    alert('Lembrete adicionado!');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

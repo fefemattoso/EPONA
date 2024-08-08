@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Epona - Timer</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Epona</h1>
+        <nav>
+            <button onclick="window.location.href='index.html'"><i class="fas fa-home"></i> Home</button>
+            <button onclick="window.location.href='calendar.html'"><i class="fas fa-calendar-alt"></i> Calendário</button>
+            <button onclick="window.location.href='goals.html'"><i class="fas fa-trophy"></i> Metas</button>
+            <button onclick="window.location.href='diary.html'"><i class="fas fa-book"></i> Diário</button>
+        </nav>
+    </header>
+    <main>
+        <section id="timer">
+            <h2>Timer</h2>
+            <input type="number" id="timerInput" placeholder="Minutos" min="1">
+            <button onclick="startTimer()">Iniciar Timer</button>
+            <div id="timerDisplay">00:00</div>
+        </section>
+    </main>
+    <script src="js/script.js"></script>
+    <script>
+        function startTimer() {
+            const minutes = document.getElementById('timerInput').value;
+            let time = minutes * 60;
+            const display = document.getElementById('timerDisplay');
+            
+            const interval = setInterval(() => {
+                const mins = Math.floor(time / 60);
+                const secs = time % 60;
+                display.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                
+                if (time <= 0) {
+                    clearInterval(interval);
+                    alert('Tempo esgotado!');
+                }
+                time--;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
