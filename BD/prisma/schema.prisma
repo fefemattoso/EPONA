@@ -14,6 +14,8 @@ model Usuario{
   senha String
   nascimento DateTime 
   criadoEm DateTime @default(now())
+  lista Lista[] @relation("faz")
+  agenda Agenda[] @relation("salva")
 }
 
 model Atividades{
@@ -26,6 +28,8 @@ model Atividades{
 model Lista{
   id Int @id @default(autoincrement())
   descricao String
+  usuarioId Int
+  usuario Usuario @relation("faz", fields: [usuarioId], references: [id])
 }
 
 model Agenda{
@@ -33,4 +37,6 @@ model Agenda{
   titulo String
   descricao String?
   data DateTime
+  usuarioId Int
+  usuario Usuario @relation("salva", fields: [usuarioId], references: [id])
 }
