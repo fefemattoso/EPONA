@@ -1,0 +1,22 @@
+:root {
+    --azul-petroleo: #162040;
+    --azul-claro: #C7E8FD;
+    --azul-escuro: #547699
+    --verde-claro: #8AC66D
+    --verde-escuro: #2f5911
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    height: 100vh;
+    width: 100vw;
+}
+
+img{
+    width: 50px;
+}
