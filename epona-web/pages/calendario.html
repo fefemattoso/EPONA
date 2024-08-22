@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/calendario.css">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <div>
+                <img src="../../Docs/logo.png" alt="Logo do projeto">
+                <p>Epona</p>
+            </div>
+            <div>
+                <ul>
+                    <li><a href="./index.html">Home</a></li>
+                    <li><a href="./calendario.html">Calendario</a></li>
+                    <li><a href="./atividades.html">Atividades</a></li>
+                    <li><a href="./listas.html">Listas</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <!--Adicionar botoes para adicionar, remover e editar eventos-->
+    <main>
+        <div class="calendario">
+            <div class="cabecalho">
+                <button class="antBtn" id="antBtn">
+                    &#60;
+                </button>
+                <span id="ano" class="ano">2024</span>
+                <button class="proxBtn" id="proxBtn">
+                    &#62;
+                </button>
+            </div>
+            <div class="mes" id="mes"></div>
+            <div class="dias" id="dias">
+            </div>
+            <div class="dia" id="dia">
+                <!--Se deu quiser o javascript faz isso aq -->
+            </div>
+        </div>
+    </main>
+
+    <!--faltando adicionar modal para adicionar, remover e editar os eventos que o usario colocará no calendario-->
+    <script src="../js/calendario.js"></script>
+</body>
+
+</html>
