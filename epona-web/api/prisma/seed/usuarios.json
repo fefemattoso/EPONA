@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "nome": "John Doe",
+        "email": "exemplo@gmail.com",
+        "senha": "1234", 
+        "nascimento": "2000-06-08",
+        "criadoEm": "2023-08-15"
+    },
+    {
+        "id": 2,
+        "nome": "Jane Smith",
+        "email": "exemplo2@gmail.com",
+        "senha": "5678",
+        "nascimento": "2003-08-18",
+        "criadoEm": "2023-11-26"
+    },
+    {
+        "id": 3,
+        "nome": "Alice Johnson",
+        "email": "exemplo3@gmail.com",
+        "senha": "9101",
+        "nascimento": "2004-03-10",
+        "criadoEm": "2024-01-28"
+    }
+]
