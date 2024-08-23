@@ -1,20 +1,20 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-
-
 const create = async (req, res) => {
     try {
-        const { id, titulo, descricao, data } = req.body;
-        const atividades = await prisma.atividades.create({
+        const { id, nome, email, senha, nascimento, criadoEm } = req.body;
+        const usuario = await prisma.usuario.create({
             data: {
                 id: id,
-                titulo: titulo,
-                descricao: descricao,
-                data: data
+                nome: nome,
+                email: email,
+                senha: senha,
+                nascimento: nascimento,
+                criadoEm: criadoEm
             }
         });
-        return res.status(201).json(atividades);
+        return res.status(201).json(usuario);
     } catch (error) {
         return res.status(400).json({ message: error.message });
     }
@@ -22,42 +22,42 @@ const create = async (req, res) => {
 
 const read = async (req, res) => {
     if (req.params.id !== undefined) {
-        const atividades = await prisma.atividades.findUnique({
+        const usuario = await prisma.usuario.findUnique({
             where: {
                id: req.params.id
             }
         });
-        return res.json(atividades);
+        return res.json(usuario);
     } else {
-        const atividadess = await prisma.atividades.findMany();
-        return res.json(atividadess);
+        const usuarios = await prisma.usuario.findMany();
+        return res.json(usuarios);
     }
 };
 
 const update = async (req, res) => {
     try {
-        const atividades = await prisma.atividades.update({
+        const usuario = await prisma.usuario.update({
             where: {
                id: req.body.id
             },
             data: req.body
         });
-        return res.status(202).json(atividades);
+        return res.status(202).json(usuario);
     } catch (error) {
-        return res.status(404).json({ message: "atividade não encontrado" });
+        return res.status(404).json({ message: "usuario não encontrado" });
     }
 };
 
 const del = async (req, res) => {
     try {
-        const atividades = await prisma.atividades.delete({
+        const usuario = await prisma.usuario.delete({
             where: {
                id: req.params.id
             }
         });
-        return res.status(204).json(atividades);
+        return res.status(204).json(usuario);
     } catch (error) {
-        return res.status(404).json({ message: "atividade não encontrado" });
+        return res.status(404).json({ message: "usuario não encontrado" });
     }
 }
 
