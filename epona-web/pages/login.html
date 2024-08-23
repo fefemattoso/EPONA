@@ -1,25 +1,154 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Login - Epona</title>
+    <style>
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #badda8;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        header {
+            background-color: #162040;
+            padding: 1rem;
+            color: #162040;
+            height: 50px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav img {
+            max-width: 100px;
+            height: auto;
+        }
+
+        nav div {
+            display: flex;
+            align-items: center;
+        }
+
+        main {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #162040;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 5px;
+            color: #162040;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #547699;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #162040;
+        }
+
+        input[type="submit"] {
+            padding: 10px;
+            background-color: #162040;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #162040;
+        }
+
+        a {
+            text-align: center;
+            color: #162040;
+            text-decoration: none;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            main {
+                margin: 20px;
+            }
+
+            input[type="text"],
+            input[type="password"],
+            input[type="submit"] {
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header></header>
+    <!-- <header>
+        <nav>
+            <div>
+                <img src="../images/logo.png" alt="Logo do projeto" style="height: 80px;">
+                <p>Epona</p>
+            </div>
+        </nav>
+    </header> -->
     <main>
+        <h2>Login no EPONA</h2>
         <section class="login" id="login">
             <form action="">
                 <label for="usuario">Usuário:</label>
                 <input type="text" id="usuario" name="usuario" placeholder="Digite o usuário ou email" required>
                 <label for="senha">Senha:</label>
-                <input type="senha" id="senha" name="senha" placeholder="Digite sua senha" required>
+                <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
                 <a href="./senha.html">Esqueci minha senha</a>
                 <a href="./cadastro.html">Cadastre-se</a>
                 <input type="submit" value="Entrar">
             </form>
         </section>
     </main>
-    <footer></footer>
 </body>
 </html>

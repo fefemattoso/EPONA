@@ -1,13 +1,124 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro</title>
+    <title>Cadastro - Epona</title>
+    <style>
+        /* Variáveis de cor */
+        :root {
+            --azul-petroleo: #162040;
+            --azul-claro: #C7E8FD;
+            --azul-escuro: #547699;
+            --verde-claro: #8AC66D;
+            --verde-escuro: #2f5911;
+        }
+
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #badda8;
+            color: var(--azul-petroleo);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        main {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--azul-petroleo);
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 5px;
+            color: var(--azul-petroleo);
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 2px solid var(--azul-escuro);
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            border-color: var(--verde-escuro);
+        }
+
+        input[type="submit"] {
+            padding: 10px;
+            background-color: var(--verde-claro);
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: var(--verde-escuro);
+        }
+
+        a {
+            text-align: center;
+            color: var(--azul-petroleo);
+            text-decoration: none;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            main {
+                margin: 20px;
+            }
+
+            input[type="text"],
+            input[type="email"],
+            input[type="password"],
+            input[type="submit"] {
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header></header>
     <main>
+        <h2>Cadastro</h2>
         <section class="cadastro" id="cadastro">
             <form action="">
                 <label for="email">Email:</label>
@@ -15,15 +126,14 @@
                 <label for="usuario">Usuário:</label>
                 <input type="text" id="usuario" name="usuario" placeholder="Digite o usuário" required>
                 <label for="senha">Senha:</label>
-                <input type="senha" id="senha" name="senha" placeholder="Digite sua senha" required>
-                <label for="senha">Confirme sua senha:</label>
-                <input type="senha" id="senha" name="senha" placeholder="Confirme sua senha" required>
+                <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+                <label for="senha-confirmacao">Confirme sua senha:</label>
+                <input type="password" id="senha-confirmacao" name="senha-confirmacao" placeholder="Confirme sua senha" required>
                 <a href="./senha.html">Esqueci minha senha</a>
-                <a href="#">Cadastre-se</a>
-                <input type="submit" value="Entrar">
+                <a href="./login.html">Já tem uma conta? Faça login</a>
+                <input type="submit" value="Cadastrar-se">
             </form>
         </section>
     </main>
-    <footer></footer>
 </body>
 </html>

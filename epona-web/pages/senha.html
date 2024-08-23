@@ -1,20 +1,109 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=], initial-scale=1.0">
-    <title>Document</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redefinir Senha</title>
+    <style>
+        /* Variáveis de cor */
+        :root {
+            --azul-petroleo: #162040;
+            --azul-claro: #C7E8FD;
+            --azul-escuro: #547699;
+            --verde-claro: #8AC66D;
+            --verde-escuro: #2f5911;
+        }
+
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #badda8;
+            color: var(--azul-petroleo);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        main {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--azul-petroleo);
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        input[type="email"] {
+            padding: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            border: 2px solid var(--azul-escuro);
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="email"]:focus {
+            border-color: var(--verde-escuro);
+        }
+
+        input[type="submit"] {
+            padding: 10px;
+            width: 100%;
+            background-color: var(--verde-claro);
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: var(--verde-escuro);
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            main {
+                margin: 20px;
+            }
+
+            h2 {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header></header>
     <main>
         <section>
-            <h2>Para redefinir sua senha, informe  email cadastrado na sua conta e lhe enviaremos um link com as instruções</h2>
+            <h2>Para redefinir sua senha, informe o email cadastrado na sua conta. Lhe enviaremos um link com as instruções.</h2>
             <form action="">
                 <input type="email" name="email" id="email" placeholder="Digite seu email" required>
+                <input type="submit" value="Enviar Instruções">
             </form>
         </section>
     </main>
-    <footer></footer>
 </body>
 </html>

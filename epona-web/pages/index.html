@@ -1,28 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HomePage</title>
+    <title>HomePage - Epona</title>
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap" rel="stylesheet">
 </head>
 
 <body>
     <header>
         <nav>
             <div>
-                <img src="../../Docs/logo.png" alt="Logo do projeto">
+                <img src="../images/logo.png" alt="Logo do projeto">
                 <p>Epona</p>
             </div>
-            <div>
-                <ul>
-                    <li><a href="./index.html">Home</a></li>
-                    <li><a href="./calendario.html">Calendario</a></li>
-                    <li><a href="./atividades.html">Atividades</a></li>
-                    <li><a href="./listas.html">Listas</a></li>
-                </ul>
+            <div class="menu-toggle" onclick="toggleMenu()">
+                <div></div>
+                <div></div>
+                <div></div>
             </div>
+            <ul class="menu-items">
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="./calendario.html">Calendário</a></li>
+                <li><a href="./atividades.html">Atividades</a></li>
+                <li><a href="./listas.html">Listas</a></li>
+            </ul>
         </nav>
     </header>
     <main>
@@ -39,7 +45,16 @@
             </ul>
         </section>
     </main>
-    <footer></footer>
+    <footer>
+        <p>&copy; 2024 Epona. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const menuItems = document.querySelector('.menu-items');
+            menuItems.classList.toggle('active');
+        }
+    </script>
 </body>
 
 </html>
