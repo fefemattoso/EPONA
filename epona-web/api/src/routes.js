@@ -23,3 +23,5 @@ router.get('/agenda', Agenda.read);
 router.get('/agenda/:id', Agenda.read);
 router.put('/agenda', Agenda.update);
 router.delete('/agenda/:id', Agenda.del);
+
+module.exports = router;
