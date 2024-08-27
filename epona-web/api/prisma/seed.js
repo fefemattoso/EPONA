@@ -7,6 +7,11 @@ const agendas = require("./seed/agendas.json");
 const usuarios = require("./seed/usuarios.json");
 
 async function main() {
+    for (const usuario of usuarios) {
+        await prisma.usuario.create({
+            data: usuario
+        });
+    }
     for (const atividade of atividades) {
         await prisma.atividade.create({
             data: atividade
@@ -20,11 +25,6 @@ async function main() {
     for (const agenda of agendas) {
         await prisma.agenda.create({
             data: agenda
-        });
-    }
-    for (const usuario of usuarios) {
-        await prisma.usuario.create({
-            data: usuario
         });
     }
 }

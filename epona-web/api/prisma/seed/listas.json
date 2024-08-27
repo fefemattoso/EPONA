@@ -2,16 +2,16 @@
     {
         "id": 1,
         "descricao": "Item aleatorio 1",
-        "usuario": 1
+        "usuarioId": 1
     },
     {
         "id": 2,
         "descricao": "Item aleatorio 2",
-        "usuario": 1
+        "usuarioId": 1
     },
     {
         "id": 3,
         "descricao": "Item aleatorio 3",
-        "usuario": 1
+        "usuarioId": 1
     }
 ]
