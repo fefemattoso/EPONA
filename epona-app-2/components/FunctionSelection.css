@@ -1,0 +1,34 @@
+/* FunctionSelection.css */
+.function-selection {
+    background-color: #FFFFFF; /* Branco */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .function-selection h2 {
+    color: #162040; /* Azul escuro */
+    margin-bottom: 20px;
+  }
+  
+  .function-selection button {
+    background-color: #162040; /* Azul escuro */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    margin: 5px;
+    transition: background-color 0.3s;
+  }
+  
+  .function-selection button:hover {
+    background-color: #0F1A2E; /* Azul mais escuro para hover */
+  }
+    .button{
+    display: center;
+    flex-direction: column;
+
+    }

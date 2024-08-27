@@ -1,0 +1,59 @@
+/* Agenda.css */
+.agenda {
+    background-color: #FFFFFF; /* Branco */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .agenda h2 {
+    color: #162040; /* Azul escuro */
+    margin-bottom: 20px;
+  }
+  
+  .agenda input {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #A8C4A0; /* Verde mais escuro para borda */
+    border-radius: 5px;
+    width: calc(100% - 22px);
+    max-width: 400px;
+  }
+  
+  .agenda button {
+    background-color: #162040; /* Azul escuro */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+  }
+  
+  .agenda button:hover {
+    background-color: #0F1A2E; /* Azul mais escuro para hover */
+  }
+  
+  .agenda ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .agenda li {
+    background-color: #BADD8A; /* Verde claro */
+    border: 1px solid #A8C4A0; /* Verde mais escuro para borda */
+    padding: 10px;
+    margin: 5px 0;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+  }
+  
+  .agenda li:hover {
+    background-color: #A8C4A0; /* Verde mais escuro para hover */
+    transform: scale(1.02);
+  }
+  
