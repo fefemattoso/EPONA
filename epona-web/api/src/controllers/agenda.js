@@ -23,7 +23,7 @@ const read = async (req, res) => {
     if (req.params.id !== undefined) {
         const agenda = await prisma.agenda.findUnique({
             where: {
-               id: req.params.id
+               id: Number(req.params.id)
             }
         });
         return res.json(agenda);
@@ -56,6 +56,7 @@ const del = async (req, res) => {
         });
         return res.status(204).json(agenda);
     } catch (error) {
+        console.log(data)
         return res.status(404).json({ message: "agenda não encontrada" });
     }
 }

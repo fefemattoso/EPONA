@@ -5,10 +5,9 @@ const prisma = new PrismaClient();
 
 const create = async (req, res) => {
     try {
-        const { id, titulo, descricao, data } = req.body;
-        const atividades = await prisma.atividades.create({
+        const { titulo, descricao, data} = req.body;
+        const atividades = await prisma.atividade.create({
             data: {
-                id: id,
                 titulo: titulo,
                 descricao: descricao,
                 data: data
@@ -22,21 +21,21 @@ const create = async (req, res) => {
 
 const read = async (req, res) => {
     if (req.params.id !== undefined) {
-        const atividades = await prisma.atividades.findUnique({
+        const atividades = await prisma.atividade.findUnique({
             where: {
-               id: req.params.id
+               id: Number(req.params.id)
             }
         });
         return res.json(atividades);
     } else {
-        const atividadess = await prisma.atividades.findMany();
-        return res.json(atividadess);
+        const atividades = await prisma.atividade.findMany();
+        return res.json(atividades);
     }
 };
 
 const update = async (req, res) => {
     try {
-        const atividades = await prisma.atividades.update({
+        const atividades = await prisma.atividade.update({
             where: {
                id: req.body.id
             },
@@ -50,9 +49,9 @@ const update = async (req, res) => {
 
 const del = async (req, res) => {
     try {
-        const atividades = await prisma.atividades.delete({
+        const atividades = await prisma.atividade.delete({
             where: {
-               id: req.params.id
+               id:  parseInt(req.params.id)
             }
         });
         return res.status(204).json(atividades);

@@ -21,7 +21,7 @@ const read = async (req, res) => {
     if (req.params.id !== undefined) {
         const lista = await prisma.lista.findUnique({
             where: {
-               id: req.params.id
+               id: Number(req.params.id)
             }
         });
         return res.json(lista);
@@ -49,7 +49,7 @@ const del = async (req, res) => {
     try {
         const lista = await prisma.lista.delete({
             where: {
-               id: req.params.id
+               id: parseInt(req.params.id)
             }
         });
         return res.status(204).json(lista);

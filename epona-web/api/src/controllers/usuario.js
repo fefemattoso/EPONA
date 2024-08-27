@@ -24,7 +24,7 @@ const read = async (req, res) => {
     if (req.params.id !== undefined) {
         const usuario = await prisma.usuario.findUnique({
             where: {
-               id: req.params.id
+               id: Number(req.params.id)
             }
         });
         return res.json(usuario);
@@ -52,7 +52,7 @@ const del = async (req, res) => {
     try {
         const usuario = await prisma.usuario.delete({
             where: {
-               id: req.params.id
+               id: parseInt(req.params.id)
             }
         });
         return res.status(204).json(usuario);

@@ -16,7 +16,7 @@ function Login({ onLogin }) {
 
   return (
     <div className="login-container">
-      <h2>LOGIN</h2>
+      <h2>Login no Epona</h2>
       <input 
         type="text" 
         placeholder="Usuário" 
