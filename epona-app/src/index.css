@@ -5,9 +5,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  display: flex; /* add this to center the body */
+  justify-content: center; /* add this to center the body */
+  align-items: center; /* add this to center the body */
+  height: 100vh; /* add this to set the body height to 100% of the viewport */
 }
