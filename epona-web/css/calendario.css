@@ -1,6 +1,203 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* Importando a fonte Comfortaa */
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&display=swap');
+
+/* Aplicando a fonte Comfortaa a todos os elementos */
+body, button, p, span, h1, h2, h3 {
+    font-family: "Comfortaa", sans-serif;
 }
 
+/* Estilos gerais do corpo */
+body {
+    background-color: #badda8; /* Cor de fundo clara */
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Estilo do cabeçalho e navegação */
+header {
+    background-color: #2f5911;
+    padding: 1rem;
+    color: #fff;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav img {
+    max-width: 100px;
+    height: auto;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+    margin: 0;
+    padding: 0;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 400;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* Estilo do calendário principal */
+.calendario {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 600px;
+    width: 100%;
+    margin: 20px auto; /* Centraliza o calendário na página */
+}
+
+/* Cabeçalho do calendário */
+.calendario .cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.calendario .cabecalho button {
+    background-color: #162040;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: background-color 0.3s ease;
+}
+
+.calendario .cabecalho button:hover {
+    background-color: #1e2a40;
+}
+
+.calendario .ano {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* Estilos para o mês */
+.calendario .mes {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+/* Estilos para os dias da semana */
+.calendario .dias {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.calendario .dias div {
+    text-align: center;
+    padding: 5px;
+    background-color: #e0e4e8;
+    border-radius: 5px;
+}
+
+/* Estilos para os dias do mês */
+.calendario .dias-do-mes {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    position: relative;
+}
+
+.calendario .dias-do-mes .dia {
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    position: relative;
+    background-color: #f9f9f9;
+}
+
+/* Estilo dos lembretes */
+.evento {
+    background-color: #8AC66D; /* Verde claro */
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    margin-top: 5px;
+    text-align: center;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 5px;
+    width: 90%;
+}
+
+/* Detalhes do dia selecionado */
+.calendario .dia-selecionado {
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    border: 1px solid #e0e4e8;
+    margin-top: 10px;
+}
+
+/* Estilo do formulário de lembretes */
+.formulario-lembrete {
+    margin-top: 20px;
+}
+
+.formulario-lembrete h3 {
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.formulario-lembrete form {
+    display: flex;
+    flex-direction: column;
+}
+
+.formulario-lembrete label {
+    margin-bottom: 5px;
+    font-weight: 400;
+}
+
+.formulario-lembrete input[type="date"],
+.formulario-lembrete input[type="text"] {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 2px solid #547699;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.formulario-lembrete button {
+    padding: 10px;
+    background-color: #162040;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.formulario-lembrete button:hover {
+    background-color: #1e2a40;
+}
