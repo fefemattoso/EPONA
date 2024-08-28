@@ -1,54 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="pt-BR">
+    <link rel="icon" href="../images/logo.png" type="image/png">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendario</title>
+    <title>Calendário</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/calendario.css">
 </head>
-
 <body>
     <header>
         <nav>
             <div>
-                <img src="../../Docs/logo.png" alt="Logo do projeto">
+                <img src="../images/logo.png" alt="Logo do projeto">
                 <p>Epona</p>
             </div>
-            <div>
-                <ul>
-                    <li><a href="./index.html">Home</a></li>
-                    <li><a href="./calendario.html">Calendario</a></li>
-                    <li><a href="./atividades.html">Atividades</a></li>
-                    <li><a href="./listas.html">Listas</a></li>
-                </ul>
-            </div>
+            <ul>
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="./calendario.html">Calendário</a></li>
+                <li><a href="./atividades.html">Atividades</a></li>
+                <li><a href="./listas.html">Listas</a></li>
+            </ul>
         </nav>
     </header>
-    <!--Adicionar botoes para adicionar, remover e editar eventos-->
     <main>
         <div class="calendario">
+            <!-- Cabeçalho do calendário com navegação -->
             <div class="cabecalho">
-                <button class="antBtn" id="antBtn">
-                    &#60;
-                </button>
+                <button class="antBtn" id="antBtn">&#60;</button>
                 <span id="ano" class="ano">2024</span>
-                <button class="proxBtn" id="proxBtn">
-                    &#62;
-                </button>
+                <button class="proxBtn" id="proxBtn">&#62;</button>
             </div>
-            <div class="mes" id="mes"></div>
+            
+            <!-- Nome do mês -->
+            <div class="mes" id="mes">Janeiro</div>
+            
+            <!-- Dias da semana -->
             <div class="dias" id="dias">
+                <div>Seg</div>
+                <div>Ter</div>
+                <div>Qua</div>
+                <div>Qui</div>
+                <div>Sex</div>
+                <div>Sab</div>
+                <div>Dom</div>
             </div>
-            <div class="dia" id="dia">
-                <!--Se deu quiser o javascript faz isso aq -->
+            
+            <!-- Dias do mês -->
+            <div class="dias-do-mes" id="dias-do-mes">
+                <!-- Os dias do mês serão adicionados dinamicamente aqui -->
+            </div>
+            
+            <!-- Detalhes do dia selecionado -->
+            <div class="dia-selecionado" id="dia">
+                <!-- Detalhes do dia selecionado aparecerão aqui -->
+            </div>
+
+            <!-- Formulário para adicionar lembretes -->
+            <div class="formulario-lembrete">
+                <h3>Adicionar Lembrete</h3>
+                <form id="form-lembrete">
+                    <label for="data-lembrete">Data:</label>
+                    <input type="date" id="data-lembrete" name="data-lembrete" required>
+
+                    <label for="texto-lembrete">Lembrete:</label>
+                    <input type="text" id="texto-lembrete" name="texto-lembrete" placeholder="Digite o lembrete" required>
+
+                    <button type="submit">Adicionar Lembrete</button>
+                </form>
             </div>
         </div>
     </main>
-
-    <!--faltando adicionar modal para adicionar, remover e editar os eventos que o usario colocará no calendario-->
     <script src="../js/calendario.js"></script>
 </body>
-
 </html>
