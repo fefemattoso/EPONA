@@ -8,7 +8,7 @@ body, button, p, span, h1, h2, h3 {
 
 /* Estilos gerais do corpo */
 body {
-    background-color: #badda8; /* Cor de fundo clara */
+    background-color: #f0f4f8;
     color: #333;
     margin: 0;
     padding: 0;
@@ -58,7 +58,7 @@ nav a:hover {
     padding: 20px;
     max-width: 600px;
     width: 100%;
-    margin: 20px auto; /* Centraliza o calendário na página */
+    margin: 20px auto;
 }
 
 /* Cabeçalho do calendário */
@@ -89,110 +89,95 @@ nav a:hover {
     font-weight: 700;
 }
 
-/* Estilos para o mês */
+/* Estilo do mês */
 .calendario .mes {
     font-size: 1.2rem;
-    font-weight: 700;
-    margin-bottom: 10px;
-}
-
-/* Estilos para os dias da semana */
-.calendario .dias {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
-    font-weight: 700;
-    margin-bottom: 10px;
-}
-
-.calendario .dias div {
+    font-weight: 500;
     text-align: center;
-    padding: 5px;
-    background-color: #e0e4e8;
-    border-radius: 5px;
+    margin-bottom: 10px;
 }
 
-/* Estilos para os dias do mês */
-.calendario .dias-do-mes {
+/* Estilo dos dias da semana */
+.dias {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+/* Estilo dos dias do mês */
+.dias-do-mes {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 5px;
-    position: relative;
 }
 
-.calendario .dias-do-mes .dia {
+.dias-do-mes .dia {
+    background-color: #fff;
+    border-radius: 5px;
     text-align: center;
     padding: 10px;
-    border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    position: relative;
-    background-color: #f9f9f9;
+}
+
+.dias-do-mes .dia:hover {
+    background-color: #e1e1e1;
 }
 
 /* Estilo dos lembretes */
-.evento {
-    background-color: #8AC66D; /* Verde claro */
-    color: white;
+.lembrete {
+    background-color: #e7f1ff;
+    border: 1px solid #b0d4ff;
+    border-radius: 5px;
     padding: 5px;
-    border-radius: 5px;
     margin-top: 5px;
-    text-align: center;
     font-size: 0.9rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: 5px;
-    width: 90%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-/* Detalhes do dia selecionado */
-.calendario .dia-selecionado {
-    text-align: center;
+.lembrete:hover {
+    background-color: #d0e4ff;
+}
+
+/* Estilo da área de detalhes do dia */
+.dia-selecionado {
+    margin-top: 20px;
     padding: 10px;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: #f9f9f9;
-    border: 1px solid #e0e4e8;
-    margin-top: 10px;
 }
 
-/* Estilo do formulário de lembretes */
+/* Estilo do formulário de lembrete */
 .formulario-lembrete {
     margin-top: 20px;
 }
 
 .formulario-lembrete h3 {
-    margin-bottom: 15px;
-    font-size: 1.2rem;
-    font-weight: 700;
-}
-
-.formulario-lembrete form {
-    display: flex;
-    flex-direction: column;
+    margin-bottom: 10px;
 }
 
 .formulario-lembrete label {
+    display: block;
     margin-bottom: 5px;
-    font-weight: 400;
 }
 
-.formulario-lembrete input[type="date"],
-.formulario-lembrete input[type="text"] {
+.formulario-lembrete input {
+    width: calc(100% - 22px);
     padding: 10px;
-    margin-bottom: 10px;
-    border: 2px solid #547699;
     border-radius: 5px;
-    font-size: 1rem;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
 }
 
 .formulario-lembrete button {
-    padding: 10px;
-    background-color: #162040;
-    color: white;
+    background-color: #2f5911;
+    color: #fff;
     border: none;
     border-radius: 5px;
+    padding: 10px;
     cursor: pointer;
     font-size: 1rem;
     transition: background-color 0.3s ease;

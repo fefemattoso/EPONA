@@ -1,57 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Atividades</title>
     <link rel="icon" href="../images/logo.png" type="image/png">
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/atividades.css">
 </head>
-
 <body>
     <header>
         <nav>
             <div>
-                <img src="../../Docs/logo.png" alt="Logo do projeto">
+                <img src="../images/logo.png" alt="Logo do projeto">
                 <p>Epona</p>
             </div>
-            <div>
-                <ul>
-                    <li><a href="./index.html">Home</a></li>
-                    <li><a href="./calendario.html">Agenda</a></li>
-                    <li><a href="./atividades.html">Atividades</a></li>
-                    <li><a href="./listas.html">Listas</a></li>
-                </ul>
-            </div>
+            <ul>
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="./calendario.html">Agenda</a></li>
+                <li><a href="./atividades.html">Atividades</a></li>
+                <li><a href="./listas.html">Listas</a></li>
+            </ul>
         </nav>
     </header>
     <main>
         <section class="atividades">
-            <button>Adicionar Atividades</button>
-            <button>Remover Atividades</button>
-            <div class="card">
-                <div class="headerCard">
-                    <h2 class="titulo">Exemplo atividade 1</h2>
-                    <span>&#9747;</span>
-                </div>
-                <p class="descricao">Ser o exemplo da atividade 1</p>
-                <button>Concluido</button>
+            <button id="addAtividadeBtn">Adicionar Atividade</button>
+            <button id="removeAllAtividadesBtn">Remover Todas Atividades</button>
+            <div id="atividadesList">
+                <!-- As atividades serão adicionadas aqui dinamicamente -->
             </div>
         </section>
     </main>
 
-    <!--Modal de remoção de atividade-->
-    <div class="overlay">
+    <!-- Modal para adicionar atividade -->
+    <div id="addAtividadeModal" class="overlay hidden">
         <div class="modal">
-            <h2>Removendo esta atividade, ela não aparecerá novamente em suas atividades diárias</h2>
-            <p>Tem certeza que deseja remover a atividade?</p>
-            <div class="btn-group">
-                <button class="cancelar">Cancelar</button>
-                <button class="confirmar">Remover</button>
-        
+            <h2>Adicionar Atividade</h2>
+            <form id="addAtividadeForm">
+                <label for="titulo">Título:</label>
+                <input type="text" id="titulo" name="titulo" required>
+                
+                <label for="descricao">Descrição:</label>
+                <textarea id="descricao" name="descricao" required></textarea>
+                
+                <div class="btn-group">
+                    <button type="button" id="cancelAddBtn" class="cancelar">Cancelar</button>
+                    <button type="submit" class="confirmar">Adicionar</button>
+                </div>
+            </form>
         </div>
     </div>
-</body>
 
+    <!-- Modal de remoção de todas as atividades -->
+    <div id="overlayAll" class="overlay hidden">
+        <div class="modal">
+            <h2>Tem certeza que deseja remover todas as atividades?</h2>
+            <p>Esta ação é irreversível e todas as atividades serão excluídas.</p>
+            <div class="btn-group">
+                <button id="cancelAllBtn" class="cancelar">Cancelar</button>
+                <button id="confirmAllBtn" class="confirmar">Remover Todas</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de remoção de atividade individual -->
+    <div id="overlayIndividual" class="overlay hidden">
+        <div class="modal">
+            <h2>Remover Atividade</h2>
+            <p>Tem certeza que deseja remover esta atividade?</p>
+            <div class="btn-group">
+                <button id="cancelIndividualBtn" class="cancelar">Cancelar</button>
+                <button id="confirmIndividualBtn" class="confirmar">Remover</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/atividades.js"></script>
+</body>
 </html>
