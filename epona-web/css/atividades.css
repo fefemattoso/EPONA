@@ -1,11 +1,13 @@
-/* atividades.css */
-
+/* Estilização geral */
 body {
-    font-family: Arial, sans-serif;
+    font-family: "Comfortaa", sans-serif; /* Aplicar a fonte Comfortaa */
+    margin: 0;
+    padding: 0;
+    background-color: #badda8; /* Verde claro para o fundo da página */
 }
 
 header {
-    background-color: #2f5911;
+    background-color: #2f5911; /* Verde escuro para o cabeçalho */
     padding: 1rem;
     color: #fff;
 }
@@ -42,8 +44,9 @@ header nav a:hover {
     padding: 20px;
 }
 
+/* Botões */
 button {
-    background-color: #2f5911;
+    background-color: #2f5911; /* Verde escuro para os botões */
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -55,41 +58,10 @@ button {
 }
 
 button:hover {
-    background-color: #1e2a40;
+    background-color: #1e2a40; /* Cor escura ao passar o mouse */
 }
 
-.card {
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin-bottom: 20px;
-}
-
-.headerCard {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.headerCard .titulo {
-    font-size: 1.2rem;
-    font-weight: bold;
-}
-
-.headerCard span {
-    justify-content: center;
-    cursor: pointer;
-    color: #e74c3c;
-    font-size: 1.5rem;
-}
-
-.descricao {
-    font-size: 1rem;
-    margin-bottom: 10px;
-}
-
+/* Modal e Overlay */
 .overlay {
     position: fixed;
     top: 0;
@@ -104,7 +76,7 @@ button:hover {
 }
 
 .modal {
-    background-color: #fff;
+    background-color: #fff; /* Fundo branco para o modal */
     border-radius: 10px;
     padding: 20px;
     max-width: 500px;
@@ -112,13 +84,8 @@ button:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.modal h2 {
-    font-size: 1.5rem;
-    margin-bottom: 15px;
-}
-
-.modal p {
-    margin-bottom: 20px;
+.hidden {
+    display: none;
 }
 
 .btn-group {
@@ -127,114 +94,117 @@ button:hover {
     gap: 10px;
 }
 
-.cancelar {
-    background-color: #e74c3c;
+/* Estilo para o formulário de adicionar atividade */
+#addAtividadeForm {
+    display: flex;
+    flex-direction: column;
 }
 
-.confirmar {
-    background-color: #2f5911;
+#addAtividadeForm label {
+    margin-bottom: 5px;
+    font-weight: bold;
 }
 
-.hidden {
-    display: none;
-}
-
-textarea {
-    width: 100%;
-    height: 100px;
+#addAtividadeForm input,
+#addAtividadeForm textarea {
+    border: 1px solid #ddd;
+    border-radius: 5px;
     padding: 10px;
-    border: 2px solid #ccc;
-    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+#addAtividadeForm input[type="text"] {
     font-size: 1rem;
-    resize: vertical;
 }
 
-.card.concluida {
-    background-color: #d4edda; /* Verde claro */
-    color: #155724; /* Verde escuro para o texto */
-    position: relative;
-    transition: background-color 0.3s ease;
+#addAtividadeForm textarea {
+    font-size: 1rem;
+    min-height: 150px; /* Altura mínima do textarea */
+    resize: vertical; /* Permitir redimensionar verticalmente */
 }
 
-.card.concluida::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 255, 0, 0.2); /* Efeito de fundo verde claro */
-    transition: opacity 1s ease;
-    opacity: 1;
+/* Botões do modal */
+button.cancelar {
+    background-color: #e74c3c; /* Cor do botão cancelar */
 }
 
-.card.concluida.fade-out::before {
-    opacity: 0;
+button.cancelar:hover {
+    background-color: #c0392b;
 }
 
-.card.concluida.fade-out {
-    animation: fadeOut 1s forwards;
+button.confirmar {
+    background-color: #2ecc71; /* Cor do botão confirmar */
 }
 
-@keyframes fadeOut {
-    0% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
-        transform: scale(0.9);
-    }
+button.confirmar:hover {
+    background-color: #27ae60;
 }
 
-.card .concluido-btn {
-    background-color: #28a745; /* Verde para o botão concluído */
-}
+/* Estilos para atividades */
 .card {
-    transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.card.concluida {
-    background-color: #d4edda; /* Verde claro */
-    color: #155724; /* Verde escuro para o texto */
+    background-color: #fff; /* Fundo branco para os cards */
+    border: 1px solid #ddd; /* Cor da borda dos cards */
+    border-radius: 8px;
+    margin-bottom: 15px;
+    padding: 15px;
     position: relative;
-    transition: background-color 0.3s ease;
 }
 
-.card.concluida::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 255, 0, 0.2); /* Efeito de fundo verde claro */
-    transition: opacity 1s ease;
-    opacity: 1;
+.card .headerCard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.card.concluida.fade-out::before {
-    opacity: 0;
+.card .titulo {
+    margin: 0;
+    font-size: 1.2rem;
 }
 
-.card.concluida.fade-out {
-    animation: fadeOut 1s forwards;
+.card .remove-atividade {
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #e74c3c;
 }
 
-@keyframes fadeOut {
-    0% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
-        transform: scale(0.9);
-    }
+.card .descricao {
+    margin: 20px 0;
+    font-size: 1rem; /* Tamanho da fonte da descrição */
+    line-height: 1.5; /* Altura da linha para melhor legibilidade */
 }
 
 .card .concluido-btn {
-    background-color: #28a745; /* Verde para o botão concluído */
-    color: white;
+    background-color: #2ecc71; /* Verde para botão de concluído */
+    color: #fff;
     border: none;
-    padding: 5px 10px;
     border-radius: 5px;
+    padding: 5px 10px;
     cursor: pointer;
+    font-size: 0.9rem;
+    margin-top: 10px; /* Espaço acima do botão */
+}
+
+.card .concluido-btn:hover {
+    background-color: #27ae60; /* Verde mais escuro ao passar o mouse */
+}
+
+.card.concluida {
+    background-color: #e0e0e0; /* Cor de fundo para atividade concluída */
+    text-decoration: line-through; /* Riscar texto da atividade concluída */
+}
+
+.card .restaurar-btn {
+    background-color: #007bff; /* Azul para botão de restaurar */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-top: 10px; /* Espaço acima do botão */
+    display: none; /* Inicialmente oculto */
+}
+
+.card .restaurar-btn:hover {
+    background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
 }

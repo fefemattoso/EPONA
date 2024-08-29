@@ -1,0 +1,197 @@
+/* Font Family */
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&display=swap');
+
+/* Aplicando a fonte Comfortaa a todos os elementos */
+body, button, p, span, h1, h2, h3 {
+    font-family: "Comfortaa", sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #badda8;
+   
+}
+
+/* Header */
+header {
+    background-color: #2f5911; /* Verde escuro */
+    padding: 1rem;
+    color: #fff;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo img {
+    width: 100px;
+    height: auto;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 15px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: 400;
+}
+
+.nav-links a:hover {
+    color: #162040;
+}
+
+/* Main Section */
+main {
+    padding: 20px;
+}
+
+.lista {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+h2 {
+    margin-bottom: 20px;
+    font-size: 2rem;
+    color: #333;
+}
+
+/* Buttons */
+.buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.btn {
+    background-color: #162040;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn:hover {
+    background-color: #162040;
+}
+
+/* Card Container */
+#cardContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+/* Cards */
+.card {
+    background-color: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: calc(33.333% - 15px);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-sizing: border-box;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card input[type="checkbox"] {
+    transform: scale(1.2);
+}
+
+.card label {
+    margin: 0;
+    font-size: 1rem;
+    color: #333;
+    flex: 1;
+}
+
+.card.completed {
+    background-color: #e0f7fa;
+}
+
+.card.completed label {
+    text-decoration: line-through;
+    color: #80deea;
+}
+
+/* Modals */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: #ffffff;
+    margin: 5% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #000;
+}
+
+.modal h2 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.modal input[type="text"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.modal button {
+    background-color: #162040;
+    color: #ffffff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.modal button:hover {
+    background-color: #162040;
+}

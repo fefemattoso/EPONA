@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-    <link rel="icon" href="../images/logo.png" type="image/png">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendário</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/calendario.css">
+    <link rel="icon" href="../images/logo.png" type="image/png">
 </head>
 <body>
     <header>
         <nav>
             <div>
                 <img src="../images/logo.png" alt="Logo do projeto">
-                <p>Epona</p>
+                <p style="color: aliceblue;">Epona</p>
             </div>
             <ul>
                 <li><a href="./index.html">Home</a></li>
@@ -71,6 +71,21 @@
             </div>
         </div>
     </main>
+
+    <!-- Modal para confirmar exclusão de lembrete -->
+    <div id="overlay-delete" class="overlay-delete hidden">
+        <div class="modal-delete">
+            <h3>Confirmar Exclusão</h3>
+            <p>Você tem certeza que deseja excluir o lembrete?</p>
+            <p id="lembrete-delete-texto"></p>
+            <p id="lembrete-delete-data"></p>
+            <div class="btn-group-delete">
+                <button id="confirm-delete">Confirmar</button>
+                <button id="cancel-delete">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
     <script src="../js/calendario.js"></script>
 </body>
 </html>

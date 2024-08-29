@@ -50,23 +50,46 @@ document.addEventListener('DOMContentLoaded', () => {
         card.innerHTML = `
             <div class="headerCard">
                 <h2 class="titulo">${titulo}</h2>
-                <span>&#9747;</span>
+                <span class="remove-atividade">&#9747;</span>
             </div>
             <p class="descricao">${descricao}</p>
             <button class="concluido-btn">Concluído</button>
         `;
 
-        card.querySelector('span').addEventListener('click', () => {
+        // Evento para remover a atividade
+        card.querySelector('.remove-atividade').addEventListener('click', () => {
             atividadeParaRemover = card;
             overlayIndividual.classList.remove('hidden');
         });
 
+        // Evento para marcar a atividade como concluída ou restaurada
         card.querySelector('.concluido-btn').addEventListener('click', () => {
-            card.classList.add('concluida');
-            card.classList.add('fade-out');
-            setTimeout(() => {
-                card.remove();
-            }, 1000); // Tempo para animação de desaparecimento
+            if (card.classList.contains('concluida')) {
+                // Restaurar atividade
+                card.classList.remove('concluida');
+                card.querySelector('.concluido-btn').textContent = 'Concluído';
+                // Remover botão de restaurar
+                const restaurarBtn = card.querySelector('.restaurar-btn');
+                if (restaurarBtn) restaurarBtn.remove();
+            } else {
+                // Concluir atividade
+                card.classList.add('concluida');
+                card.querySelector('.concluido-btn').textContent = 'Concluída';
+
+                // Adicionar botão de restaurar se não existir
+                if (!card.querySelector('.restaurar-btn')) {
+                    const restaurarBtn = document.createElement('button');
+                    restaurarBtn.className = 'restaurar-btn';
+                    restaurarBtn.textContent = 'Restaurar';
+                    card.appendChild(restaurarBtn);
+
+                    restaurarBtn.addEventListener('click', () => {
+                        card.classList.remove('concluida');
+                        card.querySelector('.concluido-btn').textContent = 'Concluído';
+                        restaurarBtn.remove(); // Remove o botão de restaurar após a restauração
+                    });
+                }
+            }
         });
 
         atividadesList.appendChild(card);

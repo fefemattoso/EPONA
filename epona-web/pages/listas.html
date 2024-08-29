@@ -1,69 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
-    <link rel="icon" href="../images/logo.png" type="image/png">
-
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listas</title>
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/listas.css">
+    <link rel="icon" href="../images/logo.png" type="image/png">
 </head>
-
 <body>
     <header>
-        <nav>
-            <div>
+        <nav class="navbar">
+            <div class="logo">
                 <img src="../../Docs/logo.png" alt="Logo do projeto">
-                <p>Epona</p>
+                <p style="color: aliceblue;">Epona</p>
             </div>
-            <div>
-                <ul>
-                    <li><a href="./index.html">Home</a></li>
-                    <li><a href="./calendario.html">Calendario</a></li>
-                    <li><a href="./atividades.html">Atividades</a></li>
-                    <li><a href="./listas.html">Listas</a></li>
-                </ul>
-            </div>
+            <ul class="nav-links">
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="./calendario.html">Calendário</a></li>
+                <li><a href="./atividades.html">Atividades</a></li>
+                <li><a href="./listas.html">Listas</a></li>
+            </ul>
         </nav>
     </header>
     <main>
         <section class="lista">
             <h2>Minha Lista</h2>
-            <button>Adicionar Item</button>
-            <button>Editar Item</button>
-            <button>Remover Item</button>
-            <h3>A fazer</h3>
-            <ul>
-                <div style="display: flex;">
-                    <li>Tarefa 1</li>
-                    <input type="checkbox" name="" id="">
-                </div>
-                <div style="display: flex;">
-                    <li>Tarefa 2</li>
-                    <input type="checkbox" name="" id="">
-                </div>
-                <div style="display: flex;">
-                    <li>Tarefa 3</li>
-                    <input type="checkbox" name="" id="">
-                </div>
-            </ul>
-            <h3>Concluidas</h3>
-            <ul>
-                <div style="display: flex;">
-                    <li>Tarefa 1</li>
-                    <input type="checkbox" name="" id="">
-                </div>
-                <div style="display: flex;">
-                    <li>Tarefa 2</li>
-                    <input type="checkbox" name="" id="">
-                </div>
-                <div style="display: flex;">
-                    <li>Tarefa 3</li>
-                    <input type="checkbox" name="" id="">
-                </div>
-            </ul>
+            <div class="buttons">
+                <button class="btn add">Adicionar Item</button>
+                <button class="btn edit">Editar Item</button>
+                <button class="btn remove">Remover Itens Concluídos</button>
+            </div>
+            <div id="cardContainer" class="cards">
+                <!-- Cartões serão adicionados aqui -->
+            </div>
         </section>
     </main>
-</body>
 
+    <!-- Modal Adicionar Item -->
+    <div id="addItemModal" class="modal">
+        <div class="modal-content">
+            <span id="addItemClose" class="close">&times;</span>
+            <h2>Adicionar Item</h2>
+            <input type="text" id="newItemText" placeholder="Digite a tarefa...">
+            <button id="addItemBtn" class="btn">Adicionar</button>
+        </div>
+    </div>
+
+    <!-- Modal Editar Item -->
+    <div id="editItemModal" class="modal">
+        <div class="modal-content">
+            <span id="editItemClose" class="close">&times;</span>
+            <h2>Editar Item</h2>
+            <input type="text" id="editItemText" placeholder="Digite a nova tarefa...">
+            <button id="editItemBtn" class="btn">Salvar</button>
+        </div>
+    </div>
+
+    <script src="../js/listas.js" defer></script>
+</body>
 </html>
