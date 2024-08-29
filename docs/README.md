@@ -21,22 +21,22 @@ O design completo do projeto Epona pode ser visualizado no Figma através do lin
 
 Sequência das telas do protótipo desenvolvido no Figma:
 
-![pag00](./pag00.png)
+![pag00](./PagPrototipo/pag00.png)
 
-![pag01](./pag01.png)
+![pag01](./PagPrototipo/pag01.png)
 
-![pag02](./pag02.png)
+![pag02](./PagPrototipo/pag02.png)
 
-![pag03](./pag03.png)
+![pag03](./PagPrototipo/pag03.png)
 
-![pag04](./pag04.png)
+![pag04](./PagPrototipo/pag04.png)
 
-![pag05](./pag05.png)
+![pag05](./PagPrototipo/pag05.png)
 
-![pag06](./pag06.png)
+![pag06](./PagPrototipo/pag06.png)
 
-![pag07](./pag07.png)
+![pag07](./PagPrototipo/pag07.png)
 
-![pag08](./pag08.png)
+![pag08](./PagPrototipo/pag08.png)
 
-![pag09](./pag09.png)
+![pag09](./PagPrototipo/pag09.png)
