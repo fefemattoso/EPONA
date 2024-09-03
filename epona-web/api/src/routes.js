@@ -6,6 +6,7 @@ const Atividade = require('./controllers/atividades');
 const Agenda = require('./controllers/agenda');
 const Lista = require('./controllers/listas');
 
+router.post('/login', Usuario.login)
 router.post('/usuario', Usuario.create);
 router.get('/usuario', Usuario.read);
 router.get('/usuario/:id', Usuario.read);

@@ -6,156 +6,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Epona</title>
-    <style>
-        /* Reset básico */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #badda8;
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        header {
-            padding: 1rem;
-            color: #fff;
-            width: 100%;
-            text-align: center;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        header img {
-            max-width: 300px;
-            height: auto;
-        }
-
-        main {
-            width: 100%;
-            max-width: 400px;
-            padding: 20px;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            position: relative;
-            top: 60px; /* Adjust to ensure space for header */
-        }
-
-        h2 {
-            text-align: center;
-            color: #162040;
-            margin-bottom: 20px;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            margin-bottom: 5px;
-            color: #162040;
-            font-weight: bold;
-        }
-
-        input[type="text"],
-        input[type="password"] {
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 2px solid #547699;
-            border-radius: 5px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-
-        input[type="text"]:focus,
-        input[type="password"]:focus {
-            border-color: #162040;
-        }
-
-        input[type="submit"] {
-            padding: 10px;
-            background-color: #162040;
-            color: white;
-            font-weight: bold;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #0f1b2a;
-        }
-
-        a {
-            text-align: center;
-            color: #162040;
-            text-decoration: none;
-            margin: 10px 0;
-            font-size: 0.9rem;
-            display: block;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        .visitor-login {
-            margin-top: 20px;
-            text-align: center;
-        }
-
-        .visitor-login a {
-            display: inline-block;
-            padding: 10px;
-            background-color: #f0f0f0;
-            color: #162040;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: background-color 0.3s ease;
-        }
-
-        .visitor-login a:hover {
-            background-color: #d1d1d1;
-        }
-
-        /* Responsividade */
-        @media (max-width: 768px) {
-            main {
-                margin: 20px;
-            }
-
-            input[type="text"],
-            input[type="password"],
-            input[type="submit"] {
-                font-size: 1rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="../css/login.css">
 </head>
 
 <body>
     <header>
         <img src="../images/logo.png" alt="Logo do projeto">
-        <p></p>
     </header>
     <main>
         <h2>Login no Epona</h2>
         <section class="login" id="login">
-            <form action="#">
-                <label for="usuario">Usuário:</label>
-                <input type="text" id="usuario" name="usuario" placeholder="Digite o usuário ou email" required>
+            <form action="localhost:3000/login" method="post">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Digite o email" required>
                 <label for="senha">Senha:</label>
                 <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
                 <a href="./senha.html">Esqueci minha senha</a>
@@ -168,5 +31,5 @@
         </section>
     </main>
 </body>
-
+<script src="../js/login.js"></script>
 </html>

@@ -1,5 +1,31 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+
+const login = async (req, res) => {
+    const {email, senha} = req.body;
+    const usuarios = await prisma.usuario.findFirst({
+        where: {
+            email: email,
+            senha: senha
+        },
+        select: {
+            id: true,
+            nome: true,
+            email: true
+        }
+    });
+    if(usuarios){
+        const token = await jwt.sign({email: usuarios.email}, process.env.KEY, {
+            expiresIn: 3600
+        });
+        usuarios.token = token
+        return res.json(usuarios);
+    } else {
+        return res.status(401).json({ message: 'Email ou senha inválidos.' });
+    }
+}
 
 const create = async (req, res) => {
     try {
@@ -65,5 +91,6 @@ module.exports = {
     create,
     read,
     update,
-    del
+    del,
+    login
 };

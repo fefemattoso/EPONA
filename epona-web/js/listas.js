@@ -11,6 +11,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const cardContainer = document.getElementById('cardContainer');
     let currentEditingCard = null;
 
+//Fetch do banco de dados
+
+async function carregarLista() {
+    try {
+        const response = await fetch('http://localhost:3000/lista');
+        const lista = await response.json();
+        return lista;
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+
+
+
+
     // Abre o modal de adicionar item
     document.querySelector(".btn.add").addEventListener("click", () => {
         addItemModal.style.display = "block";
