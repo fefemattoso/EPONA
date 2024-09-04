@@ -1,10 +1,11 @@
 /* Login.css */
 .login-container {
-    background-color: #FFFFFF; /* Branco */
+    background-color: #badda8;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center;
+    font-family: Arial, sans-serif;
   }
   
   .login-container h2 {
@@ -51,3 +52,21 @@
     
 }
   
+/* Estilo para os ramos de folhinhas */
+.leaf {
+  position: absolute;
+  opacity: 0.2; /* Deixa as folhas transparentes */
+}
+
+.leaf-top-left {
+  top: 0;
+  left: 0;
+  width: 150px; /* Ajuste o tamanho das imagens conforme necessário */
+  transform: rotate(180deg); /* Rotaciona a folha de cabeça para baixo */
+}
+
+.leaf-bottom-right {
+  bottom: 0;
+  right: 0;
+  width: 150px;
+}
