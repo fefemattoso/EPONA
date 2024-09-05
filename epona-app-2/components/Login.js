@@ -31,9 +31,9 @@ function Login({ onLogin }) {
         onChange={(e) => setPassword(e.target.value)}
       />
       <View style={styles.buttons}>
-        <Button style={styles.button} title="Entrar" onPress={handleLogin} />
-        <Button style={styles.button} title="Entrar como Visitante" onPress={() => onLogin('guest')} />
-        <Button style={styles.button} title="Cadastrar" onPress={() => alert('Cadastro ainda não disponível!')} />
+        <Button style={styles.button} color='#162040' title="Entrar" onPress={handleLogin} />
+        <Button style={styles.button} color='#162040' title="Entrar como Visitante" onPress={() => onLogin('guest')} />
+        <Button style={styles.button} color='#162040' title="Cadastrar" onPress={() => alert('Cadastro ainda não disponível!')} />
       </View>
       <Image source={require('../assets/planta2.png')} style={styles.leafTopLeft} />
       <Image source={require('../assets/planta.png')} style={styles.leafBottomRight} />
