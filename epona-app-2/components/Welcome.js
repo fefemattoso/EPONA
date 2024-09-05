@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Button, Image, StyleSheet } from 'react-native';
-import './Welcome.css';
+// import './Welcome.css';
 
 const Welcome = ({ onContinue }) => {
   return (
@@ -10,8 +10,9 @@ const Welcome = ({ onContinue }) => {
       <Text style={styles.subtitle}>Seu assistente pessoal para gerenciar tarefas e lembretes</Text>
 
       <View style={styles.buttonContainer}>
-        <Button style={styles.button} title="Login" onPress={onContinue} />
-        <Button style={styles.button} title="Acessar como visitante" onPress={onContinue} />
+        
+        <Button style={styles.button} color='#162040' title="Login" onPress={onContinue} />
+        <Button style={styles.button} color='#162040' title="Acessar como visitante" onPress={onContinue} />
       </View>
 
       {/* Folhas transparentes no canto */}
@@ -31,7 +32,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontWeight: '"Comfortaa", sans-serif',
-    color: '#333',
+    color: '#162040',
     marginBottom: 10,
   },
   subtitle: {
