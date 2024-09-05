@@ -11,21 +11,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const cardContainer = document.getElementById('cardContainer');
     let currentEditingCard = null;
 
-//Fetch do banco de dados
-
-async function carregarLista() {
-    try {
-        const response = await fetch('http://localhost:3000/lista');
-        const lista = await response.json();
-        return lista;
-      } catch (error) {
-        console.error(error);
-      }
+    // Carregar tarefas do localStorage
+    function carregarLista() {
+        const lista = JSON.parse(localStorage.getItem('tarefas')) || [];
+        lista.forEach(item => {
+            const card = createCard(item.texto, item.concluida);
+            cardContainer.appendChild(card);
+        });
     }
 
-
-
-
+    // Salvar tarefas no localStorage
+    function salvarLista() {
+        const cards = Array.from(cardContainer.querySelectorAll('.card'));
+        const lista = cards.map(card => ({
+            texto: card.querySelector('label').textContent,
+            concluida: card.classList.contains('completed')
+        }));
+        localStorage.setItem('tarefas', JSON.stringify(lista));
+    }
 
     // Abre o modal de adicionar item
     document.querySelector(".btn.add").addEventListener("click", () => {
@@ -45,6 +48,7 @@ async function carregarLista() {
             cardContainer.appendChild(card);
             newItemText.value = ""; // Limpar campo
             addItemModal.style.display = "none";
+            salvarLista();
         }
     });
 
@@ -70,6 +74,7 @@ async function carregarLista() {
                 currentEditingCard.querySelector("label").textContent = newText;
                 editItemText.value = ""; // Limpar campo
                 editItemModal.style.display = "none";
+                salvarLista();
             }
         }
     });
@@ -78,6 +83,7 @@ async function carregarLista() {
     removeCompletedBtn.addEventListener("click", () => {
         const completedCards = document.querySelectorAll(".card.completed");
         completedCards.forEach(card => card.remove());
+        salvarLista();
     });
 
     // Adiciona funcionalidade para marcar itens como concluídos ao clicar
@@ -85,6 +91,7 @@ async function carregarLista() {
         if (e.target.type === 'checkbox') {
             const card = e.target.parentElement;
             card.classList.toggle("completed", e.target.checked);
+            salvarLista();
         }
     });
 
@@ -99,9 +106,6 @@ async function carregarLista() {
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.checked = completed;
-        checkbox.addEventListener("change", () => {
-            card.classList.toggle("completed", checkbox.checked);
-        });
 
         const label = document.createElement("label");
         label.textContent = text;
@@ -111,4 +115,7 @@ async function carregarLista() {
 
         return card;
     }
+
+    // Carregar lista ao iniciar
+    carregarLista();
 });
