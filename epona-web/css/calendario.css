@@ -154,7 +154,8 @@ button:hover {
     margin-bottom: 5px;
 }
 
-.formulario-lembrete input {
+.formulario-lembrete input,
+.formulario-lembrete textarea {
     width: calc(100% - 22px);
     padding: 10px;
     border-radius: 5px;
@@ -218,7 +219,7 @@ button:hover {
 }
 
 .btn-group-delete button {
-    background-color: #162040; /* Verde escuro */
+    background-color: #162040;
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -229,17 +230,22 @@ button:hover {
 }
 
 .btn-group-delete button:hover {
-    background-color: #1e2a40; /* Azul escuro */
+    background-color: #1e2a40;
 }
 
 #cancel-delete {
-    background-color: #ccc; /* Cinza claro */
+    background-color: #ccc;
 }
 
 #cancel-delete:hover {
-    background-color: #999; /* Cinza médio */
+    background-color: #999;
 }
 
 .hidden {
     display: none;
+}
+
+/* Estilo para a textarea de descrição */
+textarea {
+    resize: vertical;
 }

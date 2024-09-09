@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const formLembrete = document.getElementById('form-lembrete');
     const dataLembreteInput = document.getElementById('data-lembrete');
     const textoLembreteInput = document.getElementById('texto-lembrete');
+    const descricaoTextoInput = document.getElementById('descricao-texto');
     const anoSpan = document.getElementById('ano');
     const mesSpan = document.getElementById('mes');
     const antBtn = document.getElementById('antBtn');
@@ -18,6 +19,63 @@ document.addEventListener('DOMContentLoaded', function() {
     let anoAtual = new Date().getFullYear();
     let mesAtual = new Date().getMonth(); // 0 = Janeiro, 1 = Fevereiro, etc.
     let lembreteParaExcluir = null; // Lembrete selecionado para exclusão
+
+    const API_URL = 'http://localhost:3000/agenda'; // URL da API
+
+    async function carregarLembretes() {
+        try {
+            const response = await fetch(API_URL);
+            if (!response.ok) throw new Error('Falha na resposta da API');
+            const agendas = await response.json();
+            lembretes = agendas.reduce((acc, lembrete) => {
+                const data = lembrete.data.split('T')[0]; // Formata data para yyyy-mm-dd
+                if (!acc[data]) acc[data] = [];
+                acc[data].push({ texto: lembrete.titulo, descricao: lembrete.descricao, id: lembrete.id });
+                return acc;
+            }, {});
+            gerarCalendario(anoAtual, mesAtual);
+        } catch (error) {
+            console.error('Erro ao carregar lembretes:', error);
+        }
+    }
+
+    async function salvarLembrete(data, texto, descricao) {
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    titulo: texto,
+                    descricao: descricao,
+                    data: new Date(data).toISOString(), // Formata data para ISO 8601
+                    usuarioId: 1 // Substitua com o ID do usuário apropriado
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Falha ao salvar lembrete');
+            }
+
+            const novoLembrete = await response.json();
+            lembretes[data] = lembretes[data] || [];
+            lembretes[data].push({ texto: novoLembrete.titulo, descricao: novoLembrete.descricao, id: novoLembrete.id });
+
+            console.log('Lembrete salvo com sucesso:', novoLembrete);
+
+            gerarCalendario(anoAtual, mesAtual);
+        } catch (error) {
+            console.error('Erro ao salvar lembrete:', error);
+        }
+    }
+
+    async function excluirLembreteAPI(id) {
+        try {
+            const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+            if (!response.ok) throw new Error('Falha ao excluir lembrete');
+        } catch (error) {
+            console.error('Erro ao excluir lembrete:', error);
+        }
+    }
 
     function gerarCalendario(ano, mes) {
         diasDoMes.innerHTML = '';
@@ -56,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 lembreteDiv.textContent = lembrete.texto;
                 lembreteDiv.addEventListener('click', (event) => {
                     event.stopPropagation(); // Impede que o clique no lembrete abra o modal do dia
-                    prepararModalDeletar(data, lembrete.texto);
+                    prepararModalDeletar(data, lembrete.texto, lembrete.id);
                 });
                 divDia.appendChild(lembreteDiv);
             });
@@ -67,62 +125,39 @@ document.addEventListener('DOMContentLoaded', function() {
         const lembretesDia = lembretes[data] || [];
         diaSelecionado.innerHTML = `
             <h3>Detalhes de ${data}</h3>
-            ${lembretesDia.map(l => `<div class="lembrete">${l.texto}</div>`).join('')}
+            ${lembretesDia.map(l => `
+                <div class="lembrete">
+                    <strong>${l.texto}</strong>
+                    <p>${l.descricao}</p>
+                </div>
+            `).join('')}
         `;
     }
 
-    function prepararModalDeletar(data, texto) {
-        lembreteParaExcluir = { data, texto };
+    function prepararModalDeletar(data, texto, id) {
+        lembreteParaExcluir = { data, texto, id };
         lembreteDeleteTexto.textContent = texto;
         lembreteDeleteData.textContent = data;
         overlayDelete.classList.remove('hidden');
     }
 
-    function excluirLembrete() {
+    async function excluirLembrete() {
         if (lembreteParaExcluir) {
-            const { data, texto } = lembreteParaExcluir;
-            lembretes[data] = lembretes[data].filter(l => l.texto !== texto);
-            const diaDiv = diasDoMes.querySelector(`.dia[data-data="${data}"]`);
-            if (diaDiv) {
-                const lembretesDiv = diaDiv.querySelectorAll('.lembrete');
-                lembretesDiv.forEach(l => {
-                    if (l.textContent === texto) {
-                        l.remove();
-                    }
-                });
-            }
-            mostrarDetalhesDia(data);
+            const { data, texto, id } = lembreteParaExcluir;
+            delete lembretes[data];
+            await excluirLembreteAPI(id);
+            gerarCalendario(anoAtual, mesAtual);
             lembreteParaExcluir = null;
         }
     }
 
-    formLembrete.addEventListener('submit', function(event) {
+    formLembrete.addEventListener('submit', async function(event) {
         event.preventDefault();
         const data = dataLembreteInput.value;
         const texto = textoLembreteInput.value;
+        const descricao = descricaoTextoInput.value;
 
-        if (!lembretes[data]) {
-            lembretes[data] = [];
-        }
-
-        lembretes[data].push({ texto });
-
-        // Atualiza o calendário com o novo lembrete
-        const dias = diasDoMes.querySelectorAll('.dia');
-        dias.forEach(dia => {
-            if (dia.dataset.data === data) {
-                const lembreteDiv = document.createElement('div');
-                lembreteDiv.classList.add('lembrete');
-                lembreteDiv.textContent = texto;
-                lembreteDiv.addEventListener('click', (event) => {
-                    event.stopPropagation();
-                    prepararModalDeletar(data, texto);
-                });
-                dia.appendChild(lembreteDiv);
-            }
-        });
-
-        mostrarDetalhesDia(data);
+        await salvarLembrete(data, texto, descricao);
         formLembrete.reset();
     });
 
@@ -146,8 +181,8 @@ document.addEventListener('DOMContentLoaded', function() {
         gerarCalendario(anoAtual, mesAtual);
     });
 
-    confirmDeleteBtn.addEventListener('click', () => {
-        excluirLembrete();
+    confirmDeleteBtn.addEventListener('click', async () => {
+        await excluirLembrete();
         overlayDelete.classList.add('hidden');
     });
 
@@ -156,5 +191,5 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Inicializa o calendário com o mês e ano atuais
-    gerarCalendario(anoAtual, mesAtual);
+    carregarLembretes();
 });
