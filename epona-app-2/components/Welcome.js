@@ -1,10 +1,12 @@
 import React from 'react';
 import { View, Text, Button, Image, StyleSheet } from 'react-native';
+import './Welcome.css';
 
 const Welcome = ({ onContinue }) => {
   return (
     <View style={styles.welcomeContainer}>
       <Text style={styles.title}>Bem-vindo ao Epona</Text>
+      <Image source={require('../assets/icon.png')} style={styles.icon} />
       <Text style={styles.subtitle}>Seu assistente pessoal para gerenciar tarefas e lembretes</Text>
 
       <View style={styles.buttonContainer}>
@@ -13,7 +15,7 @@ const Welcome = ({ onContinue }) => {
       </View>
 
       {/* Folhas transparentes no canto */}
-      <Image source={require('../assets/planta.png')} style={styles.leafTopLeft} />
+      <Image source={require('../assets/planta2.png')} style={styles.leafTopLeft} />
       <Image source={require('../assets/planta.png')} style={styles.leafBottomRight} />
     </View>
   );
@@ -36,6 +38,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#666',
     marginBottom: 20,
+    alignItems: 'center',
+    textAlign: 'center',
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -61,6 +65,10 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
   },
+  icon: {
+    width: 150,
+    height: 150,
+  }
 });
 
 export default Welcome;
