@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const API_URL = 'http://localhost:3000/lista'; // Substitua com o endereço correto do backend
     const addItemModal = document.getElementById('addItemModal');
     const editItemModal = document.getElementById('editItemModal');
     const addItemClose = document.getElementById('addItemClose');
@@ -11,44 +12,102 @@ document.addEventListener('DOMContentLoaded', () => {
     const cardContainer = document.getElementById('cardContainer');
     let currentEditingCard = null;
 
-//Fetch do banco de dados
-
-async function carregarLista() {
-    try {
-        const response = await fetch('http://localhost:3000/lista');
-        const lista = await response.json();
-        return lista;
-      } catch (error) {
-        console.error(error);
-      }
+    async function carregarLista() {
+        try {
+            const response = await fetch(API_URL);
+            if (!response.ok) throw new Error('Erro ao carregar a lista.');
+            const lista = await response.json();
+            lista.forEach(item => {
+                const card = createCard(item.descricao, item.concluida, item.id);
+                cardContainer.appendChild(card);
+            });
+        } catch (error) {
+            console.error('Erro ao carregar a lista:', error);
+        }
     }
 
+    async function adicionarItem(descricao) {
+        try {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ descricao, usuarioId: 1 }) // Ajuste `usuarioId` conforme necessário
+            });
+            if (!response.ok) throw new Error('Erro ao adicionar item.');
 
+            const newItem = await response.json();
+            console.log('Item adicionado:', newItem);
+            const card = createCard(newItem.descricao, newItem.concluida, newItem.id);
+            cardContainer.appendChild(card);
+        } catch (error) {
+            console.error('Erro ao adicionar item:', error);
+        }
+    }
 
+    async function atualizarItem(id, descricao, concluida) {
+        try {
+            const response = await fetch(`${API_URL}/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ descricao, concluida })
+            });
+            if (!response.ok) throw new Error('Erro ao atualizar item.');
+        } catch (error) {
+            console.error('Erro ao atualizar item:', error);
+        }
+    }
 
+    async function removerItem(id) {
+        try {
+            const response = await fetch(`${API_URL}/${id}`, {
+                method: 'DELETE'
+            });
+            if (!response.ok) throw new Error('Erro ao remover item.');
+        } catch (error) {
+            console.error('Erro ao remover item:', error);
+        }
+    }
 
-    // Abre o modal de adicionar item
+    function createCard(descricao, concluida = false, id = null) {
+        const card = document.createElement("div");
+        card.classList.add("card");
+        if (concluida) {
+            card.classList.add("completed");
+        }
+        if (id) {
+            card.dataset.id = id;
+        }
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = concluida;
+
+        const label = document.createElement("label");
+        label.textContent = descricao;
+
+        card.appendChild(checkbox);
+        card.appendChild(label);
+
+        return card;
+    }
+
     document.querySelector(".btn.add").addEventListener("click", () => {
         addItemModal.style.display = "block";
     });
 
-    // Fecha o modal de adicionar item
     addItemClose.addEventListener("click", () => {
         addItemModal.style.display = "none";
     });
 
-    // Adiciona o novo item
     addItemBtn.addEventListener("click", () => {
-        const text = newItemText.value.trim();
-        if (text) {
-            const card = createCard(text);
-            cardContainer.appendChild(card);
+        const descricao = newItemText.value.trim();
+        if (descricao) {
+            adicionarItem(descricao);
             newItemText.value = ""; // Limpar campo
             addItemModal.style.display = "none";
         }
     });
 
-    // Abre o modal de editar item ao clicar em um item
     cardContainer.addEventListener("click", (e) => {
         if (e.target.tagName === "LABEL") {
             currentEditingCard = e.target.parentElement;
@@ -57,58 +116,43 @@ async function carregarLista() {
         }
     });
 
-    // Fecha o modal de editar item
     editItemClose.addEventListener("click", () => {
         editItemModal.style.display = "none";
     });
 
-    // Salva as edições do item
     editItemBtn.addEventListener("click", () => {
         if (currentEditingCard) {
-            const newText = editItemText.value.trim();
-            if (newText) {
-                currentEditingCard.querySelector("label").textContent = newText;
+            const newDescricao = editItemText.value.trim();
+            const id = currentEditingCard.dataset.id;
+            if (newDescricao) {
+                const concluida = currentEditingCard.classList.contains("completed");
+                atualizarItem(id, newDescricao, concluida);
+                currentEditingCard.querySelector("label").textContent = newDescricao;
                 editItemText.value = ""; // Limpar campo
                 editItemModal.style.display = "none";
             }
         }
     });
 
-    // Remove itens concluídos
-    removeCompletedBtn.addEventListener("click", () => {
+    removeCompletedBtn.addEventListener("click", async () => {
         const completedCards = document.querySelectorAll(".card.completed");
-        completedCards.forEach(card => card.remove());
+        for (const card of completedCards) {
+            const id = card.dataset.id;
+            await removerItem(id);
+            card.remove();
+        }
     });
 
-    // Adiciona funcionalidade para marcar itens como concluídos ao clicar
     cardContainer.addEventListener('change', (e) => {
         if (e.target.type === 'checkbox') {
             const card = e.target.parentElement;
-            card.classList.toggle("completed", e.target.checked);
+            const id = card.dataset.id;
+            const concluida = e.target.checked;
+            card.classList.toggle("completed", concluida);
+            const descricao = card.querySelector("label").textContent;
+            atualizarItem(id, descricao, concluida);
         }
     });
 
-    // Cria um novo card
-    function createCard(text, completed = false) {
-        const card = document.createElement("div");
-        card.classList.add("card");
-        if (completed) {
-            card.classList.add("completed");
-        }
-
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.checked = completed;
-        checkbox.addEventListener("change", () => {
-            card.classList.toggle("completed", checkbox.checked);
-        });
-
-        const label = document.createElement("label");
-        label.textContent = text;
-
-        card.appendChild(checkbox);
-        card.appendChild(label);
-
-        return card;
-    }
+    carregarLista();
 });
