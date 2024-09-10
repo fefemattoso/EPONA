@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './Agenda.css';
 
 function Agenda() {
   const [events, setEvents] = useState([]);

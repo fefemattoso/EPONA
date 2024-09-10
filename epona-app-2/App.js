@@ -6,7 +6,7 @@ import FunctionSelection from './components/FunctionSelection';
 import Agenda from './components/Agenda';
 import DailyTasks from './components/DailyTasks';
 import CustomList from './components/CustomList';
-import Welcome from './components/Welcome'; // Importando o componente Welcome
+import Welcome from './components/Welcome';
 
 function App() {
   const [user, setUser] = useState(null);

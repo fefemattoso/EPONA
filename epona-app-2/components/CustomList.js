@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './CustomList.css';
 
 function CustomList() {
   const [lists, setLists] = useState([]);

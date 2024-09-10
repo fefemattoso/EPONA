@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './DailyTasks.css';
 
 function DailyTasks() {
   const [tasks, setTasks] = useState([]);
