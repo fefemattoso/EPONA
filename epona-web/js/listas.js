@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_URL = 'http://localhost:3000/lista'; // Substitua com o endereço correto do backend
+    const API_URL = 'http://localhost:3000/lista'; 
     const addItemModal = document.getElementById('addItemModal');
     const editItemModal = document.getElementById('editItemModal');
     const addItemClose = document.getElementById('addItemClose');
@@ -49,9 +49,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ descricao, concluida })
+                body: JSON.stringify({ id, descricao, concluida })
             });
             if (!response.ok) throw new Error('Erro ao atualizar item.');
+            console.log('Item atualizado com sucesso:', await response.json());
         } catch (error) {
             console.error('Erro ao atualizar item:', error);
         }
