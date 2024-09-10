@@ -56,7 +56,6 @@ const del = async (req, res) => {
         });
         return res.status(204).json(agenda);
     } catch (error) {
-        console.log(data)
         return res.status(404).json({ message: "agenda não encontrada" });
     }
 }
