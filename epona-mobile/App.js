@@ -7,6 +7,9 @@ import Agenda from './components/Agenda';
 import DailyTasks from './components/DailyTasks';
 import CustomList from './components/CustomList';
 import Welcome from './components/Welcome';
+import { db, storage } from './firebaseconfig';
+import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 function App() {
   const [user, setUser] = useState(null);
