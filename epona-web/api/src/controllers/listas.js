@@ -3,12 +3,13 @@ const prisma = new PrismaClient();
 
 const create = async (req, res) => {
     try {
-        const { id, descricao, usuarioId } = req.body;
+        const { id, descricao, usuarioId, concluido } = req.body;
         const lista = await prisma.lista.create({
             data: {
                 id: id,
                 descricao: descricao,
-                usuarioId: usuarioId
+                usuarioId: usuarioId,
+                concluido: concluido
             }
         });
         return res.status(201).json(lista);

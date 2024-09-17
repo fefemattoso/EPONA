@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_URL = 'http://localhost:3000/lista'; 
+    const API_URL = 'http://localhost:3000/lista';
     const addItemModal = document.getElementById('addItemModal');
     const editItemModal = document.getElementById('editItemModal');
     const addItemClose = document.getElementById('addItemClose');
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error('Erro ao carregar a lista.');
             const lista = await response.json();
             lista.forEach(item => {
-                const card = createCard(item.descricao, item.concluida, item.id);
+                const card = createCard(item.descricao, item.concluido, item.id);
                 cardContainer.appendChild(card);
             });
         } catch (error) {
@@ -44,15 +44,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    async function atualizarItem(id, descricao, concluida) {
+    async function atualizarItem(id, descricao, usuarioId, concluido) {
         try {
-            const response = await fetch(`${API_URL}/${id}`, {
+            fetch(`${API_URL}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id, descricao, concluida })
-            });
-            if (!response.ok) throw new Error('Erro ao atualizar item.');
-            console.log('Item atualizado com sucesso:', await response.json());
+                body: JSON.stringify({ id, descricao, usuarioId, concluido })
+            })
+                .then(resp => resp.json())
+                .then(response => {
+                    console.log(response)
+                });
         } catch (error) {
             console.error('Erro ao atualizar item:', error);
         }
@@ -69,23 +71,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function createCard(descricao, concluida = false, id = null) {
+    function createCard(descricao, concluida, id) {
+        //Quando carregar a lista cria uma div e a adiciona uma classe chamada card
         const card = document.createElement("div");
         card.classList.add("card");
+        //Se concluido = true, ele irá dar ao card a classe completed, que deixara ele azul e riscado
         if (concluida) {
             card.classList.add("completed");
         }
+        // Se tiver id, irá atribuir id ao card
         if (id) {
             card.dataset.id = id;
         }
 
+        // Cria um input no card
         const checkbox = document.createElement("input");
+        // Define o tipo do input como checkbox e seta o checkbox para o estado concluido caso seja true
         checkbox.type = "checkbox";
         checkbox.checked = concluida;
 
+        //Cria uma label e coloca a descrição da lista como texto
         const label = document.createElement("label");
         label.textContent = descricao;
 
+        // Adiciona o checkbox e a label ao card
         card.appendChild(checkbox);
         card.appendChild(label);
 
@@ -126,8 +135,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const newDescricao = editItemText.value.trim();
             const id = currentEditingCard.dataset.id;
             if (newDescricao) {
-                const concluida = currentEditingCard.classList.contains("completed");
-                atualizarItem(id, newDescricao, concluida);
+                const concluido = currentEditingCard.classList.contains("completed");
+                atualizarItem(id, newDescricao, concluido);
                 currentEditingCard.querySelector("label").textContent = newDescricao;
                 editItemText.value = ""; // Limpar campo
                 editItemModal.style.display = "none";

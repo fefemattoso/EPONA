@@ -28,7 +28,7 @@ router.delete('/agenda/:id', Agenda.del);
 router.post('/lista', Lista.create);
 router.get('/lista', Lista.read);
 router.get('/lista/:id', Lista.read);
-router.put('/lista', Lista.update);
+router.put('/lista/', Lista.update);
 router.delete('/lista/:id', Lista.del);
 
 router.get('/', (req, res) => { return res.json("API respondendo") });

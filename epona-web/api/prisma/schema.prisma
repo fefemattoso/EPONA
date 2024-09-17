@@ -23,14 +23,14 @@ model Atividade{
   titulo String
   descricao String?
   data DateTime? @default(now())
-  concluido Boolean
+  concluido Boolean @default(false)
 }
 
 model Lista{
   id Int @id @default(autoincrement())
   descricao String
   usuarioId Int
-  concluido Boolean
+  concluido Boolean @default(false)
   usuario Usuario @relation("escreve", fields: [usuarioId], references: [id])
 }
 
