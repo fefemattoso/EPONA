@@ -17,6 +17,7 @@ CREATE TABLE `Atividade` (
     `titulo` VARCHAR(191) NOT NULL,
     `descricao` VARCHAR(191) NULL,
     `data` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `concluido` BOOLEAN NOT NULL DEFAULT false,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -26,6 +27,7 @@ CREATE TABLE `Lista` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `descricao` VARCHAR(191) NOT NULL,
     `usuarioId` INTEGER NOT NULL,
+    `concluido` BOOLEAN NOT NULL DEFAULT false,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
