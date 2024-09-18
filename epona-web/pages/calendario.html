@@ -89,6 +89,25 @@
         </div>
     </div>
 
+    <!-- Modal para editar lembrete -->
+    <div id="overlay-edit" class="overlay-edit hidden">
+        <div class="modal-edit">
+            <h3>Editar Lembrete</h3>
+            <form id="form-edit-lembrete">
+                <label for="edit-texto-lembrete">Lembrete:</label>
+                <input type="text" id="edit-texto-lembrete" name="edit-texto-lembrete" required>
+
+                <label for="edit-descricao-texto">Descrição:</label>
+                <textarea id="edit-descricao-texto" name="edit-descricao-texto" rows="4" required></textarea>
+
+                <div class="btn-group-edit">
+                    <button type="submit" id="confirm-edit">Salvar</button>
+                    <button type="button" id="cancel-edit">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="../js/calendario.js"></script>
 </body>
 </html>

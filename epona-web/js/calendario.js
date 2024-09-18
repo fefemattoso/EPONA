@@ -15,10 +15,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const lembreteDeleteTexto = document.getElementById('lembrete-delete-texto');
     const lembreteDeleteData = document.getElementById('lembrete-delete-data');
 
+    // Modais de edição
+    const overlayEdit = document.getElementById('overlay-edit');
+    const formEditLembrete = document.getElementById('form-edit-lembrete');
+    const editTextoLembreteInput = document.getElementById('edit-texto-lembrete');
+    const editDescricaoTextoInput = document.getElementById('edit-descricao-texto');
+    const cancelEditBtn = document.getElementById('cancel-edit');
+
     let lembretes = {}; // Armazena lembretes por data
     let anoAtual = new Date().getFullYear();
     let mesAtual = new Date().getMonth(); // 0 = Janeiro, 1 = Fevereiro, etc.
     let lembreteParaExcluir = null; // Lembrete selecionado para exclusão
+    let lembreteParaEditar = null; // Lembrete selecionado para edição
 
     const API_URL = 'http://localhost:3000/agenda'; // URL da API
 
@@ -52,9 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }),
             });
 
-            if (!response.ok) {
-                throw new Error('Falha ao salvar lembrete');
-            }
+            if (!response.ok) throw new Error('Falha ao salvar lembrete');
 
             const novoLembrete = await response.json();
             lembretes[data] = lembretes[data] || [];
@@ -74,6 +80,16 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!response.ok) throw new Error('Falha ao excluir lembrete');
         } catch (error) {
             console.error('Erro ao excluir lembrete:', error);
+        }
+    }
+
+    async function excluirLembrete() {
+        if (lembreteParaExcluir) {
+            const { data, id } = lembreteParaExcluir;
+            await excluirLembreteAPI(id);
+            lembretes[data] = (lembretes[data] || []).filter(l => l.id !== id);
+            gerarCalendario(anoAtual, mesAtual);
+            lembreteParaExcluir = null;
         }
     }
 
@@ -129,9 +145,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="lembrete">
                     <strong>${l.texto}</strong>
                     <p>${l.descricao}</p>
+                    <button class="edit-btn" data-id="${l.id}" data-data="${data}">Editar</button>
                 </div>
             `).join('')}
         `;
+        adicionarEventosEditar();
     }
 
     function prepararModalDeletar(data, texto, id) {
@@ -141,14 +159,53 @@ document.addEventListener('DOMContentLoaded', function() {
         overlayDelete.classList.remove('hidden');
     }
 
-    async function excluirLembrete() {
-        if (lembreteParaExcluir) {
-            const { data, texto, id } = lembreteParaExcluir;
-            delete lembretes[data];
-            await excluirLembreteAPI(id);
-            gerarCalendario(anoAtual, mesAtual);
-            lembreteParaExcluir = null;
+    async function editarLembrete() {
+        if (lembreteParaEditar) {
+            const { id, data } = lembreteParaEditar;
+            const texto = editTextoLembreteInput.value;
+            const descricao = editDescricaoTextoInput.value;
+
+            try {
+                const response = await fetch(`${API_URL}/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id,
+                        titulo: texto,
+                        descricao: descricao,
+                        data: new Date(data).toISOString(),
+                        usuarioId: 1
+                    }),
+                });
+
+                if (!response.ok) throw new Error('Falha ao atualizar lembrete');
+
+                const atualizado = await response.json();
+                lembretes[data] = (lembretes[data] || []).map(l => l.id === id ? { ...l, texto: atualizado.titulo, descricao: atualizado.descricao } : l);
+
+                gerarCalendario(anoAtual, mesAtual);
+                overlayEdit.classList.add('hidden');
+                lembreteParaEditar = null;
+            } catch (error) {
+                console.error('Erro ao atualizar lembrete:', error);
+            }
         }
+    }
+
+    function adicionarEventosEditar() {
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', (event) => {
+                const id = event.target.dataset.id;
+                const data = event.target.dataset.data;
+                const lembrete = lembretes[data].find(l => l.id === id);
+                if (lembrete) {
+                    lembreteParaEditar = { ...lembrete, data };
+                    editTextoLembreteInput.value = lembrete.texto;
+                    editDescricaoTextoInput.value = lembrete.descricao;
+                    overlayEdit.classList.remove('hidden');
+                }
+            });
+        });
     }
 
     formLembrete.addEventListener('submit', async function(event) {
@@ -188,6 +245,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     cancelDeleteBtn.addEventListener('click', () => {
         overlayDelete.classList.add('hidden');
+    });
+
+    cancelEditBtn.addEventListener('click', () => {
+        overlayEdit.classList.add('hidden');
+    });
+
+    formEditLembrete.addEventListener('submit', (event) => {
+        event.preventDefault();
+        editarLembrete();
     });
 
     // Inicializa o calendário com o mês e ano atuais
