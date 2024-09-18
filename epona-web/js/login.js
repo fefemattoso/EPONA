@@ -1,37 +1,29 @@
-// Fetch para usar login do banco de dados
-async function login(email, senha) {
-    try {
+
+// Exemplo de função para realizar o login
+async function realizarLogin(email, senha) {
+  try {
       const response = await fetch('http://localhost:3000/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, senha }),
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, senha })
       });
-  
-      const data = await response.json();
-  
-      if (data.token) {
-        // Store the JWT token in local storage
-        localStorage.setItem('token', data.token);
-  
-        console.log('Login successful!');
-        window.location.href = './index.html';
-      } else {
-        console.log('Login ou senha errados');
-      }
-    } catch (error) {
-      console.error(error);
-    }
+
+      if (!response.ok) throw new Error('Erro ao realizar login.');
+
+      const usuario = await response.json();
+      // Armazenar o usuarioId e o token no localStorage
+      localStorage.setItem('usuario', JSON.stringify({ id: usuario.id, nome: usuario.nome, email: usuario.email }));
+      localStorage.setItem('token', usuario.token);
+
+      window.location.href = './index.html'
+  } catch (error) {
+      console.error('Erro no login:', error);
   }
-  
-  // Eventos do formulário para realizar o login
-  const form = document.querySelector('form');
-  
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-  
-    // Pega email e senha
-    const email = document.querySelector('#email').value;
-    const senha = document.querySelector('#senha').value;
-  
-    await login(email , senha)
-  });
+}
+
+// Chame esta função quando o usuário clicar no botão de login
+document.getElementById('loginBtn').addEventListener('click', () => {
+  const email = document.getElementById('email').value;
+  const senha = document.getElementById('senha').value;
+  realizarLogin(email, senha);
+});

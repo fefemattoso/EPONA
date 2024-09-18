@@ -1,17 +1,19 @@
-const jwt = require('jsonwebtoken');
 require('dotenv').config();
+const jwt = require('jsonwebtoken');
 
 const validaAcesso = (req, res, next) => {
-    const token = req.headers.authorization;
+    const token = req.headers['authorization']?.split(' ')[1]; // "Bearer <token>"
+    if (!token) {
+        return res.status(401).json({ message: 'Token não fornecido.' });
+    }
 
-    jwt.verify(token, process.env.KEY, (err, data) => {
-        if (err != null) res.status(404).json(err).end();
-        else {
-            next();
+    jwt.verify(token, process.env.KEY, (err, decoded) => {
+        if (err) {
+            return res.status(403).json({ message: 'Token inválido.' });
         }
-    })
-}
+        req.usuarioId = decoded.id;
+        next();
+    });
+};
 
-module.exports = {
-    validaAcesso
-}
+module.exports = validaAcesso;

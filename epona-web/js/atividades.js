@@ -11,10 +11,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // URL do backend
     const API_URL = 'http://localhost:3000/atividade';
 
+    // Função para obter o usuarioId do token
+    const getUsuarioIdFromToken = () => {
+        // Implementar a lógica para extrair o usuarioId do token
+        // Exemplo: return JSON.parse(localStorage.getItem('userToken')).id;
+    };
+
     // Carregar atividades do backend
     async function carregarAtividades() {
+        const usuarioId = getUsuarioIdFromToken();
         try {
-            const response = await fetch(API_URL);
+            const response = await fetch(`${API_URL}?usuarioId=${usuarioId}`);
             if (!response.ok) throw new Error('Falha na resposta da API');
             const atividades = await response.json();
             console.log('Atividades carregadas:', atividades);
@@ -29,24 +36,26 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const titulo = document.getElementById('titulo').value;
         const descricao = document.getElementById('descricao').value;
+        const usuarioId = getUsuarioIdFromToken(); // Obtendo o usuarioId
+
         console.log('Adicionando atividade:', { titulo, descricao });
-    
+
         try {
             const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ titulo, descricao })
+                body: JSON.stringify({ titulo, descricao, usuarioId }) // Incluindo o usuarioId
             });
-    
+
             if (!response.ok) throw new Error('Falha na resposta da API');
-    
+
             const newAtividade = await response.json();
             console.log('Atividade adicionada:', newAtividade);
             adicionarAtividade(newAtividade);
         } catch (error) {
             console.error('Erro ao adicionar atividade:', error);
         }
-        
+
         addAtividadeModal.classList.add('hidden');
         e.target.reset(); // Limpar o formulário
     });
@@ -63,8 +72,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Confirmar remoção de todas as atividades
     confirmAllBtn.addEventListener('click', async () => {
+        const usuarioId = getUsuarioIdFromToken(); // Obtendo o usuarioId
         try {
-            const response = await fetch(API_URL, { method: 'DELETE' });
+            const response = await fetch(API_URL, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ usuarioId }) // Enviando o usuarioId
+            });
             if (response.ok) {
                 atividadesList.innerHTML = '';
             }
@@ -108,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 await fetch(`${API_URL}/${atividade.id}`, {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ concluida })
+                    body: JSON.stringify({ concluida, usuarioId: getUsuarioIdFromToken() }) // Incluindo o usuarioId
                 });
             } catch (error) {
                 console.error('Erro ao atualizar atividade:', error);
@@ -123,7 +137,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (atividadeParaRemover) {
             const id = atividadeParaRemover.dataset.id;
             try {
-                await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+                await fetch(`${API_URL}/${id}`, { 
+                    method: 'DELETE', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ usuarioId: getUsuarioIdFromToken() }) // Incluindo o usuarioId
+                });
                 atividadeParaRemover.remove();
             } catch (error) {
                 console.error('Erro ao remover atividade:', error);

@@ -4,41 +4,28 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const login = async (req, res) => {
-    const {email, senha} = req.body;
-    const usuarios = await prisma.usuario.findFirst({
-        where: {
-            email: email,
-            senha: senha
-        },
-        select: {
-            id: true,
-            nome: true,
-            email: true
-        }
+    const { email, senha } = req.body;
+    const usuario = await prisma.usuario.findFirst({
+        where: { email, senha },
+        select: { id: true, nome: true, email: true }
     });
-    if(usuarios){
-        const token = await jwt.sign({email: usuarios.email}, process.env.KEY, {
-            expiresIn: 3600
-        });
-        usuarios.token = token
-        return res.json(usuarios);
+
+    if (usuario) {
+        const token = jwt.sign({ id: usuario.id, email: usuario.email }, process.env.KEY, {
+                expiresIn: 120 
+            });
+        usuario.token = token;
+        return res.json(usuario);
     } else {
         return res.status(401).json({ message: 'Email ou senha inválidos.' });
     }
-}
+};
 
 const create = async (req, res) => {
     try {
-        const { id, nome, email, senha, nascimento, criadoEm } = req.body;
+        const { nome, email, senha, nascimento } = req.body;
         const usuario = await prisma.usuario.create({
-            data: {
-                id: id,
-                nome: nome,
-                email: email,
-                senha: senha,
-                nascimento: nascimento,
-                criadoEm: criadoEm
-            }
+            data: { nome, email, senha, nascimento }
         });
         return res.status(201).json(usuario);
     } catch (error) {
@@ -47,12 +34,8 @@ const create = async (req, res) => {
 };
 
 const read = async (req, res) => {
-    if (req.params.id !== undefined) {
-        const usuario = await prisma.usuario.findUnique({
-            where: {
-               id: Number(req.params.id)
-            }
-        });
+    if (req.params.id) {
+        const usuario = await prisma.usuario.findUnique({ where: { id: Number(req.params.id) } });
         return res.json(usuario);
     } else {
         const usuarios = await prisma.usuario.findMany();
@@ -63,34 +46,22 @@ const read = async (req, res) => {
 const update = async (req, res) => {
     try {
         const usuario = await prisma.usuario.update({
-            where: {
-               id: req.body.id
-            },
+            where: { id: req.body.id },
             data: req.body
         });
         return res.status(202).json(usuario);
     } catch (error) {
-        return res.status(404).json({ message: "usuario não encontrado" });
+        return res.status(404).json({ message: "Usuário não encontrado" });
     }
 };
 
 const del = async (req, res) => {
     try {
-        const usuario = await prisma.usuario.delete({
-            where: {
-               id: parseInt(req.params.id)
-            }
-        });
-        return res.status(204).json(usuario);
+        await prisma.usuario.delete({ where: { id: parseInt(req.params.id) } });
+        return res.status(204).json({});
     } catch (error) {
-        return res.status(404).json({ message: "usuario não encontrado" });
+        return res.status(404).json({ message: "Usuário não encontrado" });
     }
-}
-
-module.exports = {
-    create,
-    read,
-    update,
-    del,
-    login
 };
+
+module.exports = { create, read, update, del, login };

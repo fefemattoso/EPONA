@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const API_URL = 'http://localhost:3000/lista';
-    const addItemModal = document.getElementById('addItemModal');
+     const addItemModal = document.getElementById('addItemModal');
     const editItemModal = document.getElementById('editItemModal');
     const addItemClose = document.getElementById('addItemClose');
     const editItemClose = document.getElementById('editItemClose');
@@ -11,6 +11,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const removeCompletedBtn = document.querySelector(".btn.remove");
     const cardContainer = document.getElementById('cardContainer');
     let currentEditingCard = null;
+
+    // Função para obter usuarioId do localStorage
+    function getUsuarioId() {
+        const usuario = JSON.parse(localStorage.getItem('usuario'));
+        return usuario ? usuario.id : null;
+    }
 
     async function carregarLista() {
         try {
@@ -27,11 +33,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function adicionarItem(descricao) {
+        const usuarioId = getUsuarioId();
         try {
             const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ descricao, usuarioId: 1 }) // Ajuste `usuarioId` conforme necessário
+                body: JSON.stringify({ descricao, usuarioId }) // Usando o usuarioId obtido
             });
             if (!response.ok) throw new Error('Erro ao adicionar item.');
 
@@ -44,17 +51,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    async function atualizarItem(id, descricao, usuarioId, concluido) {
+    async function atualizarItem(id, descricao, concluido) {
+        const usuarioId = getUsuarioId(); // Obtendo o usuarioId
+        const token = localStorage.getItem('token'); // Armazene o token após o login
         try {
-            fetch(`${API_URL}`, {
+            const response = await fetch(`${API_URL}/${id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id, descricao, usuarioId, concluido })
-            })
-                .then(resp => resp.json())
-                .then(response => {
-                    console.log(response)
-                });
+                headers: { 
+                    'Content-Type': 'application/json', 
+                    'Authorization': `Bearer ${token}` 
+                },
+                body: JSON.stringify({ id, descricao, concluido, usuarioId }) // Usando o usuarioId
+            });
+            if (!response.ok) throw new Error('Erro ao atualizar item.');
+            const updatedItem = await response.json();
+            console.log('Item atualizado:', updatedItem);
         } catch (error) {
             console.error('Erro ao atualizar item:', error);
         }
@@ -72,29 +83,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function createCard(descricao, concluida, id) {
-        //Quando carregar a lista cria uma div e a adiciona uma classe chamada card
         const card = document.createElement("div");
         card.classList.add("card");
-        //Se concluido = true, ele irá dar ao card a classe completed, que deixara ele azul e riscado
         if (concluida) {
             card.classList.add("completed");
         }
-        // Se tiver id, irá atribuir id ao card
         if (id) {
             card.dataset.id = id;
         }
 
-        // Cria um input no card
         const checkbox = document.createElement("input");
-        // Define o tipo do input como checkbox e seta o checkbox para o estado concluido caso seja true
         checkbox.type = "checkbox";
         checkbox.checked = concluida;
 
-        //Cria uma label e coloca a descrição da lista como texto
         const label = document.createElement("label");
         label.textContent = descricao;
 
-        // Adiciona o checkbox e a label ao card
         card.appendChild(checkbox);
         card.appendChild(label);
 

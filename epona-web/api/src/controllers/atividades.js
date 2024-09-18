@@ -5,11 +5,12 @@ const prisma = new PrismaClient();
 
 const create = async (req, res) => {
     try {
-        const { titulo, descricao, data} = req.body;
+        const { titulo, descricao, usuarioId, data} = req.body;
         const atividades = await prisma.atividade.create({
             data: {
                 titulo: titulo,
                 descricao: descricao,
+                usuarioId: usuarioId,
                 data: data
             }
         });

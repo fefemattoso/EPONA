@@ -28,6 +28,13 @@ document.addEventListener('DOMContentLoaded', function() {
     let lembreteParaExcluir = null; // Lembrete selecionado para exclusão
     let lembreteParaEditar = null; // Lembrete selecionado para edição
 
+    function getUsuarioId() {
+        const usuario = JSON.parse(localStorage.getItem('usuario'));
+        return usuario ? usuario.id : null;
+    }
+    
+
+
     const API_URL = 'http://localhost:3000/agenda'; // URL da API
 
     async function carregarLembretes() {
@@ -48,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function salvarLembrete(data, texto, descricao) {
+        const usuarioId = getUsuarioId();
         try {
             const response = await fetch(API_URL, {
                 method: 'POST',
@@ -55,8 +63,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: JSON.stringify({
                     titulo: texto,
                     descricao: descricao,
-                    data: new Date(data).toISOString(), // Formata data para ISO 8601
-                    usuarioId: 1 // Substitua com o ID do usuário apropriado
+                    data: new Date(data).toISOString(),
+                    usuarioId: usuarioId
                 }),
             });
 
@@ -160,6 +168,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     async function editarLembrete() {
+        const usuarioId = getUsuarioId(); // Obtendo o usuarioId
         if (lembreteParaEditar) {
             const { id, data } = lembreteParaEditar;
             const texto = editTextoLembreteInput.value;
@@ -174,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         titulo: texto,
                         descricao: descricao,
                         data: new Date(data).toISOString(),
-                        usuarioId: 1
+                        usuarioId: usuarioId
                     }),
                 });
 
