@@ -34,17 +34,23 @@ const read = async (req, res) => {
 
 const update = async (req, res) => {
     try {
-        const lista = await prisma.lista.update({
-            where: {
-               id: req.body.id
-            },
-            data: req.body
-        });
-        return res.status(202).json(lista);
+      const id = req.params.id;
+      const { descricao, usuarioId, concluido } = req.body;
+      const lista = await prisma.lista.update({
+        where: {
+          id: parseInt(id)
+        },
+        data: {
+          descricao,
+          usuarioId,
+          concluido
+        }
+      });
+      return res.status(202).json(lista);
     } catch (error) {
-        return res.status(404).json({ message: "lista não encontrada" });
+      return res.status(404).json({ message: "lista não encontrada" });
     }
-};
+  };
 
 const del = async (req, res) => {
     try {
