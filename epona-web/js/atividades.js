@@ -7,77 +7,93 @@ document.addEventListener('DOMContentLoaded', () => {
     const cancelAllBtn = document.getElementById('cancelAllBtn');
     const addAtividadeBtn = document.getElementById('addAtividadeBtn');
     let atividadeParaRemover = null;
+    let atividadeParaEditar = null;
 
-    // URL do backend
     const API_URL = 'http://localhost:3000/atividade';
 
-    // Função para obter o usuarioId do token
-    const getUsuarioIdFromToken = () => {
-        // Implementar a lógica para extrair o usuarioId do token
-        // Exemplo: return JSON.parse(localStorage.getItem('userToken')).id;
+    const getUsuarioId = () => {
+        const usuario = JSON.parse(localStorage.getItem('usuario'));
+        return usuario ? usuario.id : null;
     };
 
-    // Carregar atividades do backend
     async function carregarAtividades() {
-        const usuarioId = getUsuarioIdFromToken();
-        try {
-            const response = await fetch(`${API_URL}?usuarioId=${usuarioId}`);
-            if (!response.ok) throw new Error('Falha na resposta da API');
-            const atividades = await response.json();
-            console.log('Atividades carregadas:', atividades);
-            atividades.forEach(atividade => adicionarAtividade(atividade));
-        } catch (error) {
-            console.error('Erro ao carregar atividades:', error);
+        const usuarioId = getUsuarioId();
+        if (!usuarioId) {
+            window.location.href = "./login.html";
+        } else {
+            try {
+                const response = await fetch(`${API_URL}usuario/${usuarioId}`);
+                console.log('Resposta ao carregar atividades:', response);
+    
+                if (!response.ok) throw new Error('Falha na resposta da API');
+    
+                const atividades = await response.json();
+                console.log('Atividades carregadas:', atividades);
+                atividades.forEach(atividade => adicionarAtividade(atividade));
+            } catch (error) {
+                console.error('Erro ao carregar atividades:', error);
+            }
         }
     }
+    
 
-    // Adicionar atividade através do formulário
-    document.getElementById('addAtividadeForm').addEventListener('submit', async (e) => { 
+    document.getElementById('addAtividadeForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const titulo = document.getElementById('titulo').value;
         const descricao = document.getElementById('descricao').value;
-        const usuarioId = getUsuarioIdFromToken(); // Obtendo o usuarioId
+        const usuarioId = getUsuarioId();
 
-        console.log('Adicionando atividade:', { titulo, descricao });
+        if (atividadeParaEditar) {
+            try {
+                const response = await fetch(`${API_URL}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: atividadeParaEditar.dataset.id, titulo, descricao })
+                });
+                if (!response.ok) throw new Error('Falha na resposta da API');
 
-        try {
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ titulo, descricao, usuarioId }) // Incluindo o usuarioId
-            });
-
-            if (!response.ok) throw new Error('Falha na resposta da API');
-
-            const newAtividade = await response.json();
-            console.log('Atividade adicionada:', newAtividade);
-            adicionarAtividade(newAtividade);
-        } catch (error) {
-            console.error('Erro ao adicionar atividade:', error);
+                const updatedAtividade = await response.json();
+                atividadeParaEditar.querySelector('.titulo').textContent = updatedAtividade.titulo;
+                atividadeParaEditar.querySelector('.descricao').textContent = updatedAtividade.descricao;
+            } catch (error) {
+                console.error('Erro ao atualizar atividade:', error);
+            }
+            atividadeParaEditar = null;
+        } else {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ titulo, descricao, usuarioId })
+                });
+                if (!response.ok) throw new Error('Falha na resposta da API');
+                const newAtividade = await response.json();
+                adicionarAtividade(newAtividade);
+            } catch (error) {
+                console.error('Erro ao adicionar atividade:', error);
+            }
         }
 
         addAtividadeModal.classList.add('hidden');
-        e.target.reset(); // Limpar o formulário
+        e.target.reset();
     });
 
-    // Evento para abrir o modal de adicionar atividade
     addAtividadeBtn.addEventListener('click', () => {
         addAtividadeModal.classList.remove('hidden');
+        atividadeParaEditar = null; // Reseta a atividade para edição ao abrir o modal
     });
 
-    // Remover todas as atividades
     document.getElementById('removeAllAtividadesBtn').addEventListener('click', () => {
         overlayAll.classList.remove('hidden');
     });
 
-    // Confirmar remoção de todas as atividades
     confirmAllBtn.addEventListener('click', async () => {
-        const usuarioId = getUsuarioIdFromToken(); // Obtendo o usuarioId
+        const usuarioId = getUsuarioId();
         try {
             const response = await fetch(API_URL, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ usuarioId }) // Enviando o usuarioId
+                body: JSON.stringify({ usuarioId })
             });
             if (response.ok) {
                 atividadesList.innerHTML = '';
@@ -88,75 +104,88 @@ document.addEventListener('DOMContentLoaded', () => {
         overlayAll.classList.add('hidden');
     });
 
-    // Cancelar remoção de todas as atividades
     cancelAllBtn.addEventListener('click', () => {
         overlayAll.classList.add('hidden');
     });
 
-    // Adicionar atividade ao DOM
     function adicionarAtividade(atividade) {
         const card = document.createElement('div');
         card.className = 'card';
-        card.dataset.id = atividade.id; // Armazena o ID da atividade
+        card.dataset.id = atividade.id;
         card.innerHTML = `
             <div class="headerCard">
                 <h2 class="titulo">${atividade.titulo}</h2>
                 <span class="remove-atividade">&#9747;</span>
+                <span class="edit-atividade">&#9998;</span>
             </div>
             <p class="descricao">${atividade.descricao}</p>
             <button class="concluido-btn">Concluído</button>
         `;
 
-        // Evento para remover a atividade
+        card.querySelector('.edit-atividade').addEventListener('click', () => {
+            atividadeParaEditar = card;
+            document.getElementById('titulo').value = atividade.titulo;
+            document.getElementById('descricao').value = atividade.descricao;
+            addAtividadeModal.classList.remove('hidden');
+        });
+
         card.querySelector('.remove-atividade').addEventListener('click', async () => {
             atividadeParaRemover = card;
             overlayIndividual.classList.remove('hidden');
         });
 
-        // Evento para marcar a atividade como concluída ou restaurada
         card.querySelector('.concluido-btn').addEventListener('click', async () => {
-            const concluida = card.classList.toggle('concluida');
+            const concluida = !card.classList.toggle('concluida'); 
             card.querySelector('.concluido-btn').textContent = concluida ? 'Concluída' : 'Concluído';
-            // Se a atividade for concluída, envie uma solicitação PATCH para atualizar seu estado
+        
+            console.log('Atualizando atividade:', { id: atividade.id, concluida });
+        
             try {
-                await fetch(`${API_URL}/${atividade.id}`, {
-                    method: 'PATCH',
+                const response = await fetch(`${API_URL}/${atividade.id}`, {
+                    method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ concluida, usuarioId: getUsuarioIdFromToken() }) // Incluindo o usuarioId
+                    body: JSON.stringify({ id: atividade.id, concluida })
                 });
+        
+                console.log('Resposta da API:', response);
+        
+                if (!response.ok) {
+                    throw new Error(`Erro ao atualizar: ${response.status} ${response.statusText}`);
+                }
+        
+                const updatedAtividade = await response.json();
+                console.log('Atividade atualizada:', updatedAtividade);
             } catch (error) {
                 console.error('Erro ao atualizar atividade:', error);
             }
         });
+        
 
         atividadesList.appendChild(card);
     }
 
-    // Confirmar remoção de uma atividade individual
     document.getElementById('confirmIndividualBtn').addEventListener('click', async () => {
         if (atividadeParaRemover) {
             const id = atividadeParaRemover.dataset.id;
             try {
-                await fetch(`${API_URL}/${id}`, { 
-                    method: 'DELETE', 
+                await fetch(`${API_URL}/${id}`, {
+                    method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ usuarioId: getUsuarioIdFromToken() }) // Incluindo o usuarioId
+                    body: JSON.stringify({ usuarioId: getUsuarioId() })
                 });
                 atividadeParaRemover.remove();
             } catch (error) {
                 console.error('Erro ao remover atividade:', error);
             }
             overlayIndividual.classList.add('hidden');
-            atividadeParaRemover = null; // Limpar a variável
+            atividadeParaRemover = null;
         }
     });
 
-    // Cancelar remoção de uma atividade individual
     document.getElementById('cancelIndividualBtn').addEventListener('click', () => {
         overlayIndividual.classList.add('hidden');
-        atividadeParaRemover = null; // Limpar a variável
+        atividadeParaRemover = null;
     });
 
-    // Carregar atividades ao iniciar
     carregarAtividades();
 });

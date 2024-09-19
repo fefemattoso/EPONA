@@ -33,6 +33,20 @@ const read = async (req, res) => {
     }
 };
 
+const readById = async (req, res) => {
+    if(req.params.usuarioId !== undefined){
+        const usuarioId = req.params.usuarioId;
+        const lembretes = await prisma.lista.findMany({
+            where: {
+                usuarioId: parseInt(usuarioId)
+            }
+        });
+        return res.json(lembretes);
+    } else {
+        return res.status(400).json({ message: "Erro ao localizar ID do usuario" });
+    }
+}
+
 const update = async (req, res) => {
     try {
         const agenda = await prisma.agenda.update({
@@ -63,6 +77,7 @@ const del = async (req, res) => {
 module.exports = {
     create,
     read,
+    readById,
     update,
     del
 };

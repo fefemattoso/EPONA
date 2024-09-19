@@ -37,6 +37,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const API_URL = 'http://localhost:3000/agenda'; // URL da API
 
+    //Essa função está dando erro e o calendario não abre se filtrar por id
+
+    // async function carregarLembretes() {
+    //     const usuarioId = getUsuarioId()
+    //     if (!usuarioId) {
+    //         window.location.href = "./login.html"
+    //     } else {
+    //         try {
+    //             const response = await fetch(`${API_URL}usuario/${usuarioId}`);
+    //             if (!response.ok) throw new Error('Falha na resposta da API');
+    //             const agendas = await response.json();
+    //             lembretes = agendas.reduce((acc, lembrete) => {
+    //                 const data = lembrete.data.split('T')[0]; // Formata data para yyyy-mm-dd
+    //                 if (!acc[data]) acc[data] = [];
+    //                 acc[data].push({ texto: lembrete.titulo, descricao: lembrete.descricao, id: lembrete.id });
+    //                 return acc;
+    //             }, {});
+    //             gerarCalendario(anoAtual, mesAtual);
+    //         } catch (error) {
+    //             console.error('Erro ao carregar lembretes:', error);
+    //         }
+    //     }
+    // }
+
     async function carregarLembretes() {
         try {
             const response = await fetch(API_URL);

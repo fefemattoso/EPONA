@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const API_URL = 'http://localhost:3000/lista';
-     const addItemModal = document.getElementById('addItemModal');
+    const addItemModal = document.getElementById('addItemModal');
     const editItemModal = document.getElementById('editItemModal');
     const addItemClose = document.getElementById('addItemClose');
     const editItemClose = document.getElementById('editItemClose');
@@ -19,16 +19,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function carregarLista() {
-        try {
-            const response = await fetch(API_URL);
-            if (!response.ok) throw new Error('Erro ao carregar a lista.');
-            const lista = await response.json();
-            lista.forEach(item => {
-                const card = createCard(item.descricao, item.concluido, item.id);
-                cardContainer.appendChild(card);
-            });
-        } catch (error) {
-            console.error('Erro ao carregar a lista:', error);
+        const usuarioId = getUsuarioId()
+        if (!usuarioId) {
+            window.location.href = "./login.html"
+        } else {
+            try {
+                const response = await fetch(`${API_URL}usuario/${usuarioId}`);
+                if (!response.ok) throw new Error('Erro ao carregar a lista.');
+                const lista = await response.json();
+                lista.forEach(item => {
+                    const card = createCard(item.descricao, item.concluido, item.id);
+                    cardContainer.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar a lista:', error);
+            }
         }
     }
 
@@ -57,9 +62,9 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'PUT',
-                headers: { 
-                    'Content-Type': 'application/json', 
-                    'Authorization': `Bearer ${token}` 
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({ id, descricao, concluido, usuarioId }) // Usando o usuarioId
             });
