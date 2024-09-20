@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     const atividadesList = document.getElementById('atividadesList');
     const addAtividadeModal = document.getElementById('addAtividadeModal');
+    const editAtividadeModal = document.getElementById('editAtividadeModal');
     const overlayAll = document.getElementById('overlayAll');
     const overlayIndividual = document.getElementById('overlayIndividual');
     const confirmAllBtn = document.getElementById('confirmAllBtn');
-    const cancelAllBtn = document.getElementById('cancelAllBtn');
     const addAtividadeBtn = document.getElementById('addAtividadeBtn');
     let atividadeParaRemover = null;
     let atividadeParaEditar = null;
@@ -18,15 +18,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function carregarAtividades() {
         const usuarioId = getUsuarioId();
+        const token = localStorage.getItem('token')
         if (!usuarioId) {
             window.location.href = "./login.html";
         } else {
             try {
-                const response = await fetch(`${API_URL}usuario/${usuarioId}`);
+                const response = await fetch(`${API_URL}usuario/${usuarioId}`, {
+                    headers: { 
+                        'Authorization': `Bearer ${token}` 
+                    }
+                });
                 console.log('Resposta ao carregar atividades:', response);
-    
+
                 if (!response.ok) throw new Error('Falha na resposta da API');
-    
+
                 const atividades = await response.json();
                 console.log('Atividades carregadas:', atividades);
                 atividades.forEach(atividade => adicionarAtividade(atividade));
@@ -35,35 +40,49 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
-    
+
 
     document.getElementById('addAtividadeForm').addEventListener('submit', async (e) => {
         e.preventDefault();
+        const token = localStorage.getItem('token')
+        const usuarioId = getUsuarioId();
         const titulo = document.getElementById('titulo').value;
         const descricao = document.getElementById('descricao').value;
-        const usuarioId = getUsuarioId();
-
-        if (atividadeParaEditar) {
-            try {
-                const response = await fetch(`${API_URL}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: atividadeParaEditar.dataset.id, titulo, descricao })
-                });
-                if (!response.ok) throw new Error('Falha na resposta da API');
-
-                const updatedAtividade = await response.json();
-                atividadeParaEditar.querySelector('.titulo').textContent = updatedAtividade.titulo;
-                atividadeParaEditar.querySelector('.descricao').textContent = updatedAtividade.descricao;
-            } catch (error) {
-                console.error('Erro ao atualizar atividade:', error);
-            }
-            atividadeParaEditar = null;
-        } else {
+        
             try {
                 const response = await fetch(API_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}` 
+                    },
+                    body: JSON.stringify({ titulo, descricao, usuarioId })
+                });
+                const newAtividade = await response.json();
+                adicionarAtividade(newAtividade);
+            } catch (error) {
+                console.error('Erro ao adicionar atividade:', error);
+            }
+
+        addAtividadeModal.classList.add('hidden');
+        e.target.reset();
+    });
+
+    //Editar atividade
+    document.getElementById('editAtividadeForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem('token')
+        const usuarioId = getUsuarioId();
+        const titulo = document.getElementById('titulo').value;
+        const descricao = document.getElementById('descricao').value;
+        
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}` 
+                    },
                     body: JSON.stringify({ titulo, descricao, usuarioId })
                 });
                 if (!response.ok) throw new Error('Falha na resposta da API');
@@ -72,7 +91,6 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (error) {
                 console.error('Erro ao adicionar atividade:', error);
             }
-        }
 
         addAtividadeModal.classList.add('hidden');
         e.target.reset();
@@ -89,10 +107,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     confirmAllBtn.addEventListener('click', async () => {
         const usuarioId = getUsuarioId();
+        const token = localStorage.getItem('token')
         try {
             const response = await fetch(API_URL, {
                 method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` 
+                },
                 body: JSON.stringify({ usuarioId })
             });
             if (response.ok) {
@@ -104,29 +126,42 @@ document.addEventListener('DOMContentLoaded', () => {
         overlayAll.classList.add('hidden');
     });
 
-    cancelAllBtn.addEventListener('click', () => {
-        overlayAll.classList.add('hidden');
-    });
-
     function adicionarAtividade(atividade) {
         const card = document.createElement('div');
         card.className = 'card';
         card.dataset.id = atividade.id;
-        card.innerHTML = `
-            <div class="headerCard">
-                <h2 class="titulo">${atividade.titulo}</h2>
-                <span class="remove-atividade">&#9747;</span>
-                <span class="edit-atividade">&#9998;</span>
-            </div>
-            <p class="descricao">${atividade.descricao}</p>
-            <button class="concluido-btn">Concluído</button>
-        `;
+        if (atividade.concluido) {
+            card.classList.toggle('concluida');
+            card.innerHTML = `
+                <div class="headerCard">
+                    <h2 class="titulo">${atividade.titulo}</h2>
+                    <div class="botoes">
+                        <span class="remove-atividade">&#9747;</span>
+                        <span class="edit-atividade">&#9998;</span>
+                    </div>
+                </div>
+                <p class="descricao">${atividade.descricao}</p>
+                <button class="concluido-btn">Concluído</button>
+            `;
+        } else {
+            card.innerHTML = `
+                    <div class="headerCard">
+                        <h2 class="titulo">${atividade.titulo}</h2>
+                        <div class="botoes">
+                            <span class="remove-atividade">&#9747;</span>
+                            <span class="edit-atividade">&#9998;</span>
+                        </div>
+                    </div>
+                    <p class="descricao">${atividade.descricao}</p>
+                    <button class="concluido-btn">Concluir</button>
+                `;
+        }
 
         card.querySelector('.edit-atividade').addEventListener('click', () => {
             atividadeParaEditar = card;
             document.getElementById('titulo').value = atividade.titulo;
             document.getElementById('descricao').value = atividade.descricao;
-            addAtividadeModal.classList.remove('hidden');
+            editAtividadeModal.classList.remove('hidden');
         });
 
         card.querySelector('.remove-atividade').addEventListener('click', async () => {
@@ -135,42 +170,67 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         card.querySelector('.concluido-btn').addEventListener('click', async () => {
-            const concluida = !card.classList.toggle('concluida'); 
-            card.querySelector('.concluido-btn').textContent = concluida ? 'Concluída' : 'Concluído';
-        
-            console.log('Atualizando atividade:', { id: atividade.id, concluida });
-        
-            try {
-                const response = await fetch(`${API_URL}/${atividade.id}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: atividade.id, concluida })
-                });
-        
-                console.log('Resposta da API:', response);
-        
-                if (!response.ok) {
-                    throw new Error(`Erro ao atualizar: ${response.status} ${response.statusText}`);
+            const concluido = card.classList.toggle('concluida');
+            const token = localStorage.getItem('token')
+            card.querySelector('.concluido-btn').textContent = concluido ? 'Concluída' : 'Concluído';
+            if (concluido) {
+                try {
+                    const response = await fetch(`${API_URL}/${atividade.id}`, {
+                        method: 'PUT',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}` 
+                        },
+                        body: JSON.stringify({ id: atividade.id, concluido: true })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Erro ao atualizar: ${response.status} ${response.statusText}`);
+                    }
+
+                    const updatedAtividade = await response.json();
+                    console.log('Atividade atualizada:', updatedAtividade);
+                } catch (error) {
+                    console.error('Erro ao atualizar atividade:', error);
                 }
-        
-                const updatedAtividade = await response.json();
-                console.log('Atividade atualizada:', updatedAtividade);
-            } catch (error) {
-                console.error('Erro ao atualizar atividade:', error);
+            } else {
+                try {
+                    const response = await fetch(`${API_URL}/${atividade.id}`, {
+                        method: 'PUT',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}` 
+                        },
+                        body: JSON.stringify({ id: atividade.id, concluido: false })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`Erro ao atualizar: ${response.status} ${response.statusText}`);
+                    }
+
+                    const updatedAtividade = await response.json();
+                    console.log('Atividade atualizada:', updatedAtividade);
+                } catch (error) {
+                    console.error('Erro ao atualizar atividade:', error);
+                }
             }
+
         });
-        
 
         atividadesList.appendChild(card);
     }
 
     document.getElementById('confirmIndividualBtn').addEventListener('click', async () => {
+        const token = localStorage.getItem('token')
         if (atividadeParaRemover) {
             const id = atividadeParaRemover.dataset.id;
             try {
                 await fetch(`${API_URL}/${id}`, {
                     method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}` 
+                    },
                     body: JSON.stringify({ usuarioId: getUsuarioId() })
                 });
                 atividadeParaRemover.remove();
@@ -182,10 +242,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    document.getElementById('cancelIndividualBtn').addEventListener('click', () => {
+    document.getElementById('cancelAll').addEventListener('click', async () => {
+        overlayAll.classList.add('hidden');
+    })
+
+    document.getElementById('cancelUm').addEventListener('click', async () => {
         overlayIndividual.classList.add('hidden');
-        atividadeParaRemover = null;
-    });
+    })
+
+    document.getElementById('cancel').addEventListener('click', async () => {
+        addAtividadeModal.classList.add('hidden');
+        editAtividadeModal.classList.add('hidden');
+    })
 
     carregarAtividades();
 });

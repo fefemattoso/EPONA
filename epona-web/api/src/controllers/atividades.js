@@ -49,11 +49,13 @@ const readById = async (req, res) => {
 const update = async (req, res) => {
     console.log('Requisição de atualização recebida:', req.body); // Logando a requisição
 
-    const { id, titulo, descricao, concluida } = req.body;
+    const { titulo, descricao, concluido } = req.body; // Extraindo dados do corpo da requisição
     try {
         const atividade = await prisma.atividade.update({
-            where: { id: parseInt(id) },
-            data: { titulo, descricao, concluida }
+            where:{
+                id: parseInt(req.params.id)
+            },
+            data: { titulo, descricao, concluido } // Verifique se 'concluida' está incluída aqui
         });
         console.log('Atividade atualizada:', atividade); // Logando a atividade atualizada
         return res.status(202).json(atividade);
@@ -62,6 +64,7 @@ const update = async (req, res) => {
         return res.status(404).json({ message: "Atividade não encontrada" });
     }
 };
+
 
 
 

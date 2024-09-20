@@ -20,11 +20,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function carregarLista() {
         const usuarioId = getUsuarioId()
+        const token = localStorage.getItem('token')
+
         if (!usuarioId) {
             window.location.href = "./login.html"
         } else {
             try {
-                const response = await fetch(`${API_URL}usuario/${usuarioId}`);
+                const response = await fetch(`${API_URL}usuario/${usuarioId}`,{
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}` 
+                    }
+                });
                 if (!response.ok) throw new Error('Erro ao carregar a lista.');
                 const lista = await response.json();
                 lista.forEach(item => {
@@ -32,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     cardContainer.appendChild(card);
                 });
             } catch (error) {
+                console.log(token)
                 console.error('Erro ao carregar a lista:', error);
             }
         }
@@ -39,16 +47,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function adicionarItem(descricao) {
         const usuarioId = getUsuarioId();
+        const token = localStorage.getItem('token'); // Armazene o token após o login
         try {
             const response = await fetch(API_URL, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}` 
+                },
                 body: JSON.stringify({ descricao, usuarioId }) // Usando o usuarioId obtido
             });
             if (!response.ok) throw new Error('Erro ao adicionar item.');
 
             const newItem = await response.json();
-            console.log('Item adicionado:', newItem);
             const card = createCard(newItem.descricao, newItem.concluida, newItem.id);
             cardContainer.appendChild(card);
         } catch (error) {
@@ -64,22 +75,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${token}` 
                 },
                 body: JSON.stringify({ id, descricao, concluido, usuarioId }) // Usando o usuarioId
             });
             if (!response.ok) throw new Error('Erro ao atualizar item.');
-            const updatedItem = await response.json();
-            console.log('Item atualizado:', updatedItem);
         } catch (error) {
             console.error('Erro ao atualizar item:', error);
         }
     }
 
     async function removerItem(id) {
+        const token = localStorage.getItem('token');
         try {
             const response = await fetch(`${API_URL}/${id}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers:{
+                    'Authorization': `Bearer ${token}` 
+                }
             });
             if (!response.ok) throw new Error('Erro ao remover item.');
         } catch (error) {

@@ -48,7 +48,7 @@
                 <textarea id="descricao" name="descricao" required></textarea>
                 
                 <div class="btn-group">
-                    <button type="button" id="cancelAddBtn" class="cancelar">Cancelar</button>
+                    <button type="button" id="cancel" class="cancelar">Cancelar</button>
                     <button type="submit" class="confirmar">Adicionar</button>
                 </div>
             </form>
@@ -61,7 +61,7 @@
             <h2>Tem certeza que deseja remover todas as atividades?</h2>
             <p>Esta ação é irreversível e todas as atividades serão excluídas.</p>
             <div class="btn-group">
-                <button id="cancelAllBtn" class="cancelar">Cancelar</button>
+                <button id="cancelAll" class="cancelar">Cancelar</button>
                 <button id="confirmAllBtn" class="confirmar">Remover Todas</button>
             </div>
         </div>
@@ -73,9 +73,28 @@
             <h2>Remover Atividade</h2>
             <p>Tem certeza que deseja remover esta atividade?</p>
             <div class="btn-group">
-                <button id="cancelIndividualBtn" class="cancelar">Cancelar</button>
+                <button id="cancelUm" class="cancelar">Cancelar</button>
                 <button id="confirmIndividualBtn" class="confirmar">Remover</button>
             </div>
+        </div>
+    </div>
+
+     <!-- Modal para editar atividade -->
+     <div id="editAtividadeModal" class="overlay hidden">
+        <div class="modal">
+            <h2>Editar Atividade</h2>
+            <form id="editAtividadeForm">
+                <label for="titulo">Título:</label>
+                <input type="text" id="titulo" name="titulo" required>
+                
+                <label for="descricao">Descrição:</label>
+                <textarea id="descricao" name="descricao" required></textarea>
+                
+                <div class="btn-group">
+                    <button type="button" id="cancel" class="cancelar">Cancelar</button>
+                    <button type="submit" class="confirmar">Adicionar</button>
+                </div>
+            </form>
         </div>
     </div>
 
