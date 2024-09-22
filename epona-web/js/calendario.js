@@ -98,8 +98,6 @@ document.addEventListener('DOMContentLoaded', function() {
             lembretes[data] = lembretes[data] || [];
             lembretes[data].push({ texto: novoLembrete.titulo, descricao: novoLembrete.descricao, id: novoLembrete.id });
 
-            console.log('Lembrete salvo com sucesso:', novoLembrete);
-
             gerarCalendario(anoAtual, mesAtual);
         } catch (error) {
             console.error('Erro ao salvar lembrete:', error);

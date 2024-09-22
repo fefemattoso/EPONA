@@ -29,7 +29,6 @@
         <h1>Atividades</h1>
         <section class="atividades">
             <button id="addAtividadeBtn">Adicionar Atividade</button>
-            <button id="removeAllAtividadesBtn">Remover Todas Atividades</button>
             <div id="atividadesList">
                 <!-- As atividades serão adicionadas aqui dinamicamente -->
             </div>
@@ -55,18 +54,6 @@
         </div>
     </div>
 
-    <!-- Modal de remoção de todas as atividades -->
-    <div id="overlayAll" class="overlay hidden">
-        <div class="modal">
-            <h2>Tem certeza que deseja remover todas as atividades?</h2>
-            <p>Esta ação é irreversível e todas as atividades serão excluídas.</p>
-            <div class="btn-group">
-                <button id="cancelAll" class="cancelar">Cancelar</button>
-                <button id="confirmAllBtn" class="confirmar">Remover Todas</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Modal de remoção de atividade individual -->
     <div id="overlayIndividual" class="overlay hidden">
         <div class="modal">
@@ -85,14 +72,14 @@
             <h2>Editar Atividade</h2>
             <form id="editAtividadeForm">
                 <label for="titulo">Título:</label>
-                <input type="text" id="titulo" name="titulo" required>
+                <input type="text" id="newTitulo" name="titulo" required>
                 
                 <label for="descricao">Descrição:</label>
-                <textarea id="descricao" name="descricao" required></textarea>
+                <textarea id="newDescricao" name="descricao" required></textarea>
                 
                 <div class="btn-group">
-                    <button type="button" id="cancel" class="cancelar">Cancelar</button>
-                    <button type="submit" class="confirmar">Adicionar</button>
+                    <button type="button" id="cancelEdit" class="cancelar">Cancelar</button>
+                    <button type="submit" class="confirmar">Editar</button>
                 </div>
             </form>
         </div>

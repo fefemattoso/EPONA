@@ -47,8 +47,6 @@ const readById = async (req, res) => {
 }
 
 const update = async (req, res) => {
-    console.log('Requisição de atualização recebida:', req.body); // Logando a requisição
-
     const { titulo, descricao, concluido } = req.body; // Extraindo dados do corpo da requisição
     try {
         const atividade = await prisma.atividade.update({
@@ -57,7 +55,6 @@ const update = async (req, res) => {
             },
             data: { titulo, descricao, concluido } // Verifique se 'concluida' está incluída aqui
         });
-        console.log('Atividade atualizada:', atividade); // Logando a atividade atualizada
         return res.status(202).json(atividade);
     } catch (error) {
         console.error('Erro ao atualizar atividade:', error); // Logando o erro

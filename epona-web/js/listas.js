@@ -26,10 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = "./login.html"
         } else {
             try {
-                const response = await fetch(`${API_URL}usuario/${usuarioId}`,{
-                    headers: { 
+                const response = await fetch(`${API_URL}usuario/${usuarioId}`, {
+                    headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}` 
+                        'Authorization': `Bearer ${token}`
                     }
                 });
                 if (!response.ok) throw new Error('Erro ao carregar a lista.');
@@ -39,7 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     cardContainer.appendChild(card);
                 });
             } catch (error) {
-                console.log(token)
                 console.error('Erro ao carregar a lista:', error);
             }
         }
@@ -48,34 +47,42 @@ document.addEventListener('DOMContentLoaded', () => {
     async function adicionarItem(descricao) {
         const usuarioId = getUsuarioId();
         const token = localStorage.getItem('token'); // Armazene o token após o login
-        try {
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}` 
-                },
-                body: JSON.stringify({ descricao, usuarioId }) // Usando o usuarioId obtido
-            });
-            if (!response.ok) throw new Error('Erro ao adicionar item.');
+        if (!usuarioId) {
+            window.location.href = "./login.html"
+        } else {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ descricao, usuarioId }) // Usando o usuarioId obtido
+                });
+                if (!response.ok) throw new Error('Erro ao adicionar item.');
 
-            const newItem = await response.json();
-            const card = createCard(newItem.descricao, newItem.concluida, newItem.id);
-            cardContainer.appendChild(card);
-        } catch (error) {
-            console.error('Erro ao adicionar item:', error);
+                const newItem = await response.json();
+                const card = createCard(newItem.descricao, newItem.concluida, newItem.id);
+                cardContainer.appendChild(card);
+            } catch (error) {
+                console.error('Erro ao adicionar item:', error);
+            }
         }
     }
 
     async function atualizarItem(id, descricao, concluido) {
         const usuarioId = getUsuarioId(); // Obtendo o usuarioId
         const token = localStorage.getItem('token'); // Armazene o token após o login
+
+        if (!usuarioId) {
+            window.location.href = "./login.html"
+        } else {
         try {
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}` 
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({ id, descricao, concluido, usuarioId }) // Usando o usuarioId
             });
@@ -84,14 +91,19 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Erro ao atualizar item:', error);
         }
     }
+}
 
     async function removerItem(id) {
         const token = localStorage.getItem('token');
+        const usuarioId = getUsuarioId()
+        if (!usuarioId) {
+            window.location.href = "./login.html"
+        } else {
         try {
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'DELETE',
-                headers:{
-                    'Authorization': `Bearer ${token}` 
+                headers: {
+                    'Authorization': `Bearer ${token}`
                 }
             });
             if (!response.ok) throw new Error('Erro ao remover item.');
@@ -99,6 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Erro ao remover item:', error);
         }
     }
+}
 
     function createCard(descricao, concluida, id) {
         const card = document.createElement("div");
