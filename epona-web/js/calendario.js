@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const editTextoLembreteInput = document.getElementById('edit-texto-lembrete');
     const editDescricaoTextoInput = document.getElementById('edit-descricao-texto');
     const cancelEditBtn = document.getElementById('cancel-edit');
+    const confirmEditbtn = document.getElementById('confirm-edit')
 
     let lembretes = {}; // Armazena lembretes por data
     let anoAtual = new Date().getFullYear();
@@ -229,15 +230,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 const id = event.target.dataset.id;
                 const data = event.target.dataset.data;
                 const lembrete = lembretes[data].find(l => l.id === id);
+                overlayEdit.classList.remove('hidden');
                 if (lembrete) {
                     lembreteParaEditar = { ...lembrete, data };
                     editTextoLembreteInput.value = lembrete.texto;
                     editDescricaoTextoInput.value = lembrete.descricao;
-                    overlayEdit.classList.remove('hidden');
                 }
             });
         });
     }
+
+
 
     formLembrete.addEventListener('submit', async function(event) {
         event.preventDefault();
@@ -280,11 +283,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     cancelEditBtn.addEventListener('click', () => {
         overlayEdit.classList.add('hidden');
-    });
-
-    formEditLembrete.addEventListener('submit', (event) => {
-        event.preventDefault();
-        editarLembrete();
     });
 
     // Inicializa o calendário com o mês e ano atuais
