@@ -26,7 +26,7 @@ router.post('/agenda', Agenda.create);
 router.get('/agenda', Agenda.read);
 router.get('/agenda/:id', Agenda.read);
 router.get('/agendausuario/:usuarioId', Agenda.readById);
-router.put('/agenda', Agenda.update);
+router.put('/agenda/:id', Agenda.update);
 router.delete('/agenda/:id', Agenda.del);
 
 router.post('/lista', validaAcesso, Lista.create);
