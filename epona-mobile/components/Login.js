@@ -1,47 +1,51 @@
+// components/Login.js
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Button, TextInput, Image } from 'react-native';
-import { auth } from '../firebaseconfig'; // Certifique-se de configurar corretamente o auth no firebaseconfig.js
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { View, Text, Button, TextInput, Image, StyleSheet } from 'react-native';
+import { auth } from '../firebaseconfig';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 
-function Login({ onLogin }) {
+function Login({ onLogin, onGoBack }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isRegistering, setIsRegistering] = useState(false); // Estado para alternar entre cadastro e login
+  const [isRegistering, setIsRegistering] = useState(false);
 
-  const handleLogin = async () => {
+  const handleLogin = () => {
     if (email && password) {
-      try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        onLogin(userCredential.user); // Login bem-sucedido
-      } catch (error) {
-        alert("Erro ao realizar login: " + error.message);
-      }
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          console.log('Usuário logado com sucesso');
+          onLogin(email);
+        })
+        .catch((error) => {
+          console.error('Erro ao fazer login: ', error);
+          alert('Falha no login, verifique suas credenciais.');
+        });
     } else {
-      alert("Por favor, insira suas credenciais.");
+      alert('Por favor, insira suas credenciais.');
     }
   };
 
-  const handleRegister = async () => {
+  const handleRegister = () => {
     if (email && password) {
-      if (password.length < 6) {
-        alert("A senha deve ter no mínimo 6 caracteres.");
-        return;
-      }
-
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        onLogin(userCredential.user); // Cadastro bem-sucedido e login automático
-      } catch (error) {
-        alert("Erro ao cadastrar!");
-      }
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          console.log('Usuário cadastrado com sucesso');
+          alert('Usuário cadastrado com sucesso!');
+          setIsRegistering(false);  // Volta para tela de login após cadastro
+        })
+        .catch((error) => {
+          console.error('Erro ao fazer cadastro: ', error);
+          alert('Falha no cadastro, verifique suas informações.');
+        });
     } else {
-      alert("Por favor, insira um email e senha válidos.");
+      alert('Por favor, insira suas credenciais.');
     }
   };
 
   return (
     <View style={styles.loginContainer}>
-      <Text style={styles.title}>{isRegistering ? "Cadastrar" : "Login"} no Epona</Text>
+      <Text style={styles.title}>{isRegistering ? 'Cadastrar' : 'Login'} no Epona</Text>
+
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -50,6 +54,7 @@ function Login({ onLogin }) {
         keyboardType="email-address"
         autoCapitalize="none"
       />
+
       <TextInput
         style={styles.input}
         placeholder="Senha"
@@ -57,6 +62,7 @@ function Login({ onLogin }) {
         onChangeText={setPassword}
         secureTextEntry
       />
+
       <View style={styles.buttons}>
         {isRegistering ? (
           <>
@@ -69,8 +75,10 @@ function Login({ onLogin }) {
             <Button style={styles.button} color='#162040' title="Cadastrar" onPress={() => setIsRegistering(true)} />
           </>
         )}
-        <Button style={styles.button} color='#162040' title="Entrar como Visitante" onPress={() => onLogin('guest')} />
       </View>
+
+      <Button style={styles.button} color='#162040' title="Voltar" onPress={onGoBack} />
+
       <Image source={require('../assets/planta2.png')} style={styles.leafTopLeft} />
       <Image source={require('../assets/planta.png')} style={styles.leafBottomRight} />
     </View>

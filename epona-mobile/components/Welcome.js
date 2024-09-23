@@ -31,13 +31,6 @@ const Welcome = ({ onContinue, onVisitorAccess }) => {
           onPress={onContinue}
         />
         
-        {/* Botão para acessar como visitante */}
-        <Button
-          style={styles.button}
-          color='#162040'
-          title="Acessar como visitante"
-          onPress={handleVisitorAccess} // Chama a função de login anônimo
-        />
       </View>
 
       {/* Folhas decorativas */}

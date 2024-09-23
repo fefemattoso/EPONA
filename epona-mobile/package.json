@@ -20,6 +20,7 @@
     "react-native": "0.74.5",
     "react-native-calendars": "^1.1307.0",
     "react-native-image-picker": "^7.1.2",
+    "react-native-mask-input": "^1.2.3",
     "react-native-vector-icons": "^10.1.0",
     "react-native-web": "~0.19.10"
   },
