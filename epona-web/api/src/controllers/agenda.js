@@ -65,7 +65,7 @@ const del = async (req, res) => {
     try {
         const agenda = await prisma.agenda.delete({
             where: {
-               id: req.params.id
+               id: parseInt(req.params.id)
             }
         });
         return res.status(204).json(agenda);
