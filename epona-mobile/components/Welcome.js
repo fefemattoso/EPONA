@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#badda8', // Cor da paleta
     position: 'relative',
+    textAlign: 'center',
   },
   title: {
     fontSize: 36,
@@ -77,15 +78,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 0,
-    width: 100,
-    height: 100,
+    width: 150,
+    height: 150,
   },
   leafBottomRight: {
     position: 'absolute',
     bottom: 0,
     right: 0,
-    width: 100,
-    height: 100,
+    width: 150,
+    height: 150,
   },
 });
 

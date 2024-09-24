@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: 0,
     backgroundColor: '#badda8', // cor de fundo da paleta
   },
   header: {
@@ -136,16 +136,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#162040', // cor escura da paleta
     marginBottom: 20,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
   },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 20,
+    padding: 0,
   },
   buttonText: {
     fontSize: 18,
     color: '#fff',
-    backgroundColor: '#547699', // azul médio da paleta
+    backgroundColor: '#8ac66d', // verde medio
     padding: 10,
     borderRadius: 5,
   },

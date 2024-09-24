@@ -106,7 +106,7 @@ export default function DailyTasks() {
       <Button
         title={loading ? "Salvando..." : editingItemId ? "Atualizar Tarefa" : "Adicionar Tarefa"}
         onPress={adicionarOuAtualizarItem}
-        color="#6A5ACD"
+        color="#162040"
       />
 
       <Text style={styles.sectionTitle}>Lista de Tarefas</Text>
@@ -129,7 +129,7 @@ export default function DailyTasks() {
                   }}
                   trackColor={{ false: "#C0C0C0", true: "#48D1CC" }}
                   thumbColor={item.isRead ? "#FFD700" : "#FFF"}
-                  ios_backgroundColor="#D3D3D3"
+                  ios_backgroundColor="#c7e8fd"
                 />
                 <Text style={[styles.itemStatus, { color: item.isRead ? '#32CD32' : '#FF4500' }]}>
                   {item.isRead ? "Concluída" : "Pendente"}
@@ -155,19 +155,19 @@ export default function DailyTasks() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F0F8FF',
+    backgroundColor: '#badda8',
     padding: 20,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#4682B4',
+    color: '#162040',
     textAlign: 'center',
     marginBottom: 20,
   },
   label: {
     fontSize: 18,
-    color: '#5F9EA0',
+    color: '#2f5911',
     marginBottom: 8,
   },
   input: {
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#5F9EA0',
+    color: '#162040',
     marginBottom: 12,
   },
   itemTask: {
