@@ -229,16 +229,36 @@ document.addEventListener('DOMContentLoaded', function() {
             btn.addEventListener('click', (event) => {
                 const id = event.target.dataset.id;
                 const data = event.target.dataset.data;
-                const lembrete = lembretes[data].find(l => l.id === id);
-                overlayEdit.classList.remove('hidden');
-                if (lembrete) {
-                    lembreteParaEditar = { ...lembrete, data };
-                    editTextoLembreteInput.value = lembrete.texto;
-                    editDescricaoTextoInput.value = lembrete.descricao;
+    
+                // Log para verificar os dados
+                console.log('ID:', id, 'Data:', data);
+    
+                // Verificar se a data existe no objeto de lembretes
+                if (lembretes[data]) {
+                    // Log para mostrar todos os IDs disponíveis para essa data
+                    console.log('IDs disponíveis para a data:', lembretes[data].map(l => l.id));
+                    console.log('Lembretes para a data:', lembretes[data]);
+    
+                    // Alteração na comparação para garantir que os tipos estão corretos
+                    const lembrete = lembretes[data].find(l => String(l.id) === String(id));
+                    console.log('Lembrete encontrado:', lembrete);
+    
+                    overlayEdit.classList.remove('hidden');
+                    if (lembrete) {
+                        lembreteParaEditar = { ...lembrete, data };
+                        editTextoLembreteInput.value = lembrete.texto;
+                        editDescricaoTextoInput.value = lembrete.descricao;
+                    } else {
+                        console.log('Lembrete não encontrado para o ID:', id);
+                    }
+                } else {
+                    console.log(`Nenhum lembrete encontrado para a data: ${data}`);
                 }
             });
         });
     }
+    
+    
 
 
 
@@ -277,6 +297,11 @@ document.addEventListener('DOMContentLoaded', function() {
         overlayDelete.classList.add('hidden');
     });
 
+    confirmEditbtn.addEventListener('click', async () => {
+        await editarLembrete();
+        overlayEdit.classList.add('hidden');
+    })
+
     cancelDeleteBtn.addEventListener('click', () => {
         overlayDelete.classList.add('hidden');
     });
@@ -285,6 +310,25 @@ document.addEventListener('DOMContentLoaded', function() {
         overlayEdit.classList.add('hidden');
     });
 
-    // Inicializa o calendário com o mês e ano atuais
+    
     carregarLembretes();
+
+     //Fazer logoff e exibir nome do usuario
+    const sair = document.getElementById("sair");
+    const nomeUsuario = document.getElementById("usuario")
+
+    sair.addEventListener("click", () => {
+        const usuario = JSON.parse(localStorage.getItem('usuario'));
+        localStorage.removeItem(usuario);
+
+        window.location.href = "./login.html";
+        });
+
+
+    function preencherNome() {
+        const usuario = JSON.parse(localStorage.getItem('usuario'));
+            nomeUsuario.innerHTML = `${usuario.nome}`
+    }
+
+    preencherNome()
 });

@@ -18,22 +18,29 @@ document.addEventListener('DOMContentLoaded', () => {
     async function carregarAtividades() {
         const usuarioId = getUsuarioId();
         const token = localStorage.getItem('token')
-        if (!usuarioId) {
-            window.location.href = "./login.html";
-        } else {
+        if(usuarioId == null){
+            window.location.href = "./login.html"
+        }  else {
             try {
                 const response = await fetch(`${API_URL}usuario/${usuarioId}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
                 });
-                if (!response.ok) throw new Error('Falha na resposta da API');
+                if(response.status == 403) {
+                    window.location.href = "./login.html"
+                }
+               else if (!response.ok) {
+                throw new Error('Falha na resposta da API');
+            } else{
                 const atividades = await response.json();
                 atividades.forEach(atividade => adicionarAtividade(atividade));
+            }
             } catch (error) {
                 console.error('Erro ao carregar atividades:', error);
             }
         }
+    
     }
 
 
@@ -44,8 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const titulo = document.getElementById('titulo').value;
         const descricao = document.getElementById('descricao').value;
 
-        if (!usuarioId) {
-            window.location.href = "./login.html";
+        if(usuarioId == null){
+            window.location.href = "./login.html"
         } else {
             try {
                 const response = await fetch(API_URL, {
@@ -56,8 +63,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     },
                     body: JSON.stringify({ titulo, descricao, usuarioId })
                 });
+                if(response.status == 403){
+                    window.location.href = "./login.html"
+                } else if (!response.ok) {
+                    throw new Error('Falha ao adicionar atividade');
+                } else {
                 const newAtividade = await response.json();
                 adicionarAtividade(newAtividade);
+                }
             } catch (error) {
                 console.error('Erro ao adicionar atividade:', error);
             }
@@ -76,8 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const descricao = document.getElementById('newDescricao').value;
         const atividadeId = parseInt(e.target.dataset.id);
 
-        if (!usuarioId) {
-            window.location.href = "./login.html";
+        if(usuarioId == null){
+            window.location.href = "./login.html"
         } else {
             try {
                 const response = await fetch(`${API_URL}/${atividadeId}`, {
@@ -88,9 +101,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     },
                     body: JSON.stringify({ titulo, descricao, usuarioId })
                 });
-
-                if (!response.ok) throw new Error('Erro ao atualizar atividade');
-
+                if(response.status == 403){
+                    window.location.href = "./login.html"
+                }
+                else if (!response.ok) {
+                    throw new Error('Erro ao atualizar atividade');
+                } else {
                 const updatedAtividade = await response.json();
 
                 // Atualize o card existente com os novos dados
@@ -100,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const card = document.querySelector(`[data-id="${atividadeId}"]`);
                 card.querySelector('.titulo').textContent = updatedAtividade.titulo;
                 card.querySelector('.descricao').textContent = updatedAtividade.descricao;
-
+                }
             } catch (error) {
                 console.error('Erro ao editar atividade:', error);
             }
@@ -168,9 +184,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('token')
             const usuarioId = getUsuarioId();
 
-            if (!usuarioId) {
-                window.location.href = "./login.html";
-            } else {
+            if(usuarioId == null){
+                window.location.href = "./login.html"
+            }  else {
                 card.querySelector('.concluido-btn').textContent = concluido ? 'Concluída' : 'Concluído';
                 if (concluido) {
                     try {
@@ -182,12 +198,12 @@ document.addEventListener('DOMContentLoaded', () => {
                             },
                             body: JSON.stringify({ id: atividade.id, concluido: true })
                         });
-
+                        if(response.status == 403){
+                            window.location.href = "./login.html"
+                        }
                         if (!response.ok) {
                             throw new Error(`Erro ao atualizar: ${response.status} ${response.statusText}`);
                         }
-
-                        const updatedAtividade = await response.json();
                     } catch (error) {
                         console.error('Erro ao atualizar atividade:', error);
                     }
@@ -201,12 +217,12 @@ document.addEventListener('DOMContentLoaded', () => {
                             },
                             body: JSON.stringify({ id: atividade.id, concluido: false })
                         });
-
+                        if(response.status == 403){
+                            window.location.href = "./login.html"
+                        }
                         if (!response.ok) {
                             throw new Error(`Erro ao atualizar: ${response.status} ${response.statusText}`);
                         }
-
-                        const updatedAtividade = await response.json();
                     } catch (error) {
                         console.error('Erro ao atualizar atividade:', error);
                     }
@@ -220,13 +236,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('confirmIndividualBtn').addEventListener('click', async () => {
         const token = localStorage.getItem('token')
         const usuarioId = getUsuarioId();
-        if (!usuarioId) {
-            window.location.href = "./login.html";
+        if(usuarioId == null){
+            window.location.href = "./login.html"
         } else {
             if (atividadeParaRemover) {
                 const id = atividadeParaRemover.dataset.id;
                 try {
-                    await fetch(`${API_URL}/${id}`, {
+                    const response = await fetch(`${API_URL}/${id}`, {
                         method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json',
@@ -234,6 +250,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         },
                         body: JSON.stringify({ usuarioId: getUsuarioId() })
                     });
+                    if(response.status == 403){
+                        window.location.href = "./login.html"
+                    }
                     atividadeParaRemover.remove();
                 } catch (error) {
                     console.error('Erro ao remover atividade:', error);
@@ -258,4 +277,24 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     carregarAtividades();
+
+
+    //Fazer logoff e exibir nome do usuario
+    const sair = document.getElementById("sair");
+    const nomeUsuario = document.getElementById("usuario")
+
+    sair.addEventListener("click", () => {
+        const usuario = JSON.parse(localStorage.getItem('usuario'));
+        localStorage.removeItem(usuario);
+
+        window.location.href = "./login.html";
+        });
+
+
+    function preencherNome() {
+        const usuario = JSON.parse(localStorage.getItem('usuario'));
+            nomeUsuario.innerHTML = `${usuario.nome}`
+    }
+
+    preencherNome()
 });
