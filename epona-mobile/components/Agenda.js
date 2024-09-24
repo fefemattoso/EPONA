@@ -146,6 +146,7 @@ const App = () => {
           borderWidth: 1,
           borderColor: 'gray',
           height: 350,
+          borderRadius: 20,
         }}
         theme={{
           backgroundColor: '#ffffff',
@@ -257,7 +258,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Escurece o fundo quando o modal está aberto
+    backgroundColor: '#badda8', // Escurece o fundo quando o modal está aberto
   },
   modalView: {
     margin: 20,

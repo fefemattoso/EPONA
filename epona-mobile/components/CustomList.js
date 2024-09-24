@@ -91,7 +91,7 @@ export default function CustomList() {
       <Button
         title={loading ? "Salvando..." : editingItemId ? "Atualizar Item" : "Adicionar Item"}
         onPress={adicionarOuAtualizarItem}
-        color="#547699"
+        color="#162040"
       />
 
       <Text style={styles.sectionTitle}>Itens</Text>
