@@ -22,9 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const usuarioId = getUsuarioId()
         const token = localStorage.getItem('token')
 
-        if (!usuarioId) {
+        if(usuarioId == null){
             window.location.href = "./login.html"
-        } else {
+        } 
+        else {
             try {
                 const response = await fetch(`${API_URL}usuario/${usuarioId}`, {
                     headers: {
@@ -32,22 +33,29 @@ document.addEventListener('DOMContentLoaded', () => {
                         'Authorization': `Bearer ${token}`
                     }
                 });
-                if (!response.ok) throw new Error('Erro ao carregar a lista.');
-                const lista = await response.json();
-                lista.forEach(item => {
-                    const card = createCard(item.descricao, item.concluido, item.id);
-                    cardContainer.appendChild(card);
-                });
-            } catch (error) {
-                console.error('Erro ao carregar a lista:', error);
+                if(response.status == 403){
+                    window.location.href = "./login.html"
+                } else if (!response.ok) {
+                    throw new Error('Erro ao carregar a lista.');
+                } else {
+                    const lista = await response.json();
+                    lista.forEach(item => {
+                        const card = createCard(item.descricao, item.concluido, item.id);
+                        cardContainer.appendChild(card);
+                    });
+                }
+
+                } catch (error) {
+                    console.error('Erro ao carregar a lista:', error);
+                }
             }
-        }
+                
     }
 
     async function adicionarItem(descricao) {
         const usuarioId = getUsuarioId();
         const token = localStorage.getItem('token'); // Armazene o token após o login
-        if (!usuarioId) {
+        if(usuarioId == null){
             window.location.href = "./login.html"
         } else {
             try {
@@ -59,11 +67,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     },
                     body: JSON.stringify({ descricao, usuarioId }) // Usando o usuarioId obtido
                 });
-                if (!response.ok) throw new Error('Erro ao adicionar item.');
-
-                const newItem = await response.json();
-                const card = createCard(newItem.descricao, newItem.concluida, newItem.id);
-                cardContainer.appendChild(card);
+                if(response.status == 403){
+                    window.location.href = "./login.html"
+                }
+                 else if (!response.ok) {
+                    throw new Error('Erro ao adicionar item.');
+                } else {
+                    const newItem = await response.json();
+                    const card = createCard(newItem.descricao, newItem.concluida, newItem.id);
+                    cardContainer.appendChild(card);
+                }
             } catch (error) {
                 console.error('Erro ao adicionar item:', error);
             }
@@ -74,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const usuarioId = getUsuarioId(); // Obtendo o usuarioId
         const token = localStorage.getItem('token'); // Armazene o token após o login
 
-        if (!usuarioId) {
+        if(usuarioId == null){
             window.location.href = "./login.html"
         } else {
         try {
@@ -86,19 +99,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify({ id, descricao, concluido, usuarioId }) // Usando o usuarioId
             });
-            if (!response.ok) throw new Error('Erro ao atualizar item.');
+            if(response.status == 403){
+                window.location.href = "./login.html"
+            } else if (!response.ok) {
+                throw new Error('Erro ao atualizar item.')
+            }
         } catch (error) {
             console.error('Erro ao atualizar item:', error);
         }
     }
+    
 }
 
     async function removerItem(id) {
         const token = localStorage.getItem('token');
         const usuarioId = getUsuarioId()
-        if (!usuarioId) {
+        if(usuarioId == null){
             window.location.href = "./login.html"
         } else {
+        
         try {
             const response = await fetch(`${API_URL}/${id}`, {
                 method: 'DELETE',
@@ -106,6 +125,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Authorization': `Bearer ${token}`
                 }
             });
+            if(response.status == 403){
+                window.location.href = "./login.html"
+            }
             if (!response.ok) throw new Error('Erro ao remover item.');
         } catch (error) {
             console.error('Erro ao remover item:', error);
@@ -200,4 +222,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     carregarLista();
+
+    //Fazer logoff e exibir nome do usuario
+    const sair = document.getElementById("sair");
+    const nomeUsuario = document.getElementById("usuario")
+
+    sair.addEventListener("click", () => {
+        const usuario = JSON.parse(localStorage.getItem('usuario'));
+        localStorage.removeItem(usuario);
+
+        window.location.href = "./login.html";
+        });
+
+
+    function preencherNome() {
+        const usuario = JSON.parse(localStorage.getItem('usuario'));
+            nomeUsuario.innerHTML = `${usuario.nome}`
+    }
+
+    preencherNome()
 });
