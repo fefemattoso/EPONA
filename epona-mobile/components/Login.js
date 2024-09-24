@@ -1,4 +1,3 @@
-// components/Login.js
 import React, { useState } from 'react';
 import { View, Text, Button, TextInput, Image, StyleSheet } from 'react-native';
 import { auth } from '../firebaseconfig';
@@ -46,38 +45,39 @@ function Login({ onLogin, onGoBack }) {
     <View style={styles.loginContainer}>
       <Text style={styles.title}>{isRegistering ? 'Cadastrar' : 'Login'} no Epona</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
+      <View style={styles.formContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Senha"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Senha"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
 
-      <View style={styles.buttons}>
-        {isRegistering ? (
-          <>
-            <Button style={styles.button} color='#162040' title="Cadastrar" onPress={handleRegister} />
-            <Button style={styles.button} color='#162040' title="Voltar para Login" onPress={() => setIsRegistering(false)} />
-          </>
-        ) : (
-          <>
-            <Button style={styles.button} color='#162040' title="Entrar" onPress={handleLogin} />
-            <Button style={styles.button} color='#162040' title="Cadastrar" onPress={() => setIsRegistering(true)} />
-          </>
-        )}
+        <View style={styles.buttons}>
+          {isRegistering ? (
+            <>
+              <Button color='#162040' title="Cadastrar" onPress={handleRegister} />
+              <Button color='#162040' title="Voltar para Login" onPress={() => setIsRegistering(false)} />
+            </>
+          ) : (
+            <>
+              <Button color='#162040' title="Entrar" onPress={handleLogin} />
+              <Button color='#162040' title="Cadastrar" onPress={() => setIsRegistering(true)} />
+            </>
+          )}
+        </View>
       </View>
 
-      <Button style={styles.button} color='#162040' title="Voltar" onPress={onGoBack} />
 
       <Image source={require('../assets/planta2.png')} style={styles.leafTopLeft} />
       <Image source={require('../assets/planta.png')} style={styles.leafBottomRight} />
@@ -91,48 +91,51 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#badda8',
+    position: 'relative',
     padding: 20,
-    borderRadius: 8,
   },
   title: {
+    fontSize: 28,
+    fontWeight: 'bold',
     color: '#162040',
-    marginBottom: 20,
-    fontSize: 24,
+    marginBottom: 30,
+  },
+  formContainer: {
+    width: '85%',
+    maxWidth: 400,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    padding: 25,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 5,
   },
   input: {
+    borderWidth: 1,
+    borderColor: '#547699',
+    borderRadius: 8,
     padding: 10,
     marginVertical: 10,
-    borderColor: '#ffffff',
-    borderWidth: 1,
-    borderRadius: 5,
-    width: '70%',
-    maxWidth: 400,
-    marginBottom: 20,
+    width: '100%',
+    fontSize: 16,
   },
   buttons: {
-    flexDirection: 'column',
-    gap: 20,
-    marginBottom: 20,
-  },
-  button: {
-    backgroundColor: '#162040',
-    color: 'white',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    marginTop: 10,
+    marginTop: 20,
+    gap: 10,
   },
   leafTopLeft: {
     position: 'absolute',
-    top: 0,
-    left: 0,
+    top: -20,
+    left: -20,
     width: 150,
     height: 150,
   },
   leafBottomRight: {
     position: 'absolute',
-    bottom: 0,
-    right: 0,
+    bottom: -20,
+    right: -20,
     width: 150,
     height: 150,
   },

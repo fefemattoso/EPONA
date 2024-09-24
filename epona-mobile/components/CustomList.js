@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Button, TextInput, FlatList, TouchableOpacity, Animated, Switch, ScrollView } from 'react-native';
-import { db, storage } from '../firebaseconfig';
+import { db } from '../firebaseconfig';
 import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { launchImageLibrary } from 'react-native-image-picker';
 
-export default function App() {
+export default function CustomList() {
   const [nomeItem, setnomeItem] = useState('');
   const [Items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [editingItemId, setEditingItemId] = useState(null);
   const fadeAnim = useState(new Animated.Value(0))[0];
   const [isRead, setIsRead] = useState(false);
-
 
   const adicionarOuAtualizarItem = async () => {
     try {
@@ -45,7 +42,6 @@ export default function App() {
     }
   };
 
-
   const fetchItems = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'Items'));
@@ -62,9 +58,10 @@ export default function App() {
 
   const editarItem = (Item) => {
     setnomeItem(Item.nome);
-    setIsRead(Item.isRead); // Update the isRead state
+    setIsRead(Item.isRead); 
     setEditingItemId(Item.id);
   };
+
   const excluirItem = async (ItemId) => {
     try {
       await deleteDoc(doc(db, 'Items', ItemId));
@@ -81,7 +78,7 @@ export default function App() {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Lista</Text>
+      <Text style={styles.title}>Lista Personalizada</Text>
 
       <Text style={styles.label}>Nome do Item</Text>
       <TextInput
@@ -94,40 +91,41 @@ export default function App() {
       <Button
         title={loading ? "Salvando..." : editingItemId ? "Atualizar Item" : "Adicionar Item"}
         onPress={adicionarOuAtualizarItem}
-        color="#9370db"
+        color="#547699"
       />
 
-      <Text style={styles.sectionTitle}>Lista</Text>
+      <Text style={styles.sectionTitle}>Itens</Text>
 
       <Animated.View style={{ opacity: fadeAnim }}>
         <FlatList
           data={Items}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <View style={styles.itemItem}>
+            <View style={styles.itemContainer}>
               <View style={styles.itemDetails}>
                 <Text style={styles.itemName}>{item.nome}</Text>
                 <Switch
-                  value={item.isRead} onValueChange={(valor) => {
+                  value={item.isRead}
+                  onValueChange={(valor) => {
                     const ItemRef = doc(db, 'Items', item.id);
                     updateDoc(ItemRef, { isRead: valor });
                     fetchItems();
                   }}
                   trackColor={{ false: "#767577", true: "#81b0ff" }}
-                  thumbColor={item.isRead ? "#f5dd4b" : "#f4f3f4"}
+                  thumbColor={item.isRead ? "#4CAF50" : "#f4f3f4"}
                   ios_backgroundColor="#3e3e3e"
                 />
                 <Text style={[styles.itemStatus, { color: item.isRead ? '#4CAF50' : '#F44336' }]}>
-                  {item.isRead ? "Check" : "Uncheck"}
+                  {item.isRead ? "Concluído" : "Pendente"}
                 </Text>
               </View>
 
               <View style={styles.actionButtons}>
                 <TouchableOpacity onPress={() => editarItem(item)} style={styles.actionButton}>
-                  <Icon name="edit" size={25} color="#8a2be2" />
+                  <Icon name="edit" size={25} color="#547699" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => excluirItem(item.id)} style={styles.actionButton}>
-                  <Icon name="trash" size={25} color="#ff6347" />
+                  <Icon name="trash" size={25} color="#F44336" />
                 </TouchableOpacity>
               </View>
             </View>
@@ -141,39 +139,40 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#badda8',
     padding: 20,
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
-    color: '#8a2be2',
+    color: '#162040',
     textAlign: 'center',
     marginBottom: 20,
   },
   label: {
     fontSize: 18,
-    color: '#4b0082',
+    color: '#2F5911',
     marginBottom: 10,
   },
   input: {
-    borderColor: '#8a2be2',
+    borderColor: '#547699',
     borderWidth: 2,
-    borderRadius: 10,
+    borderRadius: 8,
     padding: 10,
     marginBottom: 20,
+    backgroundColor: '#fff',
   },
   sectionTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#4b0082',
+    color: '#162040',
     marginBottom: 10,
   },
-  itemItem: {
+  itemContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 15,
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
     borderRadius: 10,
     marginBottom: 10,
     shadowColor: '#000',
@@ -187,7 +186,7 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#4b0082',
+    color: '#162040',
   },
   itemStatus: {
     fontSize: 16,
@@ -200,4 +199,3 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
 });
-

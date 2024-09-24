@@ -1,20 +1,29 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TouchableOpacity, Modal } from 'react-native';
-import React, { useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Modal, Animated } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
 import Login from './components/Login';
 import FunctionSelection from './components/FunctionSelection';
 import Agenda from './components/Agenda';
 import DailyTasks from './components/DailyTasks';
 import CustomList from './components/CustomList';
-import Welcome from './components/Welcome'
+import Welcome from './components/Welcome';
 
 function App() {
   const [user, setUser] = useState(null);
   const [currentFunction, setCurrentFunction] = useState(null);
   const [showWelcome, setShowWelcome] = useState(true);
-  const [showLogoutModal, setShowLogoutModal] = useState(false); // Estado para controlar a exibição do modal de logout
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const fadeAnim = useRef(new Animated.Value(0)).current; // Controle de animação
 
-  // Função que será passada para o componente Login
+  useEffect(() => {
+    // Animação de fade-in quando o componente é montado
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  }, [fadeAnim]);
+
   const handleLogin = (username) => {
     setUser(username);
   };
@@ -24,9 +33,7 @@ function App() {
   };
 
   const handleGoBack = () => {
-    if (showWelcome) {
-      return;
-    }
+    if (showWelcome) return;
     if (!user) {
       setShowWelcome(true);
     } else if (!currentFunction) {
@@ -37,77 +44,74 @@ function App() {
   };
 
   const handleLogout = () => {
-    setShowLogoutModal(true); // Exibe o modal de logout
+    setShowLogoutModal(true);
   };
 
   const handleConfirmLogout = () => {
     setUser(null);
     setCurrentFunction(null);
     setShowWelcome(true);
-    setShowLogoutModal(false); // Fecha o modal de logout
+    setShowLogoutModal(false);
   };
 
   const handleCancelLogout = () => {
-    setShowLogoutModal(false); // Fecha o modal de logout
+    setShowLogoutModal(false);
   };
 
-  // Renderiza a página Welcome se showWelcome for verdadeiro
   if (showWelcome) {
     return (
-      <Welcome onContinue={() => setShowWelcome(false)}>
-        <TouchableOpacity onPress={handleGoBack}>
-          <Text>Voltar</Text>
-        </TouchableOpacity>
-      </Welcome>
+      <Animated.View style={{ ...styles.container, opacity: fadeAnim }}>
+        <Welcome onContinue={() => setShowWelcome(false)} />
+      </Animated.View>
     );
   }
 
-  // Exibe a página de login caso o usuário ainda não tenha feito login
   if (!user) {
     return (
-      <Login onLogin={handleLogin} onGoBack={handleGoBack}>
+      <Animated.View style={{ ...styles.container, opacity: fadeAnim }}>
+        <Login onLogin={handleLogin} onGoBack={handleGoBack} />
         <TouchableOpacity onPress={handleGoBack}>
-          <Text>Voltar</Text>
+          <Text style={styles.buttonText}>Voltar</Text>
         </TouchableOpacity>
-      </Login>
+      </Animated.View>
     );
   }
 
-  // Exibe a seleção de funções caso nenhuma tenha sido escolhida
   if (!currentFunction) {
     return (
-      <View style={styles.container}>
+      <Animated.View style={{ ...styles.container, opacity: fadeAnim }}>
         <FunctionSelection onSelect={handleFunctionSelect} />
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={handleLogout}>
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
             <Text style={styles.buttonText}>Sair</Text>
           </TouchableOpacity>
         </View>
         <Modal
-          animationType="slide"
+          animationType="fade"
           transparent={true}
           visible={showLogoutModal}
           onRequestClose={() => setShowLogoutModal(false)}
         >
           <View style={styles.modalContainer}>
-            <Text style={styles.modalText}>Deseja sair?</Text>
-            <View style={styles.modalButtonContainer}>
-              <TouchableOpacity onPress={handleConfirmLogout}>
-                <Text style={styles.modalButtonText}>Sim</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleCancelLogout}>
-                <Text style={styles.modalButtonText}>Não</Text>
-              </TouchableOpacity>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalText}>Deseja sair?</Text>
+              <View style={styles.modalButtonContainer}>
+                <TouchableOpacity style={styles.modalButton} onPress={handleConfirmLogout}>
+                  <Text style={styles.modalButtonText}>Sim</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.modalButton} onPress={handleCancelLogout}>
+                  <Text style={styles.modalButtonText}>Não</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </Modal>
-      </View>
+      </Animated.View>
     );
   }
 
-  // Exibe o conteúdo da função selecionada
   return (
-    <View style={styles.container}>
+    <Animated.View style={{ ...styles.container, opacity: fadeAnim }}>
       <Text style={styles.header}>Bem-vindo, {user}</Text>
       {currentFunction === 'agenda' && <Agenda />}
       {currentFunction === 'dailyTasks' && <DailyTasks />}
@@ -115,7 +119,7 @@ function App() {
       <TouchableOpacity onPress={() => setCurrentFunction(null)}>
         <Text style={styles.buttonText}>Voltar</Text>
       </TouchableOpacity>
-    </View>
+    </Animated.View>
   );
 }
 
@@ -125,12 +129,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#badda8',
+    backgroundColor: '#badda8', // cor de fundo da paleta
   },
   header: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
-    backgroundColor: '#badda8',
+    color: '#162040', // cor escura da paleta
+    marginBottom: 20,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -140,26 +145,49 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 18,
     color: '#fff',
+    backgroundColor: '#547699', // azul médio da paleta
+    padding: 10,
+    borderRadius: 5,
+  },
+  logoutButton: { // verde escuro da paleta
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
   },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba (0,0,0,0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: 300,
+    padding: 20,
+    backgroundColor: '#547699',
+    borderRadius: 10,
+    alignItems: 'center',
   },
   modalText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontSize: 20,
+    color: '#C7E8FD',
+    marginBottom: 20,
   },
   modalButtonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 20,
+    width: '100%',
+  },
+  modalButton: {
+    backgroundColor: '#8AC66D', // verde claro da paleta
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginHorizontal: 5,
+    alignItems: 'center',
   },
   modalButtonText: {
     fontSize: 18,
-    color: '#fff',
+    color: '#162040', // cor de texto escura da paleta
   },
 });
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Button, Image, StyleSheet } from 'react-native';
-import { getAuth, signInAnonymously } from 'firebase/auth'; // Importa autenticação anônima do Firebase
+import { getAuth, signInAnonymously } from 'firebase/auth';
 
 const Welcome = ({ onContinue, onVisitorAccess }) => {
   // Função para autenticação anônima
@@ -8,7 +8,6 @@ const Welcome = ({ onContinue, onVisitorAccess }) => {
     const auth = getAuth();
     signInAnonymously(auth)
       .then(() => {
-        // Login anônimo bem-sucedido, chama o onVisitorAccess para ir direto para a tela de funções
         onVisitorAccess();
       })
       .catch((error) => {
@@ -18,6 +17,7 @@ const Welcome = ({ onContinue, onVisitorAccess }) => {
 
   return (
     <View style={styles.welcomeContainer}>
+      <Image source={require('../assets/planta2.png')} style={styles.leafTopLeft} />
       <Text style={styles.title}>Bem-vindo ao Epona</Text>
       <Image source={require('../assets/icon.png')} style={styles.icon} />
       <Text style={styles.subtitle}>Seu assistente pessoal para gerenciar tarefas e lembretes</Text>
@@ -30,11 +30,9 @@ const Welcome = ({ onContinue, onVisitorAccess }) => {
           title="Login"
           onPress={onContinue}
         />
-        
       </View>
 
-      {/* Folhas decorativas */}
-      <Image source={require('../assets/planta2.png')} style={styles.leafTopLeft} />
+      {/* Folha decorativa na parte inferior */}
       <Image source={require('../assets/planta.png')} style={styles.leafBottomRight} />
     </View>
   );
@@ -45,49 +43,50 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#badda8',
+    backgroundColor: '#badda8', // Cor da paleta
+    position: 'relative',
   },
   title: {
     fontSize: 36,
-    fontWeight: '"Comfortaa", sans-serif',
-    color: '#162040',
+    fontWeight: 'bold',
+    color: '#162040', // Cor escura da paleta
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 18,
-    color: '#666',
+    color: '#547699', // Azul da paleta
     marginBottom: 20,
-    alignItems: 'center',
     textAlign: 'center',
+    paddingHorizontal: 20,
   },
   buttonContainer: {
-    flexDirection: 'row',
-    gap: 20,
-    marginBottom: 20,
-    display: 'flex',
-    flexDirection: 'column',
+    marginBottom: 30,
+    width: '60%',
   },
   button: {
-    backgroundColor: '#162040',
+    backgroundColor: '#162040', // Cor do botão conforme a paleta
+    padding: 10,
+    borderRadius: 5,
+  },
+  icon: {
+    width: 120,
+    height: 120,
+    marginBottom: 20,
   },
   leafTopLeft: {
     position: 'absolute',
     top: 0,
     left: 0,
-    width: 150,
-    height: 150,
+    width: 100,
+    height: 100,
   },
   leafBottomRight: {
     position: 'absolute',
     bottom: 0,
     right: 0,
-    width: 150,
-    height: 150,
+    width: 100,
+    height: 100,
   },
-  icon: {
-    width: 150,
-    height: 150,
-  }
 });
 
 export default Welcome;

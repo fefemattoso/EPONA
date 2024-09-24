@@ -6,9 +6,9 @@ function FunctionSelection({ onSelect }) {
     <View style={styles.functionSelection}>
       <Text style={styles.title}>Selecione uma Função</Text>
       <View style={styles.buttonContainer}>
-        <Button style={styles.button} color='#162040' title="Agenda" onPress={() => onSelect('agenda')} />
-        <Button style={styles.button} color='#162040' title="Lista de Tarefas Diárias" onPress={() => onSelect('dailyTasks')} />
-        <Button style={styles.button} color='#162040' title="Lista Personalizada" onPress={() => onSelect('customList')} />
+        <Button color='#162040' title="Agenda" onPress={() => onSelect('agenda')} />
+        <Button color='#162040' title="Lista de Tarefas Diárias" onPress={() => onSelect('dailyTasks')} />
+        <Button color='#162040' title="Lista Personalizada" onPress={() => onSelect('customList')} />
       </View>
 
       {/* Adicionando as folhinhas */}
@@ -25,41 +25,42 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
     backgroundColor: '#badda8',
-    borderRadius: 8,
-    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+    position: 'relative',
+    padding: 30,
   },
   title: {
+    fontSize: 28,
+    fontWeight: 'bold',
     color: '#162040',
-    marginBottom: 20,
-    fontSize: 24,
+    marginBottom: 30,
     textAlign: 'center',
   },
   buttonContainer: {
-    flexDirection: 'row',
-    gap: 20,
-    marginBottom: 20,
-    display: 'flex',
+    width: '85%',
+    maxWidth: 400,
     flexDirection: 'column',
+    gap: 15,
+    marginBottom: 30,
   },
   button: {
-    marginBottom: 20,
+    backgroundColor: '#162040',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 8,
   },
   leafTopLeft: {
     position: 'absolute',
-    top: 0,
-    left: 0,
+    top: -20,
+    left: -20,
     width: 150,
     height: 150,
-    
   },
   leafBottomRight: {
     position: 'absolute',
-    bottom: 0,
-    right: 0,
+    bottom: -20,
+    right: -20,
     width: 150,
     height: 150,
-    
   },
 });

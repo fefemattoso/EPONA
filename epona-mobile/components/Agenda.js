@@ -39,7 +39,6 @@ const App = () => {
     fetchDatesFromFirebase();
   }, []);
 
-  // Função para buscar datas salvas no Firebase e marcar no calendário
   const fetchDatesFromFirebase = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'Dates'));
@@ -67,12 +66,10 @@ const App = () => {
     const dayKey = day.dateString;
     
     if (markedDates[dayKey]) {
-      // Exibir o modal com a descrição da data cadastrada
       setSelectedDescription(markedDates[dayKey].descricao);
-      setSelectedDateId(markedDates[dayKey].id); // Armazena o ID do documento
+      setSelectedDateId(markedDates[dayKey].id); 
       setModalDescriptionVisible(true);
     } else {
-      // Abrir modal para adicionar nova descrição
       setSelected(dayKey);
       setModalVisible(true);
     }
@@ -85,14 +82,13 @@ const App = () => {
         descricao: descricao
       });
 
-      // Atualizar a data marcada com cor diferenciada
       setMarkedDates({
         ...markedDates,
         [selected]: {
           marked: true, 
           customStyles: {container: {backgroundColor: 'green'}, text: {color: 'white'}}, 
           descricao,
-          id: docRef.id // Salva o ID do documento no estado
+          id: docRef.id 
         }
       });
 
@@ -104,7 +100,6 @@ const App = () => {
     }
   };
 
-  // Função para editar a descrição da data no Firebase
   const updateDescriptionInFirebase = async () => {
     try {
       const docRef = doc(db, 'Dates', selectedDateId);
@@ -112,7 +107,6 @@ const App = () => {
         descricao: selectedDescription
       });
 
-      // Atualizar a descrição no estado
       setMarkedDates({
         ...markedDates,
         [selected]: {
@@ -129,14 +123,13 @@ const App = () => {
     fetchDatesFromFirebase();
   };
 
-  // Função para excluir a data do Firebase e do calendário
   const deleteDateFromFirebase = async () => {
     try {
       const docRef = doc(db, 'Dates', selectedDateId);
       await deleteDoc(docRef);
 
       const updatedMarkedDates = {...markedDates};
-      delete updatedMarkedDates[selected]; // Remove a data do estado local
+      delete updatedMarkedDates[selected]; 
 
       setMarkedDates(updatedMarkedDates);
       alert('Data excluída com sucesso!');
@@ -190,14 +183,15 @@ const App = () => {
               onChangeText={setDescricao}
             />
 
-            <Button
-              title="Salvar Data"
+            <TouchableOpacity
+              style={styles.buttonSave}
               onPress={saveDateToFirebase}
-              color="#9370db"
-            />
+            >
+              <Text style={styles.textStyle}>Salvar Data</Text>
+            </TouchableOpacity>
             
             <TouchableOpacity
-              style={[styles.button, styles.buttonClose]}
+              style={styles.buttonClose}
               onPress={() => setModalVisible(false)}
             >
               <Text style={styles.textStyle}>Fechar</Text>
@@ -219,7 +213,6 @@ const App = () => {
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Descrição da Data</Text>
 
-            {/* Campo para editar a descrição */}
             <TextInput
               style={styles.input}
               placeholder="Edite a descrição"
@@ -227,22 +220,22 @@ const App = () => {
               onChangeText={setSelectedDescription}
             />
 
-            {/* Botão para salvar a nova descrição */}
-            <Button
-              title="Atualizar Descrição"
+            <TouchableOpacity
+              style={styles.buttonSave}
               onPress={updateDescriptionInFirebase}
-              color="#9370db"
-            />
-
-            {/* Botão para excluir a data */}
-            <Button
-              title="Excluir Data"
-              onPress={deleteDateFromFirebase}
-              color="#ff6347"
-            />
+            >
+              <Text style={styles.textStyle}>Atualizar Descrição</Text>
+            </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.button, styles.buttonClose]}
+              style={styles.buttonDelete}
+              onPress={deleteDateFromFirebase}
+            >
+              <Text style={styles.textStyle}>Excluir Data</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.buttonClose}
               onPress={() => setModalDescriptionVisible(false)}
             >
               <Text style={styles.textStyle}>Fechar</Text>
@@ -258,53 +251,75 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    backgroundColor: '#badda8', // Fundo suave
   },
   centeredView: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Escurece o fundo quando o modal está aberto
   },
   modalView: {
     margin: 20,
-    backgroundColor: 'white',
+    backgroundColor: '#fff',
     borderRadius: 20,
-    padding: 35,
+    padding: 40,
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 8,
+    width: '90%',
   },
   input: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    marginVertical: 10,
-    width: 200,
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 10,
+    height: 50,
+    borderColor: '#547699', // Azul intermediário
+    borderWidth: 2,
+    borderRadius: 12,
+    paddingHorizontal: 15,
+    marginVertical: 15,
+    width: '100%',
+    backgroundColor: '#F7F7F7',
   },
   modalText: {
-    fontSize: 18,
-    fontWeight: 'bold',
     marginBottom: 15,
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#162040', // Azul escuro
+  },
+  label: {
+    fontSize: 18,
+    color: '#162040', // Azul escuro
+  },
+  buttonSave: {
+    backgroundColor: '#8AC66D', // Verde claro
+    padding: 15,
+    borderRadius: 15,
+    marginTop: 15,
+    width: '100%',
+    alignItems: 'center',
+  },
+  buttonDelete: {
+    backgroundColor: '#2F5911', // Verde escuro
+    padding: 15,
+    borderRadius: 15,
+    marginTop: 15,
+    width: '100%',
+    alignItems: 'center',
   },
   buttonClose: {
-    backgroundColor: '#ff6347',
-    marginTop: 10,
+    backgroundColor: '#C7E8FD', // Azul claro
+    padding: 15,
+    borderRadius: 15,
+    marginTop: 15,
+    width: '100%',
+    alignItems: 'center',
   },
   textStyle: {
-    color: 'white',
-    padding: 10,
-  }
+    color: '#fff',
+    fontWeight: 'bold',
+  },
 });
 
 export default App;

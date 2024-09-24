@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Button, TextInput, FlatList, TouchableOpacity, Animated, Switch, ScrollView } from 'react-native';
-import { db, storage } from '../firebaseconfig';
+import { db } from '../firebaseconfig';
 import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { launchImageLibrary } from 'react-native-image-picker';
 
-export default function App() {
-  const [nomeItem, setnomeItem] = useState('');
+export default function DailyTasks() {
+  const [nomeItem, setNomeItem] = useState('');
   const [descItem, setDescItem] = useState('');
   const [Items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [editingItemId, setEditingItemId] = useState(null);
   const fadeAnim = useState(new Animated.Value(0))[0];
   const [isRead, setIsRead] = useState(false);
-
 
   const adicionarOuAtualizarItem = async () => {
     try {
@@ -27,7 +24,7 @@ export default function App() {
           descricao: descItem,
           isRead: isRead,
         });
-        alert('Item atualizado com sucesso!');
+        alert('Tarefa atualizada com sucesso!');
         setEditingItemId(null);
       } else {
         await addDoc(collection(db, 'Tasks'), {
@@ -35,20 +32,19 @@ export default function App() {
           descricao: descItem,
           isRead: isRead,
         });
-        alert('Item adicionado com sucesso!');
+        alert('Tarefa adicionada com sucesso!');
       }
 
-      setnomeItem('');
+      setNomeItem('');
       setDescItem('');
       setIsRead(false);
       fetchItems();
     } catch (e) {
-      console.error("Erro ao salvar Item: ", e);
+      console.error("Erro ao salvar Tarefa: ", e);
     } finally {
       setLoading(false);
     }
   };
-
 
   const fetchItems = async () => {
     try {
@@ -60,23 +56,24 @@ export default function App() {
       setItems(ItemsList);
       Animated.timing(fadeAnim, { toValue: 1, duration: 1000, useNativeDriver: true }).start();
     } catch (e) {
-      console.error("Erro ao buscar Items: ", e);
+      console.error("Erro ao buscar Tarefas: ", e);
     }
   };
 
   const editarItem = (Item) => {
-    setnomeItem(Item.nome);
+    setNomeItem(Item.nome);
     setDescItem(Item.descricao);
-    setIsRead(Item.isRead); // Update the isRead state
+    setIsRead(Item.isRead);
     setEditingItemId(Item.id);
   };
+
   const excluirItem = async (ItemId) => {
     try {
       await deleteDoc(doc(db, 'Tasks', ItemId));
-      alert('Item excluído com sucesso!');
+      alert('Tarefa excluída com sucesso!');
       fetchItems();
     } catch (e) {
-      console.error("Erro ao excluir Item: ", e);
+      console.error("Erro ao excluir Tarefa: ", e);
     }
   };
 
@@ -86,62 +83,65 @@ export default function App() {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Lista</Text>
+      <Text style={styles.title}>Tarefas Diárias</Text>
 
-      <Text style={styles.label}>Nome do Item</Text>
+      <Text style={styles.label}>Nome da Tarefa</Text>
       <TextInput
         style={styles.input}
-        placeholder="Digite o nome do Item"
+        placeholder="Digite o nome da tarefa"
         value={nomeItem}
-        onChangeText={setnomeItem}
+        onChangeText={setNomeItem}
       />
 
       <Text style={styles.label}>Descrição</Text>
       <TextInput
         style={styles.input}
-        placeholder="Digite a Descrição da Atividader"
+        placeholder="Digite a descrição da tarefa"
         value={descItem}
         onChangeText={setDescItem}
+        multiline={true}
+        numberOfLines={4}
       />
 
       <Button
-        title={loading ? "Salvando..." : editingItemId ? "Atualizar Item" : "Adicionar Item"}
+        title={loading ? "Salvando..." : editingItemId ? "Atualizar Tarefa" : "Adicionar Tarefa"}
         onPress={adicionarOuAtualizarItem}
-        color="#9370db"
+        color="#6A5ACD"
       />
 
-      <Text style={styles.sectionTitle}>Lista</Text>
+      <Text style={styles.sectionTitle}>Lista de Tarefas</Text>
 
       <Animated.View style={{ opacity: fadeAnim }}>
         <FlatList
           data={Items}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <View style={styles.itemItem}>
+            <View style={styles.itemTask}>
               <View style={styles.itemDetails}>
                 <Text style={styles.itemName}>{item.nome}</Text>
                 <Text style={styles.itemDesc}>{item.descricao}</Text>
                 <Switch
-                  value={item.isRead} onValueChange={(valor) => {
+                  value={item.isRead}
+                  onValueChange={(valor) => {
                     const ItemRef = doc(db, 'Tasks', item.id);
                     updateDoc(ItemRef, { isRead: valor });
                     fetchItems();
                   }}
-                  trackColor={{ false: "#767577", true: "#81b0ff" }}
-                  thumbColor={item.isRead ? "#f5dd4b" : "#f4f3f4"}
-                  ios_backgroundColor="#3e3e3e"
+                  trackColor={{ false: "#C0C0C0", true: "#48D1CC" }}
+                  thumbColor={item.isRead ? "#FFD700" : "#FFF"}
+                  ios_backgroundColor="#D3D3D3"
                 />
-                <Text style={[styles.itemStatus, { color: item.isRead ? '#4CAF50' : '#F44336' }]}>
-                  {item.isRead ? "Check" : "Uncheck"}
+                <Text style={[styles.itemStatus, { color: item.isRead ? '#32CD32' : '#FF4500' }]}>
+                  {item.isRead ? "Concluída" : "Pendente"}
                 </Text>
               </View>
 
               <View style={styles.actionButtons}>
                 <TouchableOpacity onPress={() => editarItem(item)} style={styles.actionButton}>
-                  <Icon name="edit" size={25} color="#8a2be2" />
+                  <Icon name="edit" size={25} color="#4169E1" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => excluirItem(item.id)} style={styles.actionButton}>
-                  <Icon name="trash" size={25} color="#ff6347" />
+                  <Icon name="trash" size={25} color="#FF4500" />
                 </TouchableOpacity>
               </View>
             </View>
@@ -155,58 +155,70 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#F0F8FF',
     padding: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 10,
+    color: '#4682B4',
+    textAlign: 'center',
+    marginBottom: 20,
   },
   label: {
-    fontSize: 16,
-    marginBottom: 5,
+    fontSize: 18,
+    color: '#5F9EA0',
+    marginBottom: 8,
   },
   input: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    marginBottom: 10,
+    borderColor: '#4682B4',
+    borderWidth: 1.5,
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 15,
+    backgroundColor: '#FFF',
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: 'bold',
-    marginTop: 20,
-    marginBottom: 10,
+    color: '#5F9EA0',
+    marginBottom: 12,
   },
-  itemItem: {
+  itemTask: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    backgroundColor: '#C7E8FD', // Cor de fundo alterada
+    padding: 15,
+    borderRadius: 12,
+    marginBottom: 10,
+    borderColor: '#547699', // Cor da borda alterada
+    borderWidth: 1.5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
   },
   itemDetails: {
     flex: 1,
   },
   itemName: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
+    color: '#162040', // Cor do texto mais escura
   },
   itemDesc: {
-    fontSize: 14,
-    color: '#666',
+    fontSize: 16,
+    color: '#547699', // Cor da descrição mais suave
+    marginBottom: 8,
   },
   itemStatus: {
-    fontSize: 14,
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   actionButtons: {
     flexDirection: 'row',
   },
   actionButton: {
-    paddingHorizontal: 10,
+    marginHorizontal: 8,
   },
 });
-
