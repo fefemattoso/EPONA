@@ -36,7 +36,7 @@ const read = async (req, res) => {
 const readById = async (req, res) => {
     if(req.params.usuarioId !== undefined){
         const usuarioId = req.params.usuarioId;
-        const lembretes = await prisma.lista.findMany({
+        const lembretes = await prisma.agenda.findMany({
             where: {
                 usuarioId: parseInt(usuarioId)
             }

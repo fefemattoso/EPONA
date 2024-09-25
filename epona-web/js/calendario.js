@@ -40,31 +40,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //Essa função está dando erro e o calendario não abre se filtrar por id
 
-    // async function carregarLembretes() {
-    //     const usuarioId = getUsuarioId()
-    //     if (!usuarioId) {
-    //         window.location.href = "./login.html"
-    //     } else {
-    //         try {
-    //             const response = await fetch(`${API_URL}usuario/${usuarioId}`);
-    //             if (!response.ok) throw new Error('Falha na resposta da API');
-    //             const agendas = await response.json();
-    //             lembretes = agendas.reduce((acc, lembrete) => {
-    //                 const data = lembrete.data.split('T')[0]; // Formata data para yyyy-mm-dd
-    //                 if (!acc[data]) acc[data] = [];
-    //                 acc[data].push({ texto: lembrete.titulo, descricao: lembrete.descricao, id: lembrete.id });
-    //                 return acc;
-    //             }, {});
-    //             gerarCalendario(anoAtual, mesAtual);
-    //         } catch (error) {
-    //             console.error('Erro ao carregar lembretes:', error);
-    //         }
-    //     }
-    // }
-
     async function carregarLembretes() {
+        const usuarioId = getUsuarioId();
+        const url = `${API_URL}usuario/${usuarioId}`;
+
+
+        
         try {
-            const response = await fetch(API_URL);
+            const response = await fetch(`${API_URL}usuario/${usuarioId}`);
             if (!response.ok) throw new Error('Falha na resposta da API');
             const agendas = await response.json();
             lembretes = agendas.reduce((acc, lembrete) => {
@@ -151,22 +134,28 @@ document.addEventListener('DOMContentLoaded', function() {
         divDia.classList.add('dia');
         divDia.textContent = dia;
         divDia.dataset.data = data;
-        divDia.addEventListener('click', () => mostrarDetalhesDia(data));
+    
+        divDia.addEventListener('click', () => {
+            dataLembreteInput.value = data;
+            mostrarDetalhesDia(data);
+        });
+    
         diasDoMes.appendChild(divDia);
-
+    
         if (lembretes[data]) {
             lembretes[data].forEach(lembrete => {
                 const lembreteDiv = document.createElement('div');
                 lembreteDiv.classList.add('lembrete');
                 lembreteDiv.textContent = lembrete.texto;
                 lembreteDiv.addEventListener('click', (event) => {
-                    event.stopPropagation(); // Impede que o clique no lembrete abra o modal do dia
+                    event.stopPropagation();
                     prepararModalDeletar(data, lembrete.texto, lembrete.id);
                 });
                 divDia.appendChild(lembreteDiv);
             });
         }
     }
+    
 
     function mostrarDetalhesDia(data) {
         const lembretesDia = lembretes[data] || [];
@@ -229,30 +218,17 @@ document.addEventListener('DOMContentLoaded', function() {
             btn.addEventListener('click', (event) => {
                 const id = event.target.dataset.id;
                 const data = event.target.dataset.data;
-    
-                // Log para verificar os dados
-                console.log('ID:', id, 'Data:', data);
-    
-                // Verificar se a data existe no objeto de lembretes
+
                 if (lembretes[data]) {
-                    // Log para mostrar todos os IDs disponíveis para essa data
-                    console.log('IDs disponíveis para a data:', lembretes[data].map(l => l.id));
-                    console.log('Lembretes para a data:', lembretes[data]);
     
-                    // Alteração na comparação para garantir que os tipos estão corretos
                     const lembrete = lembretes[data].find(l => String(l.id) === String(id));
-                    console.log('Lembrete encontrado:', lembrete);
     
                     overlayEdit.classList.remove('hidden');
                     if (lembrete) {
                         lembreteParaEditar = { ...lembrete, data };
                         editTextoLembreteInput.value = lembrete.texto;
                         editDescricaoTextoInput.value = lembrete.descricao;
-                    } else {
-                        console.log('Lembrete não encontrado para o ID:', id);
-                    }
-                } else {
-                    console.log(`Nenhum lembrete encontrado para a data: ${data}`);
+                } 
                 }
             });
         });

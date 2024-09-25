@@ -1,47 +1,84 @@
 /* Estilização geral */
 body {
-    font-family: "Comfortaa", sans-serif; /* Aplicar a fonte Comfortaa */
-    margin: 0;
-    padding: 0;
-    background-color: #badda8; /* Verde claro para o fundo da página */
+    font-family: "Comfortaa", sans-serif;
+    background-color: #badda8;
+    color: #333;
+    align-items: center;
+    text-align: center;
 }
 
 header {
-    background-color: #2f5911; /* Verde escuro para o cabeçalho */
+    background-color: #2f5911;
     padding: 1rem;
-    color: #fff;
 }
 
-header nav {
+nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-header nav img {
+nav img {
     max-width: 100px;
     height: auto;
 }
 
-header nav ul {
-    list-style: none;
-    display: flex;
-    gap: 15px;
-    margin: 0;
-    padding: 0;
+nav .logo p{
+    color: #fff;
+    font-size: 2rem;
+    margin-right: 10px;
 }
 
-header nav a {
+
+ nav div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+nav ul {
+    display: flex;
+    gap: 1rem;
+    list-style: none;
+}
+ 
+nav ul li a {
     color: #fff;
     text-decoration: none;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
 }
 
-header nav a:hover {
-    text-decoration: underline;
+nav ul li a:hover {
+    color: #ffb74d;
 }
+
+nav .perfil span{
+    color:white;
+    font-size: 1.5rem;
+}
+
+nav .perfil button{
+    background-color: #162040;
+    border: none;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+} 
+
+nav .perfil button:hover{
+    background-color: #24356b;
+}
+
 
 .atividades {
     padding: 20px;
+}
+
+#addAtividadeBtn{
+    margin-bottom: 10px;
 }
 
 /* Botões */

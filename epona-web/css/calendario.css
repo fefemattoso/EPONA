@@ -8,17 +8,16 @@ body, button, p, span, h1, h2, h3 {
 
 /* Estilos gerais do corpo */
 body {
-    background-color: #badda8; /* Cor de fundo da página */
+    font-family: "Comfortaa", sans-serif;
+    background-color: #badda8;
     color: #333;
-    margin: 0;
-    padding: 0;
+    align-items: center;
+    text-align: center;
 }
 
-/* Estilo do cabeçalho e navegação */
 header {
-    background-color: #2f5911; /* Verde escuro */
+    background-color: #2f5911;
     padding: 1rem;
-    color: #fff;
 }
 
 nav {
@@ -27,23 +26,59 @@ nav {
     align-items: center;
 }
 
-nav div {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
 nav img {
     max-width: 100px;
     height: auto;
 }
 
-nav p {
-    font-size: 1.5rem;
+nav .logo p{
     color: #fff;
-    margin: 0;
-    font-weight: 700;
+    font-size: 2rem;
+    margin-right: 10px;
 }
+
+
+ nav div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+nav ul {
+    display: flex;
+    gap: 1rem;
+    list-style: none;
+}
+ 
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #ffb74d;
+}
+
+nav .perfil span{
+    color:white;
+    font-size: 1.5rem;
+}
+
+nav .perfil button{
+    background-color: #162040;
+    border: none;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+} 
+
+nav .perfil button:hover{
+    background-color: #24356b;
+} 
 
 /* Estilo do calendário principal */
 .calendario {

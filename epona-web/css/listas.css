@@ -7,45 +7,77 @@ body, button, p, span, h1, h2, h3 {
 }
 
 body {
-    margin: 0;
-    padding: 0;
+    font-family: "Comfortaa", sans-serif;
     background-color: #badda8;
-   
+    color: #333;
+    align-items: center;
+    text-align: center;
 }
 
-/* Header */
 header {
-    background-color: #2f5911; /* Verde escuro */
+    background-color: #2f5911;
     padding: 1rem;
-    color: #fff;
 }
 
-.navbar {
+nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.logo img {
-    width: 100px;
+nav img {
+    max-width: 100px;
     height: auto;
 }
 
-.nav-links {
-    list-style: none;
-    display: flex;
-    gap: 15px;
-}
-
-.nav-links a {
-    text-decoration: none;
+nav .logo p{
     color: #fff;
-    font-weight: 400;
+    font-size: 2rem;
+    margin-right: 10px;
 }
 
-.nav-links a:hover {
-    color: #162040;
+
+ nav div {
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
+nav ul {
+    display: flex;
+    gap: 1rem;
+    list-style: none;
+}
+ 
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #ffb74d;
+}
+
+nav .perfil span{
+    color:white;
+    font-size: 1.5rem;
+}
+
+nav .perfil button{
+    background-color: #162040;
+    border: none;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+} 
+
+nav .perfil button:hover{
+    background-color: #24356b;
+} 
 
 /* Main Section */
 main {
