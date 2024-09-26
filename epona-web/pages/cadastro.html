@@ -60,7 +60,8 @@
 
         input[type="text"],
         input[type="email"],
-        input[type="password"] {
+        input[type="password"], 
+        input[type="date"] {
             padding: 10px;
             margin-bottom: 15px;
             border: 2px solid var(--azul-escuro);
@@ -121,20 +122,23 @@
     <main>
         <h2>Cadastro</h2>
         <section class="cadastro" id="cadastro">
-            <form action="">
+            <form id="formCadastro">
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email" placeholder="Digite o email" required>
-                <label for="usuario">Usuário:</label>
-                <input type="text" id="usuario" name="usuario" placeholder="Digite o usuário" required>
+                <input type="email" name="email" placeholder="Digite o email" required>
+                <label for="nome">Usuário:</label>
+                <input type="text" name="nome" placeholder="Digite o usuário" required>
+                <label for="nascimento">Nascimento:</label>
+                <input type="date" name="nascimento" required>
                 <label for="senha">Senha:</label>
-                <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+                <input type="password" name="senha" placeholder="Digite sua senha" required>
                 <label for="senha-confirmacao">Confirme sua senha:</label>
-                <input type="password" id="senha-confirmacao" name="senha-confirmacao" placeholder="Confirme sua senha" required>
+                <input type="password" name="senhaconfirmada" placeholder="Confirme sua senha" required>
                 <a href="./senha.html">Esqueci minha senha</a>
                 <a href="./login.html">Já tem uma conta? Faça login</a>
                 <input type="submit" value="Cadastrar-se">
             </form>
         </section>
     </main>
+ <script src="../js/cadastro.js"></script>
 </body>
 </html>

@@ -12,8 +12,8 @@ const login = async (req, res) => {
 
     if (usuario) {
         const token = jwt.sign({ id: usuario.id, email: usuario.email }, process.env.KEY, {
-                expiresIn: 3600
-            });
+            expiresIn: 3600
+        });
         usuario.token = token;
         return res.json(usuario);
     } else {
@@ -25,7 +25,12 @@ const create = async (req, res) => {
     try {
         const { nome, email, senha, nascimento } = req.body;
         const usuario = await prisma.usuario.create({
-            data: { nome, email, senha, nascimento }
+            data: {
+                nome: nome, 
+                email: email,
+                senha: senha,
+                nascimento: new Date(nascimento)
+            }
         });
         return res.status(201).json(usuario);
     } catch (error) {
