@@ -60,6 +60,23 @@ const update = async (req, res) => {
     }
 };
 
+const senha = async (req, res) => {
+    const {email, senha} = req.body
+    try {
+        const usuario = await prisma.usuario.update({
+            where: {
+                 email: email
+                 },
+            data: { 
+                senha: senha
+             }
+        });
+        return res.status(202).json(usuario);
+    } catch (error) {
+        return res.status(404).json({ message: "Usuário não encontrado" });
+    }
+}
+
 const del = async (req, res) => {
     try {
         await prisma.usuario.delete({ where: { id: parseInt(req.params.id) } });
@@ -69,4 +86,4 @@ const del = async (req, res) => {
     }
 };
 
-module.exports = { create, read, update, del, login };
+module.exports = { create, read, update, senha, del, login };

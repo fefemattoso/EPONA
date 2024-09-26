@@ -7,11 +7,13 @@ const Atividade = require('./controllers/atividades');
 const Agenda = require('./controllers/agenda');
 const Lista = require('./controllers/listas');
 
+router.put('/senha', Usuario.senha)
+
 router.post('/login', Usuario.login)
 router.post('/usuario', Usuario.create);
-router.get('/usuario', validaAcesso, Usuario.read);
+router.get('/usuario', Usuario.read);
 router.get('/usuario/:id', validaAcesso, Usuario.read);
-router.put('/usuario', validaAcesso, Usuario.update);
+router.put('/usuario', Usuario.update);
 router.delete('/usuario/:id', validaAcesso, Usuario.del);
 
 router.post('/atividade',validaAcesso, Atividade.create);
