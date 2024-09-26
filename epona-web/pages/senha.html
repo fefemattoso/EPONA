@@ -100,11 +100,15 @@
     <main>
         <section>
             <h2>Para redefinir sua senha, informe o email cadastrado na sua conta. Lhe enviaremos um link com as instruções.</h2>
-            <form action="">
-                <input type="email" name="email" id="email" placeholder="Digite seu email" required>
+            <form id="trocarSenha">
+                <input type="email" name="email" placeholder="Digite seu email" required>
+                <input type="password" name="senha" placeholder="Digite a senha" required>
+                <input type="password" name="senhaconfirmada" placeholder="Confirme a nova senha" required>
                 <input type="submit" value="Enviar Instruções">
             </form>
         </section>
     </main>
+
+    <script src="../js/senha.js"></script>
 </body>
 </html>

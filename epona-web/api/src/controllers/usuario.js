@@ -12,8 +12,8 @@ const login = async (req, res) => {
 
     if (usuario) {
         const token = jwt.sign({ id: usuario.id, email: usuario.email }, process.env.KEY, {
-                expiresIn: 3600
-            });
+            expiresIn: 3600
+        });
         usuario.token = token;
         return res.json(usuario);
     } else {
@@ -25,7 +25,12 @@ const create = async (req, res) => {
     try {
         const { nome, email, senha, nascimento } = req.body;
         const usuario = await prisma.usuario.create({
-            data: { nome, email, senha, nascimento }
+            data: {
+                nome: nome, 
+                email: email,
+                senha: senha,
+                nascimento: new Date(nascimento)
+            }
         });
         return res.status(201).json(usuario);
     } catch (error) {
@@ -55,6 +60,23 @@ const update = async (req, res) => {
     }
 };
 
+const senha = async (req, res) => {
+    const {email, senha} = req.body
+    try {
+        const usuario = await prisma.usuario.update({
+            where: {
+                 email: email
+                 },
+            data: { 
+                senha: senha
+             }
+        });
+        return res.status(202).json(usuario);
+    } catch (error) {
+        return res.status(404).json({ message: "Usuário não encontrado" });
+    }
+}
+
 const del = async (req, res) => {
     try {
         await prisma.usuario.delete({ where: { id: parseInt(req.params.id) } });
@@ -64,4 +86,4 @@ const del = async (req, res) => {
     }
 };
 
-module.exports = { create, read, update, del, login };
+module.exports = { create, read, update, senha, del, login };
