@@ -25,9 +25,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#badda8',
+    backgroundColor: '#badda8', // Cor da paleta
     position: 'relative',
-    padding: 0,
+    textAlign: 'center',
   },
   title: {
     fontSize: 28,
@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
     right: 0,
     width: 150,
     height: 150,
-    transform: [{ rotate: '-90deg' }],  // Gira a imagem -45 graus
+    transform: [{ rotate: '-40deg' }],  // Gira a imagem -45 graus
+    marginRight: 60,
   },  
 });

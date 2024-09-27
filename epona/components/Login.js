@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#badda8',
-    position: 'relative',
+    position: 'static',
     padding: 10,
   },
   title: {
