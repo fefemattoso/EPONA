@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const diasDoMes = document.getElementById('dias-do-mes');
     const diaSelecionado = document.getElementById('dia');
     const formLembrete = document.getElementById('form-lembrete');
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const usuario = JSON.parse(localStorage.getItem('usuario'));
         return usuario ? usuario.id : null;
     }
-    
+
 
 
     const API_URL = 'http://localhost:3000/agenda'; // URL da API
@@ -42,58 +42,91 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function carregarLembretes() {
         const usuarioId = getUsuarioId();
-        const url = `${API_URL}usuario/${usuarioId}`;
+        const token = localStorage.getItem('token');
 
-
-        
-        try {
-            const response = await fetch(`${API_URL}usuario/${usuarioId}`);
-            if (!response.ok) throw new Error('Falha na resposta da API');
-            const agendas = await response.json();
-            lembretes = agendas.reduce((acc, lembrete) => {
-                const data = lembrete.data.split('T')[0]; // Formata data para yyyy-mm-dd
-                if (!acc[data]) acc[data] = [];
-                acc[data].push({ texto: lembrete.titulo, descricao: lembrete.descricao, id: lembrete.id });
-                return acc;
-            }, {});
-            gerarCalendario(anoAtual, mesAtual);
-        } catch (error) {
-            console.error('Erro ao carregar lembretes:', error);
+        if (usuarioId == null) {
+            window.location.href = "./login.html"
+        } else {
+            try {
+                const response = await fetch(`${API_URL}usuario/${usuarioId}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (response.status == 403) {
+                    window.location.href = "./login.html"
+                } else if (!response.ok) throw new Error('Falha na resposta da API');
+                const agendas = await response.json();
+                lembretes = agendas.reduce((acc, lembrete) => {
+                    const data = lembrete.data.split('T')[0]; // Formata data para yyyy-mm-dd
+                    if (!acc[data]) acc[data] = [];
+                    acc[data].push({ texto: lembrete.titulo, descricao: lembrete.descricao, id: lembrete.id });
+                    return acc;
+                }, {});
+                gerarCalendario(anoAtual, mesAtual);
+            } catch (error) {
+                console.error('Erro ao carregar lembretes:', error);
+            }
         }
     }
 
     async function salvarLembrete(data, texto, descricao) {
         const usuarioId = getUsuarioId();
-        try {
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    titulo: texto,
-                    descricao: descricao,
-                    data: new Date(data).toISOString(),
-                    usuarioId: usuarioId
-                }),
-            });
+        const token = localStorage.getItem('token')
+        if (usuarioId == null) {
+            window.location.href = "./login.html"
+        } else {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        titulo: texto,
+                        descricao: descricao,
+                        data: new Date(data).toISOString(),
+                        usuarioId: usuarioId
+                    }),
+                });
+                if (response.status == 403) {
+                    window.location.href = "./login.html"
+                } else if (!response.ok) throw new Error('Falha ao salvar lembrete');
 
-            if (!response.ok) throw new Error('Falha ao salvar lembrete');
+                const novoLembrete = await response.json();
+                lembretes[data] = lembretes[data] || [];
+                lembretes[data].push({ texto: novoLembrete.titulo, descricao: novoLembrete.descricao, id: novoLembrete.id });
 
-            const novoLembrete = await response.json();
-            lembretes[data] = lembretes[data] || [];
-            lembretes[data].push({ texto: novoLembrete.titulo, descricao: novoLembrete.descricao, id: novoLembrete.id });
-
-            gerarCalendario(anoAtual, mesAtual);
-        } catch (error) {
-            console.error('Erro ao salvar lembrete:', error);
+                gerarCalendario(anoAtual, mesAtual);
+            } catch (error) {
+                console.error('Erro ao salvar lembrete:', error);
+            }
         }
     }
 
     async function excluirLembreteAPI(id) {
-        try {
-            const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-            if (!response.ok) throw new Error('Falha ao excluir lembrete');
-        } catch (error) {
-            console.error('Erro ao excluir lembrete:', error);
+        const usuarioId = getUsuarioId()
+        const token = localStorage.getItem('token')
+
+        if (usuarioId == null) {
+            window.location.href = "./login.html"
+        } else {
+            try {
+                const response = await fetch(`${API_URL}/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if(response.status == 403){
+                    window.location.href = "./login.html"
+                } else if (!response.ok) throw new Error('Falha ao excluir lembrete');
+            } catch (error) {
+                console.error('Erro ao excluir lembrete:', error);
+            }
         }
     }
 
@@ -134,14 +167,14 @@ document.addEventListener('DOMContentLoaded', function() {
         divDia.classList.add('dia');
         divDia.textContent = dia;
         divDia.dataset.data = data;
-    
+
         divDia.addEventListener('click', () => {
             dataLembreteInput.value = data;
             mostrarDetalhesDia(data);
         });
-    
+
         diasDoMes.appendChild(divDia);
-    
+
         if (lembretes[data]) {
             lembretes[data].forEach(lembrete => {
                 const lembreteDiv = document.createElement('div');
@@ -155,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
-    
+
 
     function mostrarDetalhesDia(data) {
         const lembretesDia = lembretes[data] || [];
@@ -181,34 +214,44 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function editarLembrete() {
         const usuarioId = getUsuarioId(); // Obtendo o usuarioId
-        if (lembreteParaEditar) {
-            const { id, data } = lembreteParaEditar;
-            const texto = editTextoLembreteInput.value;
-            const descricao = editDescricaoTextoInput.value;
+        const token = localStorage.getItem('token')
+        if (usuarioId == null) {
+            window.location.href = "./login.html"
+        } else {
+            if (lembreteParaEditar) {
+                const { id, data } = lembreteParaEditar;
+                const texto = editTextoLembreteInput.value;
+                const descricao = editDescricaoTextoInput.value;
 
-            try {
-                const response = await fetch(`${API_URL}/${id}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        id,
-                        titulo: texto,
-                        descricao: descricao,
-                        data: new Date(data).toISOString(),
-                        usuarioId: usuarioId
-                    }),
-                });
+                try {
+                    const response = await fetch(`${API_URL}/${id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            id,
+                            titulo: texto,
+                            descricao: descricao,
+                            data: new Date(data).toISOString(),
+                            usuarioId: usuarioId
+                        }),
+                    });
+                    if (response.status == 403) {
+                        window.location.href = "./login.html"
+                    } else if (!response.ok) throw new Error('Falha ao atualizar lembrete');
 
-                if (!response.ok) throw new Error('Falha ao atualizar lembrete');
+                    const atualizado = await response.json();
+                    lembretes[data] = (lembretes[data] || []).map(l => l.id === id ? { ...l, texto: atualizado.titulo, descricao: atualizado.descricao } : l);
 
-                const atualizado = await response.json();
-                lembretes[data] = (lembretes[data] || []).map(l => l.id === id ? { ...l, texto: atualizado.titulo, descricao: atualizado.descricao } : l);
+                    gerarCalendario(anoAtual, mesAtual);
+                    overlayEdit.classList.add('hidden');
+                    lembreteParaEditar = null;
+                } catch (error) {
+                    console.error('Erro ao atualizar lembrete:', error);
+                }
 
-                gerarCalendario(anoAtual, mesAtual);
-                overlayEdit.classList.add('hidden');
-                lembreteParaEditar = null;
-            } catch (error) {
-                console.error('Erro ao atualizar lembrete:', error);
             }
         }
     }
@@ -220,25 +263,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 const data = event.target.dataset.data;
 
                 if (lembretes[data]) {
-    
+
                     const lembrete = lembretes[data].find(l => String(l.id) === String(id));
-    
+
                     overlayEdit.classList.remove('hidden');
                     if (lembrete) {
                         lembreteParaEditar = { ...lembrete, data };
                         editTextoLembreteInput.value = lembrete.texto;
                         editDescricaoTextoInput.value = lembrete.descricao;
-                } 
+                    }
                 }
             });
         });
     }
-    
-    
 
 
 
-    formLembrete.addEventListener('submit', async function(event) {
+
+
+    formLembrete.addEventListener('submit', async function (event) {
         event.preventDefault();
         const data = dataLembreteInput.value;
         const texto = textoLembreteInput.value;
@@ -248,7 +291,7 @@ document.addEventListener('DOMContentLoaded', function() {
         formLembrete.reset();
     });
 
-    antBtn.addEventListener('click', function() {
+    antBtn.addEventListener('click', function () {
         if (mesAtual === 0) {
             mesAtual = 11;
             anoAtual--;
@@ -258,7 +301,7 @@ document.addEventListener('DOMContentLoaded', function() {
         gerarCalendario(anoAtual, mesAtual);
     });
 
-    proxBtn.addEventListener('click', function() {
+    proxBtn.addEventListener('click', function () {
         if (mesAtual === 11) {
             mesAtual = 0;
             anoAtual++;
@@ -273,7 +316,7 @@ document.addEventListener('DOMContentLoaded', function() {
         overlayDelete.classList.add('hidden');
     });
 
-    confirmEditbtn.addEventListener('click', async () => {
+    formEditLembrete.addEventListener('submit', async () => {
         await editarLembrete();
         overlayEdit.classList.add('hidden');
     })
@@ -286,10 +329,10 @@ document.addEventListener('DOMContentLoaded', function() {
         overlayEdit.classList.add('hidden');
     });
 
-    
+
     carregarLembretes();
 
-     //Fazer logoff e exibir nome do usuario
+    //Fazer logoff e exibir nome do usuario
     const sair = document.getElementById("sair");
     const nomeUsuario = document.getElementById("usuario")
 
@@ -298,12 +341,12 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.removeItem(usuario);
 
         window.location.href = "./login.html";
-        });
+    });
 
 
     function preencherNome() {
         const usuario = JSON.parse(localStorage.getItem('usuario'));
-            nomeUsuario.innerHTML = `${usuario.nome}`
+        nomeUsuario.innerHTML = `${usuario.nome}`
     }
 
     preencherNome()
