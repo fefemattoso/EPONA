@@ -37,8 +37,7 @@ nav .logo p{
     margin-right: 10px;
 }
 
-
- nav div {
+nav div {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -139,8 +138,13 @@ button:hover {
 }
 
 .dias-do-mes .dia {
+    position: relative; /* Para o posicionamento dos lembretes */
+}
+
+.dias-do-mes .dia {
     background-color: #fff;
     border-radius: 5px;
+    max-width: 100px;
     text-align: center;
     padding: 10px;
     cursor: pointer;
@@ -161,10 +165,20 @@ button:hover {
     font-size: 0.9rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    width: 100%; /* Preenche a largura do dia */
+    box-sizing: border-box; /* Inclui padding e border na largura */
+    overflow-wrap: break-word; /* Quebra a linha se o texto for muito longo */
+    white-space: normal; /* Permite que o texto seja quebrado em várias linhas */
 }
 
-.lembrete:hover {
-    background-color: #d0e4ff;
+/* Estilo do texto dos lembretes */
+.lembrete p {
+    margin: 0; /* Remove margens para evitar excesso de espaço */
+}
+
+/* Ajuste para lembretes longos */
+.dia-selecionado .lembrete {
+    overflow: visible; /* Mostra todo o conteúdo do lembrete */
 }
 
 /* Estilo da área de detalhes do dia */
@@ -284,7 +298,8 @@ button:hover {
 textarea {
     resize: vertical;
 }
-/* Adicione isso ao seu arquivo CSS */
+
+/* Estilo do overlay de edição */
 .overlay-edit {
     position: fixed;
     top: 0;

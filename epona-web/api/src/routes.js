@@ -23,13 +23,12 @@ router.get('/atividadeusuario/:usuarioId', validaAcesso, Atividade.readById);
 router.put('/atividade/:id', validaAcesso, Atividade.update);
 router.delete('/atividade/:id', validaAcesso, Atividade.del);
 
-//Agenda está sem valida acesso pois ainda não funciona tentando pegar os lembretes pelos IDs dos usuarios
-router.post('/agenda', Agenda.create);
-router.get('/agenda', Agenda.read);
-router.get('/agenda/:id', Agenda.read);
-router.get('/agendausuario/:usuarioId',  Agenda.readById);
-router.put('/agenda/:id', Agenda.update);
-router.delete('/agenda/:id', Agenda.del);
+router.post('/agenda', validaAcesso, Agenda.create);
+router.get('/agenda', validaAcesso, Agenda.read);
+router.get('/agenda/:id', validaAcesso, Agenda.read);
+router.get('/agendausuario/:usuarioId', validaAcesso, Agenda.readById);
+router.put('/agenda/:id', validaAcesso, Agenda.update);
+router.delete('/agenda/:id', validaAcesso, Agenda.del);
 
 router.post('/lista', validaAcesso, Lista.create);
 router.get('/lista', validaAcesso, Lista.read);
