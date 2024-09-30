@@ -12,7 +12,7 @@ const login = async (req, res) => {
 
     if (usuario) {
         const token = jwt.sign({ id: usuario.id, email: usuario.email }, process.env.KEY, {
-            expiresIn: 300
+            expiresIn: 3600
         });
         usuario.token = token;
         return res.json(usuario);

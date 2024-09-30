@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listas</title>
+    <title>Minhas Listas - Epona</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/listas.css">
     <link rel="icon" href="../images/logo.png" type="image/png">
@@ -22,8 +22,8 @@
                 <li><a href="./listas.html">Listas</a></li>
             </ul>
             <div class="perfil">
-                <span id="usuario"></span>
-                <button id="sair">Sair</button>
+                <span id="usuario" aria-label="Usuário"></span>
+                <button id="sair" type="button">Sair</button>
             </div>
         </nav>
     </header>
@@ -31,8 +31,8 @@
         <section class="lista">
             <h2>Minha Lista</h2>
             <div class="buttons">
-                <button class="btn add">Adicionar Item</button>
-                <button class="btn remove">Remover Itens Concluídos</button>
+                <button type="button" class="btn add">Adicionar Item</button>
+                <button type="button" class="btn remove">Remover Itens Concluídos</button>
             </div>
             <div id="cardContainer" class="cards">
                 <!-- Cartões serão adicionados aqui -->
@@ -41,22 +41,22 @@
     </main>
 
     <!-- Modal Adicionar Item -->
-    <div id="addItemModal" class="modal">
+    <div id="addItemModal" class="modal" role="dialog" aria-labelledby="addItemModal" aria-hidden="true">
         <div class="modal-content">
-            <span id="addItemClose" class="close">&times;</span>
+            <span id="addItemClose" class="close" aria-label="Fechar">&times;</span>
             <h2>Adicionar Item</h2>
-            <input type="text" id="newItemText" placeholder="Digite a tarefa...">
-            <button id="addItemBtn" class="btn">Adicionar</button>
+            <input type="text" id="newItemText" placeholder="Digite a tarefa..." aria-required="true">
+            <button id="addItemBtn" class="btn" type="button">Adicionar</button>
         </div>
     </div>
 
     <!-- Modal Editar Item -->
-    <div id="editItemModal" class="modal">
+    <div id="editItemModal" class="modal" role="dialog" aria-labelledby="editItemModal" aria-hidden="true">
         <div class="modal-content">
-            <span id="editItemClose" class="close">&times;</span>
+            <span id="editItemClose" class="close" aria-label="Fechar">&times;</span>
             <h2>Editar Item</h2>
-            <input type="text" id="editItemText" placeholder="Digite a nova tarefa...">
-            <button id="editItemBtn" class="btn">Salvar</button>
+            <input type="text" id="editItemText" placeholder="Digite a nova tarefa..." aria-required="true">
+            <button id="editItemBtn" class="btn" type="button">Salvar</button>
         </div>
     </div>
 
