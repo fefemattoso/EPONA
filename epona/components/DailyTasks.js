@@ -148,7 +148,7 @@ export default function DailyTasks() {
     )}
     // Adicionando um Footer para garantir espaço extra no final
     ListFooterComponent={<View style={{ height: 30 }} />}
-    contentContainerStyle={{ paddingBottom: 20 }} // Garantir que o último item não seja cortado
+    contentContainerStyle={{ paddingBottom: 30 }} // Garantir que o último item não seja cortado
   />
 </Animated.View>
 

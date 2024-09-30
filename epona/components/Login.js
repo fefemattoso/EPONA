@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, Button, TextInput, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Button, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { auth } from '../firebaseconfig';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 
-function Login({ onLogin, onGoBack }) {
+function Login({ onLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
@@ -42,7 +42,7 @@ function Login({ onLogin, onGoBack }) {
   };
 
   return (
-    <View style={styles.loginContainer}>
+    <View style={styles.container}>
       <Text style={styles.title}>{isRegistering ? 'Cadastrar' : 'Login'} no Epona</Text>
 
       <View style={styles.formContainer}>
@@ -63,58 +63,54 @@ function Login({ onLogin, onGoBack }) {
           secureTextEntry
         />
 
-<View style={styles.buttons}>
-  {isRegistering ? (
-    <>
-      <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Cadastrar</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => setIsRegistering(false)}>
-        <Text style={styles.buttonText}>Voltar para Login</Text>
-      </TouchableOpacity>
-    </>
-  ) : (
-    <>
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>ENTRAR</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => setIsRegistering(true)}>
-        <Text style={styles.buttonText}>CADASTRAR</Text>
-      </TouchableOpacity>
-    </>
-  )}
-</View>
-
+        <View style={styles.buttons}>
+          {isRegistering ? (
+            <>
+              <TouchableOpacity style={styles.button} onPress={handleRegister}>
+                <Text style={styles.buttonText}>Cadastrar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.secondaryButton} onPress={() => setIsRegistering(false)}>
+                <Text style={styles.secondaryButtonText}>Voltar para Login</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                <Text style={styles.buttonText}>Entrar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.secondaryButton} onPress={() => setIsRegistering(true)}>
+                <Text style={styles.secondaryButtonText}>Cadastrar</Text>
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
       </View>
-
-
-      {/* <Image source={require('../assets/planta2.png')} style={styles.leafTopLeft} />
-      <Image source={require('../assets/planta.png')} style={styles.leafBottomRight} /> */}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  loginContainer: {
-    flexGrow: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#badda8",
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#badda8',
     paddingVertical: 20,
   },
   title: {
+    marginBottom: 20,
     fontSize: 28,
     fontWeight: 'bold',
+    textAlign: 'center',
     color: '#162040',
-    marginBottom: 30,
   },
   formContainer: {
-    width: "90%",
+    width: '90%',
     maxWidth: 400,
-    backgroundColor: "#ffffff",
+    backgroundColor: '#ffffff',
     padding: 20,
     borderRadius: 10,
-    borderColor: "#c2be99",
+    borderColor: '#c2be99',
     borderWidth: 1,
     elevation: 5,
   },
@@ -132,34 +128,26 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   button: {
-    backgroundColor: '#162040', // Cor do botão conforme a paleta
-    padding: 10,
-    borderRadius: 10,
+    backgroundColor: '#162040',
+    padding: 15,
+    borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
   },
   buttonText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+    fontSize: 17,
+  },
+  secondaryButton: {
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  secondaryButtonText: {
+    color: '#547699',
     fontSize: 15,
     fontWeight: 'bold',
-    color: '#fff', // Cor escura da paleta
-    marginBottom: 10,
-    marginTop: 5,
   },
-  // leafTopLeft: {
-  //   position: 'absolute',
-  //   top: 0,
-  //   left: 0,
-  //   width: 130,
-  //   height: 130,
-  // },
-  // leafBottomRight: {
-  //   position: 'absolute',
-  //   bottom: 0,
-  //   right: 0,
-  //   width: 130,
-  //   height: 130,
-  //   marginRight: 30,
-  // },
 });
 
 export default Login;
