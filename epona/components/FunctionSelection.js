@@ -1,15 +1,24 @@
 import React from 'react';
-import { View, Text, Button, Image, StyleSheet } from 'react-native';
+import { View, Text, Button, Image, StyleSheet, TouchableOpacity } from 'react-native';
 
 function FunctionSelection({ onSelect }) {
   return (
     <View style={styles.functionSelection}>
       <Text style={styles.title}>Selecione uma Função</Text>
       <View style={styles.buttonContainer}>
-        <Button color='#162040' title="Agenda" onPress={() => onSelect('agenda')} />
-        <Button color='#162040' title="Lista de Tarefas Diárias" onPress={() => onSelect('dailyTasks')} />
-        <Button color='#162040' title="Lista Personalizada" onPress={() => onSelect('customList')} />
-      </View>
+        <TouchableOpacity style={styles.button} onPress={() => onSelect('agenda')}>
+          <Text style={styles.buttonText}>AGENDA</Text>
+      </TouchableOpacity>
+  
+      <TouchableOpacity style={styles.button} onPress={() => onSelect('dailyTasks')}>
+        <Text style={styles.buttonText}>TAREFAS DIÁRIAS</Text>
+      </TouchableOpacity>
+  
+      <TouchableOpacity style={styles.button} onPress={() => onSelect('customList')}>
+        <Text style={styles.buttonText}>LISTA PERSONALIZADA</Text>
+      </TouchableOpacity>
+</View>
+
 
       {/* Adicionando as folhinhas */}
       <Image source={require('../assets/planta2.png')} style={styles.leafTopLeft} />
@@ -44,10 +53,18 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   button: {
-    backgroundColor: '#162040',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 8,
+    backgroundColor: '#162040', // Cor do botão conforme a paleta
+    padding: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#fff', // Cor escura da paleta
+    marginBottom: 10,
+    marginTop: 5,
   },
   leafTopLeft: {
     position: 'absolute',

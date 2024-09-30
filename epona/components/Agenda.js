@@ -8,7 +8,8 @@ import {
   Button, 
   TextInput, 
   StyleSheet, 
-  TouchableOpacity
+  TouchableOpacity,
+  FlatList
 } from 'react-native';
 import {db} from '../firebaseconfig';
 import {collection, addDoc, getDocs, doc, updateDoc, deleteDoc} from 'firebase/firestore';
@@ -34,10 +35,16 @@ const App = () => {
   const [modalDescriptionVisible, setModalDescriptionVisible] = useState(false);
   const [selectedDescription, setSelectedDescription] = useState('');
   const [selectedDateId, setSelectedDateId] = useState(null); // Para armazenar o ID do documento no Firebase
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1); // Mês atual
+  const [monthlyEvents, setMonthlyEvents] = useState([]); // Eventos do mês atual
 
   useEffect(() => {
     fetchDatesFromFirebase();
   }, []);
+
+  useEffect(() => {
+    filterEventsByMonth();
+  }, [currentMonth, markedDates]);
 
   const fetchDatesFromFirebase = async () => {
     try {
@@ -62,6 +69,17 @@ const App = () => {
     }
   };
 
+  const filterEventsByMonth = () => {
+    const events = Object.keys(markedDates).filter(date => {
+      const eventMonth = new Date(date).getMonth() + 1;
+      return eventMonth === currentMonth;
+    }).map(date => ({
+      date,
+      descricao: markedDates[date].descricao
+    }));
+    setMonthlyEvents(events);
+  };
+
   const handleDayPress = (day) => {
     const dayKey = day.dateString;
     
@@ -73,6 +91,10 @@ const App = () => {
       setSelected(dayKey);
       setModalVisible(true);
     }
+  };
+
+  const handleMonthChange = (month) => {
+    setCurrentMonth(month.month);
   };
 
   const saveDateToFirebase = async () => {
@@ -159,8 +181,22 @@ const App = () => {
           textDisabledColor: '#d9e1e8'
         }}
         onDayPress={handleDayPress}
+        onMonthChange={handleMonthChange} // Para capturar a mudança de mês
         markedDates={markedDates}
         markingType={'custom'}
+      />
+
+      {/* Lista de eventos do mês */}
+      <Text style={styles.eventListTitle}>Eventos de {LocaleConfig.locales['br'].monthNames[currentMonth - 1]}:</Text>
+      <FlatList
+        data={monthlyEvents}
+        keyExtractor={item => item.date}
+        renderItem={({item}) => (
+          <View style={styles.eventItem}>
+            <Text style={styles.eventDate}>{item.date}</Text>
+            <Text style={styles.eventDescription}>{item.descricao}</Text>
+          </View>
+        )}
       />
 
       {/* Modal para adicionar descrição */}
@@ -320,6 +356,25 @@ const styles = StyleSheet.create({
   textStyle: {
     color: '#fff',
     fontWeight: 'bold',
+  },
+  eventListTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#162040',
+    marginVertical: 15,
+  },
+  eventItem: {
+    padding: 10,
+    backgroundColor: '#e8f5e9',
+    borderRadius: 10,
+    marginVertical: 5,
+  },
+  eventDate: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  eventDescription: {
+    fontSize: 14,
   },
 });
 

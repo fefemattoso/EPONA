@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button, Image, StyleSheet } from 'react-native';
+import { View, Text, Button, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { getAuth, signInAnonymously } from 'firebase/auth';
 
 const Welcome = ({ onContinue, onVisitorAccess }) => {
@@ -22,15 +22,12 @@ const Welcome = ({ onContinue, onVisitorAccess }) => {
       <Image source={require('../assets/icon.png')} style={styles.icon} />
       <Text style={styles.subtitle}>Seu assistente pessoal para gerenciar tarefas e lembretes</Text>
 
-      <View style={styles.buttonContainer}>
-        {/* Botão para ir à tela de login */}
-        <Button
-          style={styles.button}
-          color='#162040'
-          title="Login"
-          onPress={onContinue}
-        />
-      </View>
+    <View style={styles.buttonContainer}>
+      <TouchableOpacity style={styles.button} onPress={onContinue}>
+        <Text style={styles.buttonText}>LOGIN</Text>
+      </TouchableOpacity>
+    </View>
+
 
       {/* Folha decorativa na parte inferior */}
       <Image source={require('../assets/planta.png')} style={styles.leafBottomRight} />
@@ -62,12 +59,24 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginBottom: 30,
-    width: '60%',
+    width: '90%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   button: {
     backgroundColor: '#162040', // Cor do botão conforme a paleta
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '25vw',
+  },
+  buttonText: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#fff', // Cor escura da paleta
+    marginBottom: 10,
+    marginTop: 5,
   },
   icon: {
     width: 120,

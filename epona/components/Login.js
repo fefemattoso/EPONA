@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Button, TextInput, Image, StyleSheet } from 'react-native';
+import { View, Text, Button, TextInput, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { auth } from '../firebaseconfig';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 
@@ -63,36 +63,44 @@ function Login({ onLogin, onGoBack }) {
           secureTextEntry
         />
 
-        <View style={styles.buttons}>
-          {isRegistering ? (
-            <>
-              <Button color='#162040' title="Cadastrar" onPress={handleRegister} />
-              <Button color='#162040' title="Voltar para Login" onPress={() => setIsRegistering(false)} />
-            </>
-          ) : (
-            <>
-              <Button color='#162040' title="Entrar" onPress={handleLogin} />
-              <Button color='#162040' title="Cadastrar" onPress={() => setIsRegistering(true)} />
-            </>
-          )}
-        </View>
+<View style={styles.buttons}>
+  {isRegistering ? (
+    <>
+      <TouchableOpacity style={styles.button} onPress={handleRegister}>
+        <Text style={styles.buttonText}>Cadastrar</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={() => setIsRegistering(false)}>
+        <Text style={styles.buttonText}>Voltar para Login</Text>
+      </TouchableOpacity>
+    </>
+  ) : (
+    <>
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>ENTRAR</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={() => setIsRegistering(true)}>
+        <Text style={styles.buttonText}>CADASTRAR</Text>
+      </TouchableOpacity>
+    </>
+  )}
+</View>
+
       </View>
 
 
-      <Image source={require('../assets/planta2.png')} style={styles.leafTopLeft} />
-      <Image source={require('../assets/planta.png')} style={styles.leafBottomRight} />
+      {/* <Image source={require('../assets/planta2.png')} style={styles.leafTopLeft} />
+      <Image source={require('../assets/planta.png')} style={styles.leafBottomRight} /> */}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   loginContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#badda8',
-    position: 'static',
-    padding: 10,
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#badda8",
+    paddingVertical: 20,
   },
   title: {
     fontSize: 28,
@@ -101,15 +109,13 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   formContainer: {
-    width: '85%',
+    width: "90%",
     maxWidth: 400,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#ffffff",
+    padding: 20,
     borderRadius: 10,
-    padding: 25,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
+    borderColor: "#c2be99",
+    borderWidth: 1,
     elevation: 5,
   },
   input: {
@@ -125,21 +131,35 @@ const styles = StyleSheet.create({
     marginTop: 20,
     gap: 10,
   },
-  leafTopLeft: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: 100,
-    height: 100,
+  button: {
+    backgroundColor: '#162040', // Cor do botão conforme a paleta
+    padding: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  leafBottomRight: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: 100,
-    height: 100,
-    marginRight: 30,
+  buttonText: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#fff', // Cor escura da paleta
+    marginBottom: 10,
+    marginTop: 5,
   },
+  // leafTopLeft: {
+  //   position: 'absolute',
+  //   top: 0,
+  //   left: 0,
+  //   width: 130,
+  //   height: 130,
+  // },
+  // leafBottomRight: {
+  //   position: 'absolute',
+  //   bottom: 0,
+  //   right: 0,
+  //   width: 130,
+  //   height: 130,
+  //   marginRight: 30,
+  // },
 });
 
 export default Login;

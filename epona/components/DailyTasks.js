@@ -111,43 +111,47 @@ export default function DailyTasks() {
 
       <Text style={styles.sectionTitle}>Lista de Tarefas</Text>
 
-      <Animated.View style={{ opacity: fadeAnim }}>
-        <FlatList
-          data={Items}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View style={styles.itemTask}>
-              <View style={styles.itemDetails}>
-                <Text style={styles.itemName}>{item.nome}</Text>
-                <Text style={styles.itemDesc}>{item.descricao}</Text>
-                <Switch
-                  value={item.isRead}
-                  onValueChange={(valor) => {
-                    const ItemRef = doc(db, 'Tasks', item.id);
-                    updateDoc(ItemRef, { isRead: valor });
-                    fetchItems();
-                  }}
-                  trackColor={{ false: "#C0C0C0", true: "#48D1CC" }}
-                  thumbColor={item.isRead ? "#FFD700" : "#FFF"}
-                  ios_backgroundColor="#c7e8fd"
-                />
-                <Text style={[styles.itemStatus, { color: item.isRead ? '#32CD32' : '#FF4500' }]}>
-                  {item.isRead ? "Concluída" : "Pendente"}
-                </Text>
-              </View>
+      <Animated.View style={{ opacity: fadeAnim, flex: 1 }}>
+  <FlatList
+    data={Items}
+    keyExtractor={(item) => item.id}
+    renderItem={({ item }) => (
+      <View style={styles.itemTask}>
+        <View style={styles.itemDetails}>
+          <Text style={styles.itemName}>{item.nome}</Text>
+          <Text style={styles.itemDesc}>{item.descricao}</Text>
+          <Switch
+            value={item.isRead}
+            onValueChange={(valor) => {
+              const ItemRef = doc(db, 'Tasks', item.id);
+              updateDoc(ItemRef, { isRead: valor });
+              fetchItems();
+            }}
+            trackColor={{ false: "#C0C0C0", true: "#48D1CC" }}
+            thumbColor={item.isRead ? "#FFD700" : "#FFF"}
+            ios_backgroundColor="#c7e8fd"
+          />
+          <Text style={[styles.itemStatus, { color: item.isRead ? '#32CD32' : '#FF4500' }]}>
+            {item.isRead ? "Concluída" : "Pendente"}
+          </Text>
+        </View>
 
-              <View style={styles.actionButtons}>
-                <TouchableOpacity onPress={() => editarItem(item)} style={styles.actionButton}>
-                  <Icon name="edit" size={25} color="#4169E1" />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => excluirItem(item.id)} style={styles.actionButton}>
-                  <Icon name="trash" size={25} color="#FF4500" />
-                </TouchableOpacity>
-              </View>
-            </View>
-          )}
-        />
-      </Animated.View>
+        <View style={styles.actionButtons}>
+          <TouchableOpacity onPress={() => editarItem(item)} style={styles.actionButton}>
+            <Icon name="edit" size={25} color="#4169E1" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => excluirItem(item.id)} style={styles.actionButton}>
+            <Icon name="trash" size={25} color="#FF4500" />
+          </TouchableOpacity>
+        </View>
+      </View>
+    )}
+    // Adicionando um Footer para garantir espaço extra no final
+    ListFooterComponent={<View style={{ height: 30 }} />}
+    contentContainerStyle={{ paddingBottom: 20 }} // Garantir que o último item não seja cortado
+  />
+</Animated.View>
+
     </ScrollView>
   );
 }
