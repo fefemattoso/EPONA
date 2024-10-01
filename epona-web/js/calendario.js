@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const editTextoLembreteInput = document.getElementById('edit-texto-lembrete');
     const editDescricaoTextoInput = document.getElementById('edit-descricao-texto');
     const cancelEditBtn = document.getElementById('cancel-edit');
-    const confirmEditbtn = document.getElementById('confirm-edit');
+    const confirmEditbtn = document.getElementById('confirm-edit')
 
     let lembretes = {}; // Armazena lembretes por data
     let anoAtual = new Date().getFullYear();
@@ -34,14 +34,18 @@ document.addEventListener('DOMContentLoaded', function () {
         return usuario ? usuario.id : null;
     }
 
+
+
     const API_URL = 'http://localhost:3000/agenda'; // URL da API
+
+    //Essa função está dando erro e o calendario não abre se filtrar por id
 
     async function carregarLembretes() {
         const usuarioId = getUsuarioId();
         const token = localStorage.getItem('token');
 
         if (usuarioId == null) {
-            window.location.href = "./login.html";
+            window.location.href = "./login.html"
         } else {
             try {
                 const response = await fetch(`${API_URL}usuario/${usuarioId}`, {
@@ -51,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
                 if (response.status == 403) {
-                    window.location.href = "./login.html";
+                    window.location.href = "./login.html"
                 } else if (!response.ok) throw new Error('Falha na resposta da API');
                 const agendas = await response.json();
                 lembretes = agendas.reduce((acc, lembrete) => {
@@ -69,16 +73,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function salvarLembrete(data, texto, descricao) {
         const usuarioId = getUsuarioId();
-        const token = localStorage.getItem('token');
-        
+        const token = localStorage.getItem('token')
         if (usuarioId == null) {
-            window.location.href = "./login.html";
+            window.location.href = "./login.html"
         } else {
-            if (texto.length > 25) {
-                alert('O título do lembrete deve ter no máximo 25 caracteres.');
-                return; // Impede o salvamento se o título for muito longo
-            }
-
             try {
                 const response = await fetch(API_URL, {
                     method: 'POST',
@@ -93,14 +91,13 @@ document.addEventListener('DOMContentLoaded', function () {
                         usuarioId: usuarioId
                     }),
                 });
-
                 if (response.status == 403) {
-                    window.location.href = "./login.html";
+                    window.location.href = "./login.html"
                 } else if (!response.ok) throw new Error('Falha ao salvar lembrete');
 
                 const novoLembrete = await response.json();
                 lembretes[data] = lembretes[data] || [];
-                lembretes[data].push({ texto: novoLembrete.titulo.slice(0, 25), descricao: novoLembrete.descricao, id: novoLembrete.id });
+                lembretes[data].push({ texto: novoLembrete.titulo, descricao: novoLembrete.descricao, id: novoLembrete.id });
 
                 gerarCalendario(anoAtual, mesAtual);
             } catch (error) {
@@ -110,11 +107,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     async function excluirLembreteAPI(id) {
-        const usuarioId = getUsuarioId();
-        const token = localStorage.getItem('token');
+        const usuarioId = getUsuarioId()
+        const token = localStorage.getItem('token')
 
         if (usuarioId == null) {
-            window.location.href = "./login.html";
+            window.location.href = "./login.html"
         } else {
             try {
                 const response = await fetch(`${API_URL}/${id}`, {
@@ -124,8 +121,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         'Authorization': `Bearer ${token}`
                     }
                 });
-                if (response.status == 403) {
-                    window.location.href = "./login.html";
+                if(response.status == 403){
+                    window.location.href = "./login.html"
                 } else if (!response.ok) throw new Error('Falha ao excluir lembrete');
             } catch (error) {
                 console.error('Erro ao excluir lembrete:', error);
@@ -148,6 +145,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const primeiroDia = new Date(ano, mes, 1).getDay();
         const diasNoMes = new Date(ano, mes + 1, 0).getDate();
 
+        // Ajustar primeiroDia para o calendário começar na segunda-feira
         const ajusteDia = (primeiroDia === 0) ? 6 : primeiroDia - 1;
 
         for (let i = 0; i < ajusteDia; i++) {
@@ -159,6 +157,7 @@ document.addEventListener('DOMContentLoaded', function () {
             criarDia(i, `${ano}-${(mes + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`);
         }
 
+        // Atualiza os detalhes do mês e ano
         mesSpan.textContent = new Date(ano, mes).toLocaleString('pt-BR', { month: 'long' });
         anoSpan.textContent = ano;
     }
@@ -190,6 +189,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+
     function mostrarDetalhesDia(data) {
         const lembretesDia = lembretes[data] || [];
         diaSelecionado.innerHTML = `
@@ -213,20 +213,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     async function editarLembrete() {
-        const usuarioId = getUsuarioId();
-        const token = localStorage.getItem('token');
+        const usuarioId = getUsuarioId(); // Obtendo o usuarioId
+        const token = localStorage.getItem('token')
         if (usuarioId == null) {
-            window.location.href = "./login.html";
+            window.location.href = "./login.html"
         } else {
             if (lembreteParaEditar) {
                 const { id, data } = lembreteParaEditar;
                 const texto = editTextoLembreteInput.value;
                 const descricao = editDescricaoTextoInput.value;
-
-                if (texto.length > 25) {
-                    alert('O lembrete deve ter no máximo 25 caracteres.');
-                    return; // Impede o salvamento se o título for muito longo
-                }
 
                 try {
                     const response = await fetch(`${API_URL}/${id}`, {
@@ -235,83 +230,124 @@ document.addEventListener('DOMContentLoaded', function () {
                             'Content-Type': 'application/json',
                             'Authorization': `Bearer ${token}`
                         },
-                        body: JSON.stringify({ titulo: texto, descricao: descricao, data: new Date(data).toISOString(), usuarioId: usuarioId })
+                        body: JSON.stringify({
+                            id,
+                            titulo: texto,
+                            descricao: descricao,
+                            data: new Date(data).toISOString(),
+                            usuarioId: usuarioId
+                        }),
                     });
                     if (response.status == 403) {
-                        window.location.href = "./login.html";
-                    } else if (!response.ok) throw new Error('Falha ao editar lembrete');
+                        window.location.href = "./login.html"
+                    } else if (!response.ok) throw new Error('Falha ao atualizar lembrete');
 
-                    const lembreteEditado = await response.json();
-                    lembretes[data] = lembretes[data].map(l => l.id === id ? { texto: lembreteEditado.titulo.slice(0, 25), descricao: lembreteEditado.descricao, id: lembreteEditado.id } : l);
+                    const atualizado = await response.json();
+                    lembretes[data] = (lembretes[data] || []).map(l => l.id === id ? { ...l, texto: atualizado.titulo, descricao: atualizado.descricao } : l);
+
                     gerarCalendario(anoAtual, mesAtual);
-                } catch (error) {
-                    console.error('Erro ao editar lembrete:', error);
-                } finally {
                     overlayEdit.classList.add('hidden');
+                    lembreteParaEditar = null;
+                } catch (error) {
+                    console.error('Erro ao atualizar lembrete:', error);
                 }
+
             }
         }
     }
 
     function adicionarEventosEditar() {
-        const editBtns = document.querySelectorAll('.edit-btn');
-        editBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const id = btn.dataset.id;
-                const data = btn.dataset.data;
-                lembreteParaEditar = { id, data };
-                const lembrete = lembretes[data].find(l => l.id === id);
-                editTextoLembreteInput.value = lembrete.texto;
-                editDescricaoTextoInput.value = lembrete.descricao;
-                overlayEdit.classList.remove('hidden');
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', (event) => {
+                const id = event.target.dataset.id;
+                const data = event.target.dataset.data;
+
+                if (lembretes[data]) {
+
+                    const lembrete = lembretes[data].find(l => String(l.id) === String(id));
+
+                    overlayEdit.classList.remove('hidden');
+                    if (lembrete) {
+                        lembreteParaEditar = { ...lembrete, data };
+                        editTextoLembreteInput.value = lembrete.texto;
+                        editDescricaoTextoInput.value = lembrete.descricao;
+                    }
+                }
             });
         });
     }
 
-    formLembrete.addEventListener('submit', (event) => {
+
+
+
+
+    formLembrete.addEventListener('submit', async function (event) {
         event.preventDefault();
         const data = dataLembreteInput.value;
         const texto = textoLembreteInput.value;
         const descricao = descricaoTextoInput.value;
 
-        salvarLembrete(data, texto, descricao);
+        await salvarLembrete(data, texto, descricao);
         formLembrete.reset();
     });
 
-    antBtn.addEventListener('click', () => {
-        mesAtual--;
-        if (mesAtual < 0) {
+    antBtn.addEventListener('click', function () {
+        if (mesAtual === 0) {
             mesAtual = 11;
             anoAtual--;
+        } else {
+            mesAtual--;
         }
         gerarCalendario(anoAtual, mesAtual);
     });
 
-    proxBtn.addEventListener('click', () => {
-        mesAtual++;
-        if (mesAtual > 11) {
+    proxBtn.addEventListener('click', function () {
+        if (mesAtual === 11) {
             mesAtual = 0;
             anoAtual++;
+        } else {
+            mesAtual++;
         }
         gerarCalendario(anoAtual, mesAtual);
     });
 
-    confirmDeleteBtn.addEventListener('click', () => {
-        excluirLembrete();
+    confirmDeleteBtn.addEventListener('click', async () => {
+        await excluirLembrete();
         overlayDelete.classList.add('hidden');
     });
+
+    formEditLembrete.addEventListener('submit', async () => {
+        await editarLembrete();
+        overlayEdit.classList.add('hidden');
+    })
 
     cancelDeleteBtn.addEventListener('click', () => {
         overlayDelete.classList.add('hidden');
-    });
-
-    confirmEditbtn.addEventListener('click', () => {
-        editarLembrete();
     });
 
     cancelEditBtn.addEventListener('click', () => {
         overlayEdit.classList.add('hidden');
     });
 
+
     carregarLembretes();
+
+    //Fazer logoff e exibir nome do usuario
+    const sair = document.getElementById("sair");
+    const nomeUsuario = document.getElementById("usuario")
+
+    sair.addEventListener("click", () => {
+        const usuario = JSON.parse(localStorage.getItem('usuario'));
+        localStorage.removeItem(usuario);
+
+        window.location.href = "./login.html";
+    });
+
+
+    function preencherNome() {
+        const usuario = JSON.parse(localStorage.getItem('usuario'));
+        nomeUsuario.innerHTML = `${usuario.nome}`
+    }
+
+    preencherNome()
 });
