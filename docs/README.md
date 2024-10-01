@@ -40,3 +40,5 @@ Sequência das telas do protótipo desenvolvido no Figma:
 ![pag08](./PagPrototipo/pag08.png)
 
 ![pag09](./PagPrototipo/pag09.png)
+
+[Canva](https://www.canva.com/design/DAGPnY7lVgg/pok9tHXxQKNTiy6x70pGtg/view?utm_content=DAGPnY7lVgg&utm_campaign=designshare&utm_medium=link&utm_source=editor)
