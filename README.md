@@ -21,24 +21,24 @@ O design completo do projeto Epona pode ser visualizado no Figma através do lin
 
 Sequência das telas do protótipo desenvolvido no Figma:
 
-![pag00](./PagPrototipo/pag00.png)
+![pag00](./docs/PagPrototipo/pag00.png)
 
-![pag01](./PagPrototipo/pag01.png)
+![pag01](./docs/PagPrototipo/pag01.png)
 
-![pag02](./PagPrototipo/pag02.png)
+![pag02](./docs/PagPrototipo/pag02.png)
 
-![pag03](./PagPrototipo/pag03.png)
+![pag03](./docs/PagPrototipo/pag03.png)
 
-![pag04](./PagPrototipo/pag04.png)
+![pag04](./docs/PagPrototipo/pag04.png)
 
-![pag05](./PagPrototipo/pag05.png)
+![pag05](./docs/PagPrototipo/pag05.png)
 
-![pag06](./PagPrototipo/pag06.png)
+![pag06](./docs/PagPrototipo/pag06.png)
 
-![pag07](./PagPrototipo/pag07.png)
+![pag07](./docs/PagPrototipo/pag07.png)
 
-![pag08](./PagPrototipo/pag08.png)
+![pag08](./docs/PagPrototipo/pag08.png)
 
-![pag09](./PagPrototipo/pag09.png)
+![pag09](./docs/PagPrototipo/pag09.png)
 
 [Canva](https://www.canva.com/design/DAGPnY7lVgg/pok9tHXxQKNTiy6x70pGtg/view?utm_content=DAGPnY7lVgg&utm_campaign=designshare&utm_medium=link&utm_source=editor)
