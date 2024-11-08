@@ -189,6 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }  else {
                 card.querySelector('.concluido-btn').textContent = concluido ? 'Concluída' : 'Concluído';
                 if (concluido) {
+                    
                     try {
                         const response = await fetch(`${API_URL}/${atividade.id}`, {
                             method: 'PUT',
@@ -297,4 +298,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     preencherNome()
+
+    // //Sistema de pontuação
+    // let pontuacao = document.getElementById("pontuacao")
+    // pontuacao = 0
+
+    // document.getElementById("concluir").addEventListener("click", () => {
+    //     pontuacao.innerHTML = parseInt(pontuacao.innerHTML) + 1
+    // });
+
 });

@@ -6,6 +6,7 @@ const Usuario = require('./controllers/usuario');
 const Atividade = require('./controllers/atividades');
 const Agenda = require('./controllers/agenda');
 const Lista = require('./controllers/listas');
+const itemLista = require('./controllers/itemLista');
 
 router.put('/senha', Usuario.senha)
 
@@ -16,8 +17,8 @@ router.get('/usuario/:id', validaAcesso, Usuario.read);
 router.put('/usuario', Usuario.update);
 router.delete('/usuario/:id', validaAcesso, Usuario.del);
 
-router.post('/atividade',validaAcesso, Atividade.create);
-router.get('/atividade',validaAcesso, Atividade.read);
+router.post('/atividade', validaAcesso, Atividade.create);
+router.get('/atividade', validaAcesso, Atividade.read);
 router.get('/atividade/:id', validaAcesso, Atividade.read);
 router.get('/atividadeusuario/:usuarioId', validaAcesso, Atividade.readById);
 router.put('/atividade/:id', validaAcesso, Atividade.update);
@@ -36,6 +37,13 @@ router.get('/lista/:id', validaAcesso, Lista.read);
 router.get('/listausuario/:usuarioId', validaAcesso, Lista.readById);
 router.put('/lista/:id', validaAcesso, Lista.update);
 router.delete('/lista/:id', validaAcesso, Lista.del);
+
+router.post('/itemLista', itemLista.create);
+router.get('/itemLista', itemLista.read);
+router.get('/itemLista/:id', itemLista.read);
+router.get('/itemLista/lista/:id', itemLista.readItensByLista);
+router.put('/itemLista/:id', itemLista.update);
+router.delete('/itemLista/:id', itemLista.del);
 
 router.get('/', (req, res) => { return res.json("API respondendo") });
 
