@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 const create = async (req, res) => {
     try {
         const { id, descricao, usuarioId, concluido } = req.body;
-        const lista = await prisma.lista.create({
+        const lista = await prisma.listas.create({
             data: {
                 id: id,
                 descricao: descricao,
@@ -20,14 +20,14 @@ const create = async (req, res) => {
 
 const read = async (req, res) => {
     if (req.params.id !== undefined) {
-        const lista = await prisma.lista.findUnique({
+        const lista = await prisma.listas.findUnique({
             where: {
                id: Number(req.params.id)
             }
         });
         return res.json(lista);
     } else {
-        const listas = await prisma.lista.findMany();
+        const listas = await prisma.listas.findMany();
         return res.json(listas);
     }
 };
@@ -35,7 +35,7 @@ const read = async (req, res) => {
 const readById = async (req, res) => {
     if(req.params.usuarioId !== undefined){
         const usuarioId = req.params.usuarioId;
-        const itens = await prisma.lista.findMany({
+        const itens = await prisma.listas.findMany({
             where: {
                 usuarioId: parseInt(usuarioId)
             }

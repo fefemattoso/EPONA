@@ -1,0 +1,32 @@
+[
+    {
+        "descricao": "Coleira",
+        "usuarioId": 1,
+        "concluido": false,
+        "listaId": 2
+    },
+    {
+        "descricao": "Fucinheira",
+        "usuarioId": 1,
+        "concluido": true,
+        "listaId": 2
+    },
+    {
+        "descricao": "Tomate",
+        "usuarioId": 1,
+        "concluido": true,
+        "listaId": 1
+    },
+    {
+        "descricao": "Leite",
+        "usuarioId": 1,
+        "concluido": true,
+        "listaId": 1
+    },
+    {
+        "descricao": "Sabonete",
+        "usuarioId": 1,
+        "concluido": false,
+        "listaId": 1
+    }
+]

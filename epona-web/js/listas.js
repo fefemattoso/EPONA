@@ -1,16 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const API_URL = 'http://localhost:3000/lista';
+
     const addItemModal = document.getElementById('addItemModal');
-    const editItemModal = document.getElementById('editItemModal');
-    const addItemClose = document.getElementById('addItemClose');
-    const editItemClose = document.getElementById('editItemClose');
-    const addItemBtn = document.getElementById('addItemBtn');
-    const editItemBtn = document.getElementById('editItemBtn');
-    const newItemText = document.getElementById('newItemText');
-    const editItemText = document.getElementById('editItemText');
-    const removeCompletedBtn = document.querySelector(".btn.remove");
-    const cardContainer = document.getElementById('cardContainer');
-    let currentEditingCard = null;
 
     // Função para obter usuarioId do localStorage
     function getUsuarioId() {
@@ -18,14 +9,13 @@ document.addEventListener('DOMContentLoaded', () => {
         return usuario ? usuario.id : null;
     }
 
-    async function carregarLista() {
-        const usuarioId = getUsuarioId()
-        const token = localStorage.getItem('token')
-
-        if(usuarioId == null){
-            window.location.href = "./login.html"
-        } 
-        else {
+    async function carregarListas() {
+        const usuarioId = getUsuarioId();
+        const token = localStorage.getItem('token');
+    
+        if (usuarioId == null) {
+            window.location.href = "./login.html";
+        } else {
             try {
                 const response = await fetch(`${API_URL}usuario/${usuarioId}`, {
                     headers: {
@@ -33,195 +23,87 @@ document.addEventListener('DOMContentLoaded', () => {
                         'Authorization': `Bearer ${token}`
                     }
                 });
-                if(response.status == 403){
-                    window.location.href = "./login.html"
+    
+                if (response.status == 403) {
+                    window.location.href = "./login.html";
                 } else if (!response.ok) {
                     throw new Error('Erro ao carregar a lista.');
                 } else {
-                    const lista = await response.json();
-                    lista.forEach(item => {
-                        const card = createCard(item.descricao, item.concluido, item.id);
-                        cardContainer.appendChild(card);
+                    const listas = await response.json();
+                    listas.forEach(item => {
+                        console.log(item);
+    
+                        // Criar o card para cada lista
+                        let card = document.createElement('div');
+                        card.setAttribute('id', item.id);
+                        card.classList.add('card');
+                        card.innerHTML = `
+                            <h3>${item.titulo}</h3>
+                            <p style="color:red; display:none; cursor:pointer" id="deletarLista" onclick="deletarLista(${item.id})">&#128465;</p>
+                        `;
+    
+                        // Adicionar o evento mouseover para mostrar o botão de excluir
+                        card.addEventListener('mouseover', () => {
+                            let deletarLista = card.querySelector("#deletarLista");
+                            deletarLista.style.display = 'block';  // Torna o botão visível
+                        });
+    
+                        // Adicionar o evento mouseout para esconder o botão de excluir
+                        card.addEventListener('mouseout', () => {
+                            let deletarLista = card.querySelector("#deletarLista");
+                            deletarLista.style.display = 'none';  // Torna o botão invisível novamente
+                        });
+    
+                        // Adicionar o card ao contêiner de listas
+                        document.getElementById('listas').appendChild(card);
                     });
                 }
-
-                } catch (error) {
-                    console.error('Erro ao carregar a lista:', error);
-                }
-            }
-                
-    }
-
-    async function adicionarItem(descricao) {
-        const usuarioId = getUsuarioId();
-        const token = localStorage.getItem('token'); // Armazene o token após o login
-        if(usuarioId == null){
-            window.location.href = "./login.html"
-        } else {
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ descricao, usuarioId }) // Usando o usuarioId obtido
-                });
-                if(response.status == 403){
-                    window.location.href = "./login.html"
-                }
-                 else if (!response.ok) {
-                    throw new Error('Erro ao adicionar item.');
-                } else {
-                    const newItem = await response.json();
-                    const card = createCard(newItem.descricao, newItem.concluida, newItem.id);
-                    cardContainer.appendChild(card);
-                }
             } catch (error) {
-                console.error('Erro ao adicionar item:', error);
+                console.error('Erro ao carregar a lista:', error);
             }
-        }
-    }
-
-    async function atualizarItem(id, descricao, concluido) {
-        const usuarioId = getUsuarioId(); // Obtendo o usuarioId
-        const token = localStorage.getItem('token'); // Armazene o token após o login
-
-        if(usuarioId == null){
-            window.location.href = "./login.html"
-        } else {
-        try {
-            const response = await fetch(`${API_URL}/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ id, descricao, concluido, usuarioId }) // Usando o usuarioId
-            });
-            if(response.status == 403){
-                window.location.href = "./login.html"
-            } else if (!response.ok) {
-                throw new Error('Erro ao atualizar item.')
-            }
-        } catch (error) {
-            console.error('Erro ao atualizar item:', error);
         }
     }
     
-}
-
-    async function removerItem(id) {
-        const token = localStorage.getItem('token');
-        const usuarioId = getUsuarioId()
-        if(usuarioId == null){
-            window.location.href = "./login.html"
-        } else {
-        
-        try {
-            const response = await fetch(`${API_URL}/${id}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            if(response.status == 403){
-                window.location.href = "./login.html"
-            }
-            if (!response.ok) throw new Error('Erro ao remover item.');
-        } catch (error) {
-            console.error('Erro ao remover item:', error);
+    //Evento de abrir um modal do card ao clicar neles ou nos textos dentre
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('card')) {
+            let idLista = e.target.id; //pega o id do card (lista)
+            let titulo = e.target.querySelector('h3').innerText;
+            console.log(idLista, titulo)
+            abrirModal(idLista, titulo);
         }
-    }
-}
+    });
 
-    function createCard(descricao, concluida, id) {
-        const card = document.createElement("div");
-        card.classList.add("card");
-        if (concluida) {
-            card.classList.add("completed");
-        }
-        if (id) {
-            card.dataset.id = id;
-        }
+    //função de abrirModal
+    async function abrirModal(idLista, titulo) {
+        addItemModal.style.display = 'block';
+        const tituloLista = document.getElementById('titulo')
+        tituloLista.innerHTML = titulo;
 
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.checked = concluida;
-
-        const label = document.createElement("label");
-        label.textContent = descricao;
-
-        card.appendChild(checkbox);
-        card.appendChild(label);
-
-        return card;
+        //Carregar as informações das listas 
+        let response = await fetch(`http://localhost:3000/itemLista/lista/${idLista}`)
+        let itensLista = await response.json()
+        document.getElementById('itens').innerHTML = ''
+        itensLista.forEach(item => {
+            let itemCard = document.createElement('div');
+            itemCard.classList.add('itemCard');
+            itemCard.style.display = 'flex';
+            itemCard.innerHTML = `
+            <input type="checkbox" id="concluido"}>
+                <p>${item.descricao}</p>
+                <div class="acoes">
+                    <button class="editar" onclick="editarItem(${item.id}, '${item.descricao}')">Editar</button>
+                    <button class="deletar" onclick="deletarItem(${item.id})">Deletar</button>
+                    `
+            document.getElementById('itens').appendChild(itemCard);
+        });
     }
 
-    document.querySelector(".btn.add").addEventListener("click", () => {
-        addItemModal.style.display = "block";
+    //fechar addItemModal
+    const addItemClose = document.getElementById('addItemClose');
+    addItemClose.addEventListener('click', () => {
+        addItemModal.style.display = 'none';
     });
-
-    addItemClose.addEventListener("click", () => {
-        addItemModal.style.display = "none";
-    });
-
-    addItemBtn.addEventListener("click", () => {
-        const descricao = newItemText.value.trim();
-        if (descricao) {
-            adicionarItem(descricao);
-            newItemText.value = ""; // Limpar campo
-            addItemModal.style.display = "none";
-        }
-    });
-
-    cardContainer.addEventListener("click", (e) => {
-        if (e.target.tagName === "LABEL") {
-            currentEditingCard = e.target.parentElement;
-            editItemText.value = e.target.textContent;
-            editItemModal.style.display = "block";
-        }
-    });
-
-    editItemClose.addEventListener("click", () => {
-        editItemModal.style.display = "none";
-    });
-
-    editItemBtn.addEventListener("click", () => {
-        if (currentEditingCard) {
-            const newDescricao = editItemText.value.trim();
-            const id = currentEditingCard.dataset.id;
-            if (newDescricao) {
-                const concluido = currentEditingCard.classList.contains("completed");
-                atualizarItem(id, newDescricao, concluido);
-                currentEditingCard.querySelector("label").textContent = newDescricao;
-                editItemText.value = ""; // Limpar campo
-                editItemModal.style.display = "none";
-            }
-        }
-    });
-
-    removeCompletedBtn.addEventListener("click", async () => {
-        const completedCards = document.querySelectorAll(".card.completed");
-        for (const card of completedCards) {
-            const id = card.dataset.id;
-            await removerItem(id);
-            card.remove();
-        }
-    });
-
-    cardContainer.addEventListener('change', (e) => {
-        if (e.target.type === 'checkbox') {
-            const card = e.target.parentElement;
-            const id = card.dataset.id;
-            const concluida = e.target.checked;
-            card.classList.toggle("completed", concluida);
-            const descricao = card.querySelector("label").textContent;
-            atualizarItem(id, descricao, concluida);
-        }
-    });
-
-    carregarLista();
 
     //Fazer logoff e exibir nome do usuario
     const sair = document.getElementById("sair");
@@ -232,13 +114,14 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem(usuario);
 
         window.location.href = "./login.html";
-        });
+    });
 
 
     function preencherNome() {
         const usuario = JSON.parse(localStorage.getItem('usuario'));
-            nomeUsuario.innerHTML = `${usuario.nome}`
+        nomeUsuario.innerHTML = `${usuario.nome}`
     }
 
+    carregarListas()
     preencherNome()
 });

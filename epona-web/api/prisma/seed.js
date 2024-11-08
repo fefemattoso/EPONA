@@ -5,6 +5,7 @@ const atividades = require("./seed/atividades.json");
 const listas = require("./seed/listas.json");
 const agendas = require("./seed/agendas.json");
 const usuarios = require("./seed/usuarios.json");
+const itensLista = require("./seed/itemlista.json");
 
 async function main() {
     for (const usuario of usuarios) {
@@ -18,8 +19,13 @@ async function main() {
         });
     }
     for (const lista of listas) {
-        await prisma.lista.create({
+        await prisma.listas.create({
             data: lista
+        });
+    }
+    for (const itemlista of itensLista) {
+        await prisma.itemLista.create({
+            data: itemlista
         });
     }
     for (const agenda of agendas) {

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="../css/listas.css">
     <link rel="icon" href="../images/logo.png" type="image/png">
 </head>
+
 <body>
     <header>
         <nav>
@@ -29,24 +31,27 @@
     </header>
     <main>
         <section class="lista">
-            <h2>Minha Lista</h2>
+            <h2>Minhas Lista</h2>
             <div class="buttons">
-                <button type="button" class="btn add">Adicionar Item</button>
-                <button type="button" class="btn remove">Remover Itens Concluídos</button>
+                <button type="button" class="btn add">Adicionar Lista</button>
             </div>
-            <div id="cardContainer" class="cards">
-                <!-- Cartões serão adicionados aqui -->
+            <div id="listas" class="cards">
             </div>
         </section>
     </main>
 
     <!-- Modal Adicionar Item -->
-    <div id="addItemModal" class="modal" role="dialog" aria-labelledby="addItemModal" aria-hidden="true">
+    <div id="addItemModal" class="modal">
         <div class="modal-content">
-            <span id="addItemClose" class="close" aria-label="Fechar">&times;</span>
-            <h2>Adicionar Item</h2>
-            <input type="text" id="newItemText" placeholder="Digite a tarefa..." aria-required="true">
-            <button id="addItemBtn" class="btn" type="button">Adicionar</button>
+            <span id="addItemClose" class="close">&times;</span>
+            <h2 id="titulo"></h2>
+            <div id="itens" class="cards">
+                <!-- Cartões serão adicionados aqui -->
+            </div>
+            <form id="addItem">
+                <input type="text" id="novoItem" placeholder="Adicionar novo item...">
+                <button class="btn" type="submit">Adicionar Novo item</button>
+            </form>
         </div>
     </div>
 
@@ -62,4 +67,5 @@
 
     <script src="../js/listas.js" defer></script>
 </body>
+
 </html>
