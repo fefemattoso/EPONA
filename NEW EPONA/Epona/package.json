@@ -1,5 +1,5 @@
 {
-  "name": "epona-mobile",
+  "name": "epona",
   "version": "1.0.0",
   "main": "expo/AppEntry.js",
   "scripts": {
@@ -10,22 +10,17 @@
   },
   "dependencies": {
     "@expo/metro-runtime": "~3.2.3",
-    "@expo/vector-icons": "^14.0.4",
-    "@react-native-async-storage/async-storage": "^2.0.0",
-    "@react-native-community/datetimepicker": "8.0.1",
-    "@react-native-firebase/app": "^20.5.0",
-    "@react-native-firebase/storage": "^20.5.0",
-    "expo": "^51.0.38",
+    "@react-native-firebase/storage": "^21.2.0",
+    "expo": "~51.0.28",
     "expo-status-bar": "~1.12.1",
-    "firebase": "^10.13.2",
-    "install": "^0.13.0",
+    "firebase": "^11.0.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.74.5",
     "react-native-calendars": "^1.1307.0",
+    "react-native-chart-kit": "^6.12.0",
     "react-native-image-picker": "^7.1.2",
-    "react-native-mask-input": "^1.2.3",
-    "react-native-vector-icons": "^10.1.0",
+    "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.19.10"
   },
   "devDependencies": {

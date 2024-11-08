@@ -1,0 +1,28 @@
+paleta nova epona 
+
+rosa: #f46472
+creme escuro: #f2ecc3
+creme: #fff9d8
+verde: #bed6ab
+marrom: #999175
+
+2-
+.color1 { #fee9a6 };
+.color2 { #fec0ab };
+.color3 { #fa5894 };
+.color4 { #660860 };
+.color5 { #9380b7 };
+
+3-
+.color1 { #d6496c };
+.color2 { #7db8a2 };
+.color3 { #d6dd90 };
+.color4 { #fffad3 };
+.color5 { #7e638c };
+
+4-
+.color1 { #acdeb2 };
+.color2 { #e1eab5 };
+.color3 { #edad9e };
+.color4 { #fe4b74 };
+.color5 { #390d2d };

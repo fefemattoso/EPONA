@@ -17,10 +17,9 @@ const Welcome = ({ onContinue, onVisitorAccess }) => {
 
   return (
     <View style={styles.welcomeContainer}>
-      {/* <Image source={require('../assets/planta2.png')} style={styles.leafTopLeft} /> */}
-      <Text style={styles.title}>Welcome to</Text>
-      <Image source={require('../assets/NEW/logotipo2.png')} style={styles.epona} />
-      <Image source={require('../assets/logo.png')} style={styles.icon} />
+      <Image source={require('../assets/planta2.png')} style={styles.leafTopLeft} />
+      <Text style={styles.title}>Bem-vindo ao Epona</Text>
+      <Image source={require('../assets/icon.png')} style={styles.icon} />
       <Text style={styles.subtitle}>Seu assistente pessoal para gerenciar tarefas e lembretes</Text>
 
     <View style={styles.buttonContainer}>
@@ -31,7 +30,7 @@ const Welcome = ({ onContinue, onVisitorAccess }) => {
 
 
       {/* Folha decorativa na parte inferior */}
-      {/* <Image source={require('../assets/planta.png')} style={styles.leafBottomRight} /> */}
+      <Image source={require('../assets/planta.png')} style={styles.leafBottomRight} />
     </View>
   );
 };
@@ -41,23 +40,22 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff8dd', // Cor da paleta
+    backgroundColor: '#badda8', // Cor da paleta
     position: 'relative',
     textAlign: 'center',
   },
   title: {
-    fontSize: 25,
+    fontSize: 36,
     fontWeight: 'bold',
-    color: '#255140', // Cor escura da paleta
+    color: '#162040', // Cor escura da paleta
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 18,
-    color: '#255140', // Azul da paleta
+    color: '#547699', // Azul da paleta
     marginBottom: 20,
     textAlign: 'center',
     paddingHorizontal: 20,
-    
   },
   buttonContainer: {
     marginBottom: 30,
@@ -66,9 +64,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   button: {
-    backgroundColor: '#255140', // Cor do botão conforme a paleta
+    backgroundColor: '#162040', // Cor do botão conforme a paleta
     padding: 10,
-    borderRadius: 50,
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
     width: '25vw',
@@ -85,25 +83,20 @@ const styles = StyleSheet.create({
     height: 120,
     marginBottom: 20,
   },
-  epona: {
-    width: 290,
-    height: 100,
-    marginBottom: 0,
+  leafTopLeft: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: 130,
+    height: 130,
   },
-  // leafTopLeft: {
-  //   position: 'absolute',
-  //   top: 0,
-  //   left: 0,
-  //   width: 130,
-  //   height: 130,
-  // },
-  // leafBottomRight: {
-  //   position: 'absolute',
-  //   bottom: 0,
-  //   right: 0,
-  //   width: 130,
-  //   height: 130,
-  // },
+  leafBottomRight: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 130,
+    height: 130,
+  },
 });
 
 export default Welcome;
