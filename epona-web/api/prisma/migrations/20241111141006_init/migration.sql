@@ -34,6 +34,16 @@ CREATE TABLE `Listas` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `Notas` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `titulo` VARCHAR(191) NOT NULL,
+    `descricao` VARCHAR(191) NOT NULL,
+    `usuarioId` INTEGER NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `ItemLista` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `descricao` VARCHAR(191) NOT NULL,
@@ -60,6 +70,9 @@ ALTER TABLE `Atividade` ADD CONSTRAINT `Atividade_usuarioId_fkey` FOREIGN KEY (`
 
 -- AddForeignKey
 ALTER TABLE `Listas` ADD CONSTRAINT `Listas_usuarioId_fkey` FOREIGN KEY (`usuarioId`) REFERENCES `Usuario`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Notas` ADD CONSTRAINT `Notas_usuarioId_fkey` FOREIGN KEY (`usuarioId`) REFERENCES `Usuario`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `ItemLista` ADD CONSTRAINT `ItemLista_listaId_fkey` FOREIGN KEY (`listaId`) REFERENCES `Listas`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

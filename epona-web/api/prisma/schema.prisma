@@ -7,53 +7,64 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Usuario{
-  id Int   @id @default(autoincrement())
-  nome String
-  email String   @unique
-  senha String
-  nascimento DateTime
-  pontuacao Int
-  criadoEm DateTime? @default(now())
-  itenslista ItemLista[] @relation("escreve")
-  lista Listas[] @relation("cria")
-  agenda Agenda[] @relation("planeja")
-  atividade Atividade[] @relation("tem")
+model Usuario {
+  id          Int         @id @default(autoincrement())
+  nome        String
+  email       String      @unique
+  senha       String
+  nascimento  DateTime
+  pontuacao   Int
+  criadoEm    DateTime?   @default(now())
+  itenslista  ItemLista[] @relation("escreve")
+  lista       Listas[]    @relation("cria")
+  agenda      Agenda[]    @relation("planeja")
+  atividade   Atividade[] @relation("tem")
+
+  // Relacionamento com as Notas
+  notas       Notas[]     @relation("criaNotas") // Notas agora estão relacionadas diretamente com o Usuario
 }
 
-model Atividade{
-  id Int @id @default(autoincrement())
-  titulo String
-  descricao String?
-  usuarioId Int
-  data DateTime? @default(now())
-  concluido Boolean @default(false)
-  usuario Usuario @relation("tem", fields: [usuarioId], references: [id])
+model Atividade {
+  id          Int         @id @default(autoincrement())
+  titulo      String
+  descricao   String?
+  usuarioId   Int
+  data        DateTime?   @default(now())
+  concluido   Boolean     @default(false)
+  usuario     Usuario     @relation("tem", fields: [usuarioId], references: [id])
 }
 
-model Listas{
-  id Int @id @default(autoincrement())
-  titulo String
-  usuarioId Int
-  usuario Usuario @relation("cria", fields: [usuarioId], references: [id])
-  itens ItemLista[] @relation("pertence")
+model Listas {
+  id          Int         @id @default(autoincrement())
+  titulo      String
+  usuarioId   Int
+  usuario     Usuario     @relation("cria", fields: [usuarioId], references: [id])
+  itens       ItemLista[] @relation("pertence")
 }
 
-model ItemLista{
-  id Int @id @default(autoincrement())
+model Notas {
+  id          Int         @id @default(autoincrement())
+  titulo      String
   descricao String
-  usuarioId Int
-  concluido Boolean @default(false)
-  listaId Int
-  lista Listas @relation("pertence", fields: [listaId], references: [id])
-  usuario Usuario @relation("escreve", fields: [usuarioId], references: [id])
+  usuarioId   Int
+  usuario     Usuario     @relation("criaNotas", fields: [usuarioId], references: [id]) // Notas agora são associadas diretamente ao Usuario
 }
 
-model Agenda{
-  id Int @id @default(autoincrement())
-  titulo String
-  descricao String?
-  data DateTime
-  usuarioId Int
-  usuario Usuario @relation("planeja", fields: [usuarioId], references: [id])
+model ItemLista {
+  id          Int         @id @default(autoincrement())
+  descricao   String
+  usuarioId   Int
+  concluido   Boolean     @default(false)
+  listaId     Int
+  lista       Listas      @relation("pertence", fields: [listaId], references: [id])
+  usuario     Usuario     @relation("escreve", fields: [usuarioId], references: [id])
+}
+
+model Agenda {
+  id          Int         @id @default(autoincrement())
+  titulo      String
+  descricao   String?
+  data        DateTime
+  usuarioId   Int
+  usuario     Usuario     @relation("planeja", fields: [usuarioId], references: [id])
 }

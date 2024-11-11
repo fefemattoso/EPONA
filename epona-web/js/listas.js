@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function carregarListas() {
         const usuarioId = getUsuarioId();
         const token = localStorage.getItem('token');
-    
+
         if (usuarioId == null) {
             window.location.href = "./login.html";
         } else {
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         'Authorization': `Bearer ${token}`
                     }
                 });
-    
+
                 if (response.status == 403) {
                     window.location.href = "./login.html";
                 } else if (!response.ok) {
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const listas = await response.json();
                     listas.forEach(item => {
                         console.log(item);
-    
+
                         // Criar o card para cada lista
                         let card = document.createElement('div');
                         card.setAttribute('id', item.id);
@@ -41,19 +41,19 @@ document.addEventListener('DOMContentLoaded', () => {
                             <h3>${item.titulo}</h3>
                             <p style="color:red; display:none; cursor:pointer" id="deletarLista" onclick="deletarLista(${item.id})">&#128465;</p>
                         `;
-    
+
                         // Adicionar o evento mouseover para mostrar o botão de excluir
                         card.addEventListener('mouseover', () => {
                             let deletarLista = card.querySelector("#deletarLista");
                             deletarLista.style.display = 'block';  // Torna o botão visível
                         });
-    
+
                         // Adicionar o evento mouseout para esconder o botão de excluir
                         card.addEventListener('mouseout', () => {
                             let deletarLista = card.querySelector("#deletarLista");
                             deletarLista.style.display = 'none';  // Torna o botão invisível novamente
                         });
-    
+
                         // Adicionar o card ao contêiner de listas
                         document.getElementById('listas').appendChild(card);
                     });
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
-    
+
     //Evento de abrir um modal do card ao clicar neles ou nos textos dentre
     document.addEventListener('click', (e) => {
         if (e.target.classList.contains('card')) {
@@ -99,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+   
     //fechar addItemModal
     const addItemClose = document.getElementById('addItemClose');
     addItemClose.addEventListener('click', () => {
@@ -125,3 +126,25 @@ document.addEventListener('DOMContentLoaded', () => {
     carregarListas()
     preencherNome()
 });
+
+ //Deletar lista
+ async function deletarLista(id) {
+    try {
+        let response = await fetch(`http://localhost:3000/lista/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+        if (response.status == 403) {
+            window.location.href = "./login.html"
+        }
+        else if (!response.ok) {
+            throw new Error('Falha ao deletar lista')
+        }
+        window.location.reload()
+    } catch (e) {
+        console.error('Erro ao deletar lista:', e)
+    }
+}
