@@ -3,13 +3,12 @@ const prisma = new PrismaClient();
 
 const create = async (req, res) => {
     try {
-        const { id, descricao, usuarioId, concluido } = req.body;
+        const { id, titulo, usuarioId } = req.body;
         const lista = await prisma.listas.create({
             data: {
                 id: id,
-                descricao: descricao,
+                titulo: titulo,
                 usuarioId: usuarioId,
-                concluido: concluido
             }
         });
         return res.status(201).json(lista);
@@ -22,7 +21,7 @@ const read = async (req, res) => {
     if (req.params.id !== undefined) {
         const lista = await prisma.listas.findUnique({
             where: {
-               id: Number(req.params.id)
+                id: Number(req.params.id)
             }
         });
         return res.json(lista);
@@ -33,7 +32,7 @@ const read = async (req, res) => {
 };
 
 const readById = async (req, res) => {
-    if(req.params.usuarioId !== undefined){
+    if (req.params.usuarioId !== undefined) {
         const usuarioId = req.params.usuarioId;
         const itens = await prisma.listas.findMany({
             where: {
@@ -48,34 +47,33 @@ const readById = async (req, res) => {
 
 const update = async (req, res) => {
     try {
-      const id = req.params.id;
-      const { descricao, usuarioId, concluido } = req.body;
-      const lista = await prisma.lista.update({
-        where: {
-          id: parseInt(id)
-        },
-        data: {
-          descricao,
-          usuarioId,
-          concluido
-        }
-      });
-      return res.status(202).json(lista);
+        const id = req.params.id;
+        const { usuarioId } = req.body;
+        const lista = await prisma.listas.update({
+            where: {
+                id: parseInt(id)
+            },
+            data: {
+                titulo,
+                usuarioId,
+            }
+        });
+        return res.status(202).json(lista);
     } catch (error) {
-      return res.status(404).json({ message: "lista não encontrada" });
+        return res.status(404).json({ message: "lista não encontrada" });
     }
-  };
+};
 
 const del = async (req, res) => {
     try {
-        const lista = await prisma.lista.delete({
+        const lista = await prisma.listas.delete({
             where: {
-               id: parseInt(req.params.id)
+                id: parseInt(req.params.id)
             }
         });
         return res.status(204).json(lista);
     } catch (error) {
-        return res.status(404).json({ message: "lista não encontrada" });
+        return res.status(404).json({ message: "lista não encontrada" + error });
     }
 }
 
