@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 0,
-    backgroundColor: '#badda8', // cor de fundo da paleta
+    backgroundColor: '#fff8dd', // cor de fundo da paleta
   },
   header: {
     fontSize: 28,
