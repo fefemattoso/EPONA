@@ -33,18 +33,18 @@
         <section class="lista">
             <h2>Minhas Lista</h2>
             <div class="buttons">
-                <button type="button" class="btn add" onclick="abrirModalAddLista()">Adicionar Lista</button>
-                <button type="button" class="btn add" onclick="abrirModalAddNota()">Adicionar Nota</button>
+                <button type="button" class="btn add" onclick="abrirModalCriarLista()">Adicionar Lista</button>
+                <button type="button" class="btn add" onclick="criarNota()">Adicionar Nota</button>
             </div>
             <div id="listas" class="cards">
             </div>
         </section>
     </main>
 
-    <!-- Modal Adicionar Item -->
-    <div id="addItemModal" class="modal">
+    <!-- Modal exibir itens-->
+    <div id="exibirItemModal" class="modal">
         <div class="modal-content">
-            <span id="addItemClose" class="close">&times;</span>
+            <span id="exibirItemClose" class="close">&times;</span>
             <h2 id="titulo"></h2>
             <div id="itens" class="cards">
                 <!-- Cartões serão adicionados aqui -->
@@ -56,13 +56,29 @@
         </div>
     </div>
 
-    <!-- Modal Editar Item -->
-    <div id="editItemModal" class="modal" role="dialog" aria-labelledby="editItemModal" aria-hidden="true">
+    <!-- Modal add lista -->
+    <div id="addListaModal" class="modal">
         <div class="modal-content">
-            <span id="editItemClose" class="close" aria-label="Fechar">&times;</span>
-            <h2>Editar Item</h2>
-            <input type="text" id="editItemText" placeholder="Digite a nova tarefa..." aria-required="true">
-            <button id="editItemBtn" class="btn" type="button">Salvar</button>
+            <span id="addItemClose" class="close">&times;</span>
+            <h2>Criar lista</h2>
+            <form id="addLista">
+                <input type="text" id="novaLista" placeholder="Nome da lista">
+                <button class="btn" type="submit">Criar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal add nota -->
+
+    <div id="addNotaModal" class="modal">
+        <div class="modal-content">
+            <span id="addNotaClose" class="close">&times;</span>
+            <h2>Criar Nota</h2>
+            <form id="addNota">
+                <input type="text" name="novaNota" placeholder="Nome da nota">
+                <textarea name="descricao" placeholder="descrição">
+                <button class="btn" type="submit">Criar</button>
+            </form>
         </div>
     </div>
 
