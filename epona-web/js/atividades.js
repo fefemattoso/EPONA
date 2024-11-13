@@ -282,7 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //Fazer logoff e exibir nome do usuario
     const sair = document.getElementById("sair");
-    const nomeUsuario = document.getElementById("usuario")
+    const nomeUsuario = document.getElementById("usuarioNome")
 
     sair.addEventListener("click", () => {
         const usuario = JSON.parse(localStorage.getItem('usuario'));
@@ -298,13 +298,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     preencherNome()
-
-    // //Sistema de pontuação
-    // let pontuacao = document.getElementById("pontuacao")
-    // pontuacao = 0
-
-    // document.getElementById("concluir").addEventListener("click", () => {
-    //     pontuacao.innerHTML = parseInt(pontuacao.innerHTML) + 1
-    // });
-
 });

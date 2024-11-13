@@ -33,51 +33,38 @@
         <section class="lista">
             <h2>Minhas Lista</h2>
             <div class="buttons">
-                <button type="button" class="btn add" onclick="abrirModalCriarLista()">Adicionar Lista</button>
-                <button type="button" class="btn add" onclick="criarNota()">Adicionar Nota</button>
+                <button type="button" class="btn add" id="btnExibirAddLista">Adicionar Lista</button>
+                <button type="button" class="btn add" onclick="abrirModalAddNota()">Adicionar Nota</button>
             </div>
             <div id="listas" class="cards">
             </div>
         </section>
     </main>
 
-    <!-- Modal exibir itens-->
-    <div id="exibirItemModal" class="modal">
-        <div class="modal-content">
-            <span id="exibirItemClose" class="close">&times;</span>
-            <h2 id="titulo"></h2>
-            <div id="itens" class="cards">
-                <!-- Cartões serão adicionados aqui -->
-            </div>
-            <form id="addItem">
-                <input type="text" id="novoItem" placeholder="Adicionar novo item...">
-                <button class="btn" type="submit">Adicionar Novo item</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal add lista -->
+    <!-- Modal para adicionar lista -->
     <div id="addListaModal" class="modal">
         <div class="modal-content">
-            <span id="addItemClose" class="close">&times;</span>
+            <span id="addListaClose" class="close">&times;</span>
             <h2>Criar lista</h2>
-            <form id="addLista">
+            <form id="formAddLista">
                 <input type="text" id="novaLista" placeholder="Nome da lista">
                 <button class="btn" type="submit">Criar</button>
             </form>
         </div>
     </div>
 
-    <!-- Modal add nota -->
-
-    <div id="addNotaModal" class="modal">
+    <!-- Modal para exibir os itens -->
+    <div id="exibirItensModal" class="modal">
         <div class="modal-content">
-            <span id="addNotaClose" class="close">&times;</span>
-            <h2>Criar Nota</h2>
-            <form id="addNota">
-                <input type="text" name="novaNota" placeholder="Nome da nota">
-                <textarea name="descricao" placeholder="descrição">
-                <button class="btn" type="submit">Criar</button>
+            <span id="exibirItensClose" class="close">&times;</span>
+            <h2 id="tituloLista"></h2>
+            <div class="itensLista" id="itensLista">
+                <!-- dados gerados atraves do js -->
+            </div>
+            <form id="formAddItem">
+                <input type="hidden" name="idDaLista" id="idDaLista">
+                <input type="text" name="novoItem" placeholder="Digite o nome do item...">
+                <button type="submit">Adicionar novo item</button>
             </form>
         </div>
     </div>
