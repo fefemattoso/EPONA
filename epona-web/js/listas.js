@@ -243,48 +243,6 @@ document.addEventListener('DOMContentLoaded', () => {
         nomeUsuario.innerHTML = `${usuario.nome}`
     }
 
-    //addItem
-    //     const addItem = document.getElementById('addItem');
-    //     addItem.addEventListener('submit', async (e) => {
-    //         const usuarioId = getUsuarioId();
-    //         const token = localStorage.getItem('token');
-    //         if (usuarioId == null) {
-    //             window.location.href = './login.html'
-    //         } else {
-    //             try{
-    //                 e.preventDefault();
-    //                 const idLista = addItem.getAttribute('data-id-lista');
-    //                 let idListaInt = parseInt(idLista)
-    //                 const item = document.getElementById('novoItem').value;
-
-    //                 let response = await fetch(`http://localhost:3000/itemLista`, {
-    //                     method: 'POST',
-    //                     headers: {
-    //                         'Content-Type': 'application/json',
-    //                         'Authorization': `Bearer ${token}`
-    //                     },
-    //                     body: JSON.stringify({
-    //                         descricao: item,
-    //                         listaId: idListaInt,
-    //                         usuarioId: usuarioId
-    //                     })
-    //                 });
-    //                 if(response.status == 403){
-    //                     window.location.href = "./login.html"
-    //                 }
-    //                 if(!response.ok) {
-    //                     throw new Error('Falha ao adicionar item.')
-    //                 } else {
-    //                     alert('Item adicionado');
-    //                     window.location.reload();
-    //                 }
-    //             } catch (e) {
-    //                 console.error("Falha ao adicionar item" + e)
-    //             }
-    //         }
-
-    // })
-
     carregarListas()
     preencherNome()
 });
