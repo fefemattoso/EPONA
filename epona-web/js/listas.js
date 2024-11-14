@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         card.classList.add('card');
                         card.innerHTML = `
                             <h3>${item.titulo}</h3>
-                            <p style="color:red; display:none; cursor:pointer" id="deletarLista" onclick="deletarLista(${item.id})">&#128465;</p>
+                            <p style="color:red; display:none; cursor:pointer" id="deletarLista" onclick="abrirModalDeletar(${item.id})">&#128465;</p>
                         `;
 
                         // Adicionar o evento mouseover para mostrar o botão de excluir
@@ -85,6 +85,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
+
+    const confirmModal = document.getElementById('confirmModal');
+
+    // const deletarLista = document.getElementById('deletarLista');
+    // deletarLista.addEventListener('click', () => {
+
+    //     // const idLista =  document.getElementById('listaId');
+    //     // idLista = id;
+    //     // console.log(idLista);
+    //     confirmModal.style.display = 'block';
+    // });
+
 
     //Evento de abrir um modal do card ao clicar neles ou nos textos dentre
     document.addEventListener('click', (e) => {
@@ -226,6 +238,14 @@ document.addEventListener('DOMContentLoaded', () => {
         addListaModal.style.display = 'none';
     });
 
+    const confirmListaClose = document.getElementById('confirmListaClose');
+    confirmListaClose.addEventListener('click', () => {
+        confirmModal.style.display = 'none';
+    });
+
+
+
+
     //Fazer logoff e exibir nome do usuario
     const sair = document.getElementById("sair");
 
@@ -243,59 +263,37 @@ document.addEventListener('DOMContentLoaded', () => {
         nomeUsuario.innerHTML = `${usuario.nome}`
     }
 
-    //addItem
-    //     const addItem = document.getElementById('addItem');
-    //     addItem.addEventListener('submit', async (e) => {
-    //         const usuarioId = getUsuarioId();
-    //         const token = localStorage.getItem('token');
-    //         if (usuarioId == null) {
-    //             window.location.href = './login.html'
-    //         } else {
-    //             try{
-    //                 e.preventDefault();
-    //                 const idLista = addItem.getAttribute('data-id-lista');
-    //                 let idListaInt = parseInt(idLista)
-    //                 const item = document.getElementById('novoItem').value;
-
-    //                 let response = await fetch(`http://localhost:3000/itemLista`, {
-    //                     method: 'POST',
-    //                     headers: {
-    //                         'Content-Type': 'application/json',
-    //                         'Authorization': `Bearer ${token}`
-    //                     },
-    //                     body: JSON.stringify({
-    //                         descricao: item,
-    //                         listaId: idListaInt,
-    //                         usuarioId: usuarioId
-    //                     })
-    //                 });
-    //                 if(response.status == 403){
-    //                     window.location.href = "./login.html"
-    //                 }
-    //                 if(!response.ok) {
-    //                     throw new Error('Falha ao adicionar item.')
-    //                 } else {
-    //                     alert('Item adicionado');
-    //                     window.location.reload();
-    //                 }
-    //             } catch (e) {
-    //                 console.error("Falha ao adicionar item" + e)
-    //             }
-    //         }
-
-    // })
 
     carregarListas()
     preencherNome()
 });
 
+const confirmModal = document.getElementById('confirmModal');
+const cancelBtn = document.getElementById("cancelBtn");
+cancelBtn.addEventListener("click", () => {
+    confirmModal.style.display = 'none';
+});
 
+const btnConfirm = document.getElementById("btnConfirm");
+btnConfirm.addEventListener("click", () => {
+    deletarLista();
+});
+
+
+function abrirModalDeletar(id){
+    confirmModal.style.display = 'block';
+    const listaId = document.getElementById("listaId");
+    listaId.value = id;
+    console.log(id);
+}
 
 
 //Deletar lista
-async function deletarLista(id) {
+async function deletarLista() {
+    const listaId = document.getElementById("listaId").value;
+
     try {
-        let response = await fetch(`http://localhost:3000/lista/${id}`, {
+        let response = await fetch(`http://localhost:3000/lista/${listaId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

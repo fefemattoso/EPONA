@@ -53,6 +53,18 @@
         </div>
     </div>
 
+    <!-- Modal de confirmação da exclusão -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <span id="confirmListaClose" class="close">&times;</span>
+            <h2>Exclusão</h2>
+                <p>Deseja realmente excluir a lista?</p>
+                <input type="hidden" id="listaId">
+                <button type="button" id="cancelBtn">Cancelar</button>
+                <button type="button" id="btnConfirm" class="deletebtn">Deletar</button>
+        </div>
+    </div>
+
     <!-- Modal para exibir os itens -->
     <div id="exibirItensModal" class="modal">
         <div class="modal-content">

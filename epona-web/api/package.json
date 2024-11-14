@@ -19,6 +19,6 @@
     "jsonwebtoken": "^9.0.2"
   },
   "prisma": {
-    "seed": "node ./seed.js"
+    "seed": "node ./prisma/seed.js"
   }
 }
