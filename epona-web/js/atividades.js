@@ -1,301 +1,162 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const atividadesList = document.getElementById('atividadesList');
-    const addAtividadeModal = document.getElementById('addAtividadeModal');
-    const editAtividadeModal = document.getElementById('editAtividadeModal');
-    const overlayAll = document.getElementById('overlayAll');
-    const overlayIndividual = document.getElementById('overlayIndividual');
-    const addAtividadeBtn = document.getElementById('addAtividadeBtn');
-    let atividadeParaRemover = null;
-    let atividadeParaEditar = null;
+    const usuario = JSON.parse(localStorage.getItem('usuario'));
+    const token = localStorage.getItem('token');
+    // Função para verificar se o token está expirado
+    function verificarTokenExpirado(token) {
+        if (!token) return true; // Se o token não existe, consideramos expirado
 
-    const API_URL = 'http://localhost:3000/atividade';
+        // Decodificar o token JWT
+        const payload = JSON.parse(atob(token.split('.')[1])); // Decodifica a parte 'payload' do token
+        const expTimestamp = payload.exp * 1000; // A expiração vem em segundos, então multiplicamos por 1000 para converter para milissegundos
+        const now = Date.now(); // Obtém a data atual em milissegundos
 
-    const getUsuarioId = () => {
-        const usuario = JSON.parse(localStorage.getItem('usuario'));
-        return usuario ? usuario.id : null;
-    };
+        // Retorna true se o token estiver expirado
+        return expTimestamp < now;
+    }
+
+    // Função para checar dados e redirecionar caso necessário
+    async function checarDados() {
+        if (!usuario || !token) {
+            alert('Por Favor, realize login no sistema');
+            window.location.href = "./login.html";
+        } else if (verificarTokenExpirado(token)) {
+            alert('O seu token expirou, por favor, faça login novamente.');
+            localStorage.removeItem('usuario');
+            localStorage.removeItem('token');
+            window.location.href = "./login.html"; // Redireciona para a página de login
+        } else {
+            console.log('Você está autenticado');
+        }
+    }
 
     async function carregarAtividades() {
-        const usuarioId = getUsuarioId();
-        const token = localStorage.getItem('token')
-        if(usuarioId == null){
-            window.location.href = "./login.html"
-        }  else {
-            try {
-                const response = await fetch(`${API_URL}usuario/${usuarioId}`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                if(response.status == 403) {
-                    window.location.href = "./login.html"
+        checarDados();
+        try {
+            let response = await fetch('http://localhost:3000/atividade', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 }
-               else if (!response.ok) {
-                throw new Error('Falha na resposta da API');
-            } else{
-                const atividades = await response.json();
-                atividades.forEach(atividade => adicionarAtividade(atividade));
-            }
-            } catch (error) {
-                console.error('Erro ao carregar atividades:', error);
-            }
-        }
-    
-    }
+            })
+            let atividades = await response.json()
 
-
-    document.getElementById('addAtividadeForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const token = localStorage.getItem('token')
-        const usuarioId = getUsuarioId();
-        const titulo = document.getElementById('titulo').value;
-        const descricao = document.getElementById('descricao').value;
-
-        if(usuarioId == null){
-            window.location.href = "./login.html"
-        } else {
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ titulo, descricao, usuarioId })
-                });
-                if(response.status == 403){
-                    window.location.href = "./login.html"
-                } else if (!response.ok) {
-                    throw new Error('Falha ao adicionar atividade');
-                } else {
-                const newAtividade = await response.json();
-                adicionarAtividade(newAtividade);
-                }
-            } catch (error) {
-                console.error('Erro ao adicionar atividade:', error);
-            }
-
-            addAtividadeModal.classList.add('hidden');
-            e.target.reset();
-        }
-    });
-
-    //Editar atividade
-    document.getElementById('editAtividadeForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const token = localStorage.getItem('token');
-        const usuarioId = getUsuarioId();
-        const titulo = document.getElementById('newTitulo').value; // Usar IDs corretos
-        const descricao = document.getElementById('newDescricao').value;
-        const atividadeId = parseInt(e.target.dataset.id);
-
-        if(usuarioId == null){
-            window.location.href = "./login.html"
-        } else {
-            try {
-                const response = await fetch(`${API_URL}/${atividadeId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ titulo, descricao, usuarioId })
-                });
-                if(response.status == 403){
-                    window.location.href = "./login.html"
-                }
-                else if (!response.ok) {
-                    throw new Error('Erro ao atualizar atividade');
-                } else {
-                const updatedAtividade = await response.json();
-
-                // Atualize o card existente com os novos dados
-                atividadeParaEditar.titulo = updatedAtividade.titulo;
-                atividadeParaEditar.descricao = updatedAtividade.descricao;
-
-                const card = document.querySelector(`[data-id="${atividadeId}"]`);
-                card.querySelector('.titulo').textContent = updatedAtividade.titulo;
-                card.querySelector('.descricao').textContent = updatedAtividade.descricao;
-                }
-            } catch (error) {
-                console.error('Erro ao editar atividade:', error);
-            }
-
-            editAtividadeModal.classList.add('hidden');
-            e.target.reset();
-        }
-    });
-
-    addAtividadeBtn.addEventListener('click', () => {
-        addAtividadeModal.classList.remove('hidden');
-        atividadeParaEditar = null; // Reseta a atividade para edição ao abrir o modal
-    });
-
-    function adicionarAtividade(atividade) {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.dataset.id = atividade.id;
-        if (atividade.concluido) {
-            card.classList.toggle('concluida');
-            card.innerHTML = `
-                <div class="headerCard">
-                    <h2 class="titulo">${atividade.titulo}</h2>
-                    <div class="botoes">
-                        <span class="remove-atividade">&#9747;</span>
-                        <span class="edit-atividade">&#9998;</span>
-                    </div>
-                </div>
-                <p class="descricao">${atividade.descricao}</p>
-                <button class="concluido-btn">Concluído</button>
-            `;
-        } else {
-            card.innerHTML = `
+            document.getElementById('atividadesList').innerHTML = ''
+            atividades.forEach(atividade => {
+                let atividadeCard = document.createElement('div');
+                atividadeCard.classList.add('atividadeCard');
+                atividade.concluido ? 'atividadeCard.classList.add("concluido")' : ''
+                atividadeCard.innerHTML = `
                     <div class="headerCard">
-                        <h2 class="titulo">${atividade.titulo}</h2>
+                        <h3>${atividade.titulo}</h3>
                         <div class="botoes">
-                            <span class="remove-atividade">&#9747;</span>
-                            <span class="edit-atividade">&#9998;</span>
+                            <p style="color:red; display:none; cursor:pointer" id="deletarAtividadeBtn" onclick="deletarAtividade(${atividade.id})">&#128465;</p>
+                            <p style="display:none; cursor:pointer" id="editarAtividadeBtn" onclick="editarAtividade(${atividade.id})">&#9998;</p>
                         </div>
                     </div>
-                    <p class="descricao">${atividade.descricao}</p>
-                    <button class="concluido-btn">Concluir</button>
+                    <p>${atividade.descricao}</p>
+                    <button onclick="concluirAtividade(${atividade.id})">Concluir</button>
                 `;
+                // Adicionar o evento mouseover para mostrar o botão de excluir
+                atividadeCard.addEventListener('mouseover', () => {
+                    let deletarAtividade = atividadeCard.querySelector("#deletarAtividadeBtn");
+                    let editarAtividade = atividadeCard.querySelector("#editarAtividadeBtn");
+                    deletarAtividade.style.display = 'block';  // Torna o botão visível
+                    editarAtividade.style.display = 'block';  // Torna o botão visível
+                });
+
+                // Adicionar o evento mouseout para esconder o botão de excluir
+                atividadeCard.addEventListener('mouseout', () => {
+                    let deletarAtividade = atividadeCard.querySelector("#deletarAtividadeBtn");
+                    deletarAtividade.style.display = 'none';  // Torna o botão invisível novamente
+                    let editarAtividade = atividadeCard.querySelector("#editarAtividadeBtn");
+                    editarAtividade.style.display = 'none';  // Torna o botão visível
+                });
+                document.getElementById('atividadesList').appendChild(atividadeCard);
+            })
+        } catch (e) {
+            console.error("Erro ao carregar atividades:", e)
         }
 
-        card.querySelector('.edit-atividade').addEventListener('click', () => {
-            atividadeParaEditar = atividade; // Mantenha referência ao objeto atividade
-            document.getElementById('newTitulo').value = atividade.titulo; // Usar IDs corretos
-            document.getElementById('newDescricao').value = atividade.descricao;
-            editAtividadeModal.classList.remove('hidden');
-
-            // Armazena o ID da atividade a ser editada
-            document.getElementById('editAtividadeForm').dataset.id = atividade.id;
-        });
-
-
-
-        card.querySelector('.remove-atividade').addEventListener('click', async () => {
-            atividadeParaRemover = card;
-            overlayIndividual.classList.remove('hidden');
-        });
-
-        card.querySelector('.concluido-btn').addEventListener('click', async () => {
-            const concluido = card.classList.toggle('concluida');
-            const token = localStorage.getItem('token')
-            const usuarioId = getUsuarioId();
-
-            if(usuarioId == null){
-                window.location.href = "./login.html"
-            }  else {
-                card.querySelector('.concluido-btn').textContent = concluido ? 'Concluída' : 'Concluído';
-                if (concluido) {
-                    
-                    try {
-                        const response = await fetch(`${API_URL}/${atividade.id}`, {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${token}`
-                            },
-                            body: JSON.stringify({ id: atividade.id, concluido: true })
-                        });
-                        if(response.status == 403){
-                            window.location.href = "./login.html"
-                        }
-                        if (!response.ok) {
-                            throw new Error(`Erro ao atualizar: ${response.status} ${response.statusText}`);
-                        }
-                    } catch (error) {
-                        console.error('Erro ao atualizar atividade:', error);
-                    }
-                } else {
-                    try {
-                        const response = await fetch(`${API_URL}/${atividade.id}`, {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${token}`
-                            },
-                            body: JSON.stringify({ id: atividade.id, concluido: false })
-                        });
-                        if(response.status == 403){
-                            window.location.href = "./login.html"
-                        }
-                        if (!response.ok) {
-                            throw new Error(`Erro ao atualizar: ${response.status} ${response.statusText}`);
-                        }
-                    } catch (error) {
-                        console.error('Erro ao atualizar atividade:', error);
-                    }
-                }
-            }
-        });
-
-        atividadesList.appendChild(card);
     }
 
-    document.getElementById('confirmIndividualBtn').addEventListener('click', async () => {
-        const token = localStorage.getItem('token')
-        const usuarioId = getUsuarioId();
-        if(usuarioId == null){
-            window.location.href = "./login.html"
-        } else {
-            if (atividadeParaRemover) {
-                const id = atividadeParaRemover.dataset.id;
-                try {
-                    const response = await fetch(`${API_URL}/${id}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({ usuarioId: getUsuarioId() })
-                    });
-                    if(response.status == 403){
-                        window.location.href = "./login.html"
-                    }
-                    atividadeParaRemover.remove();
-                } catch (error) {
-                    console.error('Erro ao remover atividade:', error);
-                }
-                overlayIndividual.classList.add('hidden');
-                atividadeParaRemover = null;
+    //Abrir modal de adicionar atividades
+    const addAtividadeModal = document.getElementById('addAtividadeModal')
+
+    const addAtividadeBtn = document.getElementById('addAtividadeBtn')
+    addAtividadeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        addAtividadeModal.style.display = 'flex';
+    })
+
+    //Formulario de adicionar atividade
+    const addAtividadeForm = document.getElementById('addAtividadeForm');
+    addAtividadeForm.addEventListener('submit', async (e) => {
+        e.preventDefault()
+        let titulo = addAtividadeForm.titulo.value;
+        let descricao = addAtividadeForm.descricao.value;
+        let usuarioId = usuario.id;
+
+        try{
+            let response = await fetch('http://localhost:3000/atividade', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    titulo: titulo,
+                    descricao: descricao,
+                    usuarioId: usuarioId
+                })
+            })
+            if(!response.ok) {
+                throw new Error('Erro ao adicionar atividade')
             }
+            alert('Atividade adicionada!')
+            window.location.reload()
+        } catch (e) {
+            console.error("Erro ao adicionar atividade:", e)
         }
-    });
-
-    document.getElementById('cancelUm').addEventListener('click', async () => {
-        overlayIndividual.classList.add('hidden');
     })
-
-    document.getElementById('cancel').addEventListener('click', async () => {
-        editAtividadeModal.classListadd('hidden');
-        addAtividadeModal.classList.add('hidden');
-    })
-
-    document.getElementById('cancelEdit').addEventListener('click', async () => {
-        editAtividadeModal.classList.add('hidden');
-    })
-
-    carregarAtividades();
-
-
-    //Fazer logoff e exibir nome do usuario
-    const sair = document.getElementById("sair");
-    const nomeUsuario = document.getElementById("usuarioNome")
-
-    sair.addEventListener("click", () => {
-        const usuario = JSON.parse(localStorage.getItem('usuario'));
-        localStorage.removeItem(usuario);
-
-        window.location.href = "./login.html";
-        });
-
 
     function preencherNome() {
+        const nomeUsuario = document.getElementById("usuarioNome")
         const usuario = JSON.parse(localStorage.getItem('usuario'));
-            nomeUsuario.innerHTML = `${usuario.nome}`
+        nomeUsuario.innerHTML = `${usuario.nome}`
     }
 
-    preencherNome()
+    carregarAtividades();
+    preencherNome();
+
 });
+const token = localStorage.getItem('token');
+
+//Abrir confirmação de exclusão de atividade
+const deleteAtividadeModal = document.getElementById('deleteAtividadeModal');
+
+const deletarAtividadeBtn = document.getElementById('deletarAtividadeBtn');
+    deletarAtividadeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        deleteAtividadeModal.style.display = 'flex';
+    })
+
+function deletarAtividade(id) {
+    try{
+        fetch(`http://localhost:3000/atividade/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            if(!response.ok) {
+                throw new Error('Erro ao excluir atividade')
+            }
+            alert('Atividade excluída!')
+            window.location.reload()
+        })
+    } catch(e) {
+            console.error("Erro ao excluir atividade:", e)
+        }
+    }

@@ -111,6 +111,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 5,
     borderColor: '#000',
+    minHeight: 300,
   },
   input: {
     borderWidth: 1,
