@@ -19,8 +19,6 @@ model Usuario {
   lista       Listas[]    @relation("cria")
   agenda      Agenda[]    @relation("planeja")
   atividade   Atividade[] @relation("tem")
-
-  // Relacionamento com as Notas
   notas       Notas[]     @relation("criaNotas") // Notas agora estão relacionadas diretamente com o Usuario
 }
 
@@ -29,7 +27,6 @@ model Atividade {
   titulo      String
   descricao   String?
   usuarioId   Int
-  data        DateTime?   @default(now())
   concluido   Boolean     @default(false)
   usuario     Usuario     @relation("tem", fields: [usuarioId], references: [id])
 }
@@ -47,7 +44,7 @@ model Notas {
   titulo      String
   descricao String
   usuarioId   Int
-  usuario     Usuario     @relation("criaNotas", fields: [usuarioId], references: [id]) // Notas agora são associadas diretamente ao Usuario
+  usuario     Usuario     @relation("criaNotas", fields: [usuarioId], references: [id])
 }
 
 model ItemLista {
