@@ -53,8 +53,9 @@ const update = async (req, res) => {
             where:{
                 id: parseInt(req.params.id)
             },
-            data: { titulo, descricao, concluido } // Verifique se 'concluida' está incluída aqui
+            data: { titulo, descricao, concluido }
         });
+        console.log(atividade)
         return res.status(202).json(atividade);
     } catch (error) {
         console.error('Erro ao atualizar atividade:', error); // Logando o erro

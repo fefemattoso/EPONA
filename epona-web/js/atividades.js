@@ -30,32 +30,53 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function carregarAtividades() {
+        let usuarioid = parseInt(usuario.id)
+        console.log(usuarioid);
         checarDados();
         try {
-            let response = await fetch('http://localhost:3000/atividade', {
+            let response = await fetch(`http://localhost:3000/atividade/${usuarioid}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 }
             })
-            let atividades = await response.json()
+            let atividade = await response.json()
+            console.log(atividade);
+            const atividades = [];
+            atividades.push(atividade);
 
             document.getElementById('atividadesList').innerHTML = ''
             atividades.forEach(atividade => {
                 let atividadeCard = document.createElement('div');
                 atividadeCard.classList.add('atividadeCard');
-                atividade.concluido ? 'atividadeCard.classList.add("concluido")' : ''
-                atividadeCard.innerHTML = `
+                if(atividade.concluido == true) {
+                    atividadeCard.classList.add("concluido");
+                    atividadeCard.innerHTML = `
                     <div class="headerCard">
                         <h3>${atividade.titulo}</h3>
                         <div class="botoes">
-                            <p style="color:red; display:none; cursor:pointer" id="deletarAtividadeBtn" onclick="deletarAtividade(${atividade.id})">&#128465;</p>
+                        <p style="color:red; display:none; cursor:pointer" id="deletarAtividadeBtn" onclick="deletarAtividade(${atividade.id})">&#128465;</p>
                             <p style="display:none; cursor:pointer" id="editarAtividadeBtn" onclick="editarAtividade(${atividade.id})">&#9998;</p>
-                        </div>
-                    </div>
+                            </div>
+                            </div>
                     <p>${atividade.descricao}</p>
-                    <button onclick="concluirAtividade(${atividade.id})">Concluir</button>
-                `;
+                    <button id="btn${atividade.id}" onclick="concluirAtividade(${atividade.id})" disabled>Concluir</button>
+                    `;
+
+                    } else {
+                        atividadeCard.innerHTML = `
+                    <div class="headerCard">
+                        <h3>${atividade.titulo}</h3>
+                        <div class="botoes">
+                        <p style="color:red; display:none; cursor:pointer" id="deletarAtividadeBtn" onclick="deletarAtividade(${atividade.id})">&#128465;</p>
+                            <p style="display:none; cursor:pointer" id="editarAtividadeBtn" onclick="editarAtividade(${atividade.id})">&#9998;</p>
+                            </div>
+                            </div>
+                    <p>${atividade.descricao}</p>
+                    <button id="btn${atividade.id}" onclick="concluirAtividade(${atividade.id})">Concluir</button>
+                    `;
+                    }
+
                 // Adicionar o evento mouseover para mostrar o botão de excluir
                 atividadeCard.addEventListener('mouseover', () => {
                     let deletarAtividade = atividadeCard.querySelector("#deletarAtividadeBtn");
@@ -96,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let descricao = addAtividadeForm.descricao.value;
         let usuarioId = usuario.id;
 
-        try{
+        try {
             let response = await fetch('http://localhost:3000/atividade', {
                 method: 'POST',
                 headers: {
@@ -109,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     usuarioId: usuarioId
                 })
             })
-            if(!response.ok) {
+            if (!response.ok) {
                 throw new Error('Erro ao adicionar atividade')
             }
             alert('Atividade adicionada!')
@@ -120,13 +141,23 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     function preencherNome() {
-        const nomeUsuario = document.getElementById("usuarioNome")
+        const nomeUsuario = document.getElementById("usuario")
         const usuario = JSON.parse(localStorage.getItem('usuario'));
         nomeUsuario.innerHTML = `${usuario.nome}`
     }
 
+    const sair = document.getElementById("sair");
+
+    sair.addEventListener("click", () => {
+        const usuario = JSON.parse(localStorage.getItem('usuario'));
+        localStorage.removeItem(usuario);
+
+        window.location.href = "./login.html";
+    });
+
     carregarAtividades();
     preencherNome();
+    carregarPontuacao();
 
 });
 const token = localStorage.getItem('token');
@@ -135,13 +166,13 @@ const token = localStorage.getItem('token');
 const deleteAtividadeModal = document.getElementById('deleteAtividadeModal');
 
 const deletarAtividadeBtn = document.getElementById('deletarAtividadeBtn');
-    deletarAtividadeBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        deleteAtividadeModal.style.display = 'flex';
-    })
+deletarAtividadeBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    deleteAtividadeModal.style.display = 'flex';
+})
 
 function deletarAtividade(id) {
-    try{
+    try {
         fetch(`http://localhost:3000/atividade/${id}`, {
             method: 'DELETE',
             headers: {
@@ -149,14 +180,61 @@ function deletarAtividade(id) {
                 'Authorization': `Bearer ${token}`
             }
         })
-        .then(response => {
-            if(!response.ok) {
-                throw new Error('Erro ao excluir atividade')
-            }
-            alert('Atividade excluída!')
-            window.location.reload()
-        })
-    } catch(e) {
-            console.error("Erro ao excluir atividade:", e)
-        }
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao excluir atividade')
+                }
+                alert('Atividade excluída!')
+                window.location.reload()
+            })
+    } catch (e) {
+        console.error("Erro ao excluir atividade:", e)
     }
+}
+
+async function concluirAtividade(id) {
+    try {
+        let btn = document.getElementById(`btn${id}`)
+        btn.disabled = true
+        btn.style.backgroundColor = 'grey'
+
+        let response = await fetch(`http://localhost:3000/atividade/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                concluido : true
+            })
+        })
+
+    } catch (e) {
+        console.error("Erro ao concluir atividade:", e)
+    }
+}
+
+function abrirRanking() {
+    window.location.href = "./pontuacao.html"
+}
+
+async function carregarPontuacao() {
+    const usuario = JSON.parse(localStorage.getItem('usuario'))
+    let usuarioId = usuario.id;
+    try {
+
+        let response = await fetch(`http://localhost:3000/ranking/${usuarioId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        let pontuacao = await response.json();
+        document.getElementById('pontuacao').innerHTML = `${pontuacao.pontuacao}`
+    } catch (e) {
+        console.error("Erro ao carregar pontuação:", e)
+    }
+
+}

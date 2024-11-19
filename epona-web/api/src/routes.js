@@ -15,6 +15,8 @@ router.post('/login', Usuario.login)
 router.post('/usuario', Usuario.create);
 router.get('/usuario', Usuario.read);
 router.get('/usuario/:id', Usuario.read);
+router.get('/ranking', Usuario.readPontuacao);
+router.get('/ranking/:id', Usuario.readPontuacao);
 router.put('/usuario', Usuario.update);
 router.delete('/usuario/:id', Usuario.del);
 
