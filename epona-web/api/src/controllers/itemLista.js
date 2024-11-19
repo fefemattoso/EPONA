@@ -51,9 +51,7 @@ const update = async (req, res) => {
             where: {
                 id: id
             },
-            data: {
-                descricao: req.body.descricao
-            }
+            data: req.body         
         });
         res.status(202).json(itemLista);
 
