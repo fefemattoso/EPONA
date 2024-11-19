@@ -5,7 +5,7 @@ CREATE TABLE `Usuario` (
     `email` VARCHAR(191) NOT NULL,
     `senha` VARCHAR(191) NOT NULL,
     `nascimento` DATETIME(3) NOT NULL,
-    `pontuacao` INTEGER NOT NULL,
+    `pontuacao` INTEGER NULL DEFAULT 0,
     `criadoEm` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     UNIQUE INDEX `Usuario_email_key`(`email`),
@@ -18,7 +18,6 @@ CREATE TABLE `Atividade` (
     `titulo` VARCHAR(191) NOT NULL,
     `descricao` VARCHAR(191) NULL,
     `usuarioId` INTEGER NOT NULL,
-    `data` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3),
     `concluido` BOOLEAN NOT NULL DEFAULT false,
 
     PRIMARY KEY (`id`)

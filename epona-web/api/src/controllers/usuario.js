@@ -26,7 +26,7 @@ const create = async (req, res) => {
         const { nome, email, senha, nascimento } = req.body;
         const usuario = await prisma.usuario.create({
             data: {
-                nome: nome, 
+                nome: nome,
                 email: email,
                 senha: senha,
                 nascimento: new Date(nascimento)
@@ -61,15 +61,15 @@ const update = async (req, res) => {
 };
 
 const senha = async (req, res) => {
-    const {email, senha} = req.body
+    const { email, senha } = req.body
     try {
         const usuario = await prisma.usuario.update({
             where: {
-                 email: email
-                 },
-            data: { 
+                email: email
+            },
+            data: {
                 senha: senha
-             }
+            }
         });
         return res.status(202).json(usuario);
     } catch (error) {
@@ -86,4 +86,34 @@ const del = async (req, res) => {
     }
 };
 
-module.exports = { create, read, update, senha, del, login };
+const readPontuacao = async (req, res) => {
+    if (req.params.id === undefined) {
+        const usuario = await prisma.usuario.findMany({
+            select: {
+                id: true,
+                nome: true,
+                pontuacao: true
+            },
+            orderBy: {
+                pontuacao: 'desc'
+            },
+
+        });
+        return res.json(usuario);
+    } else {
+        const usuario = await prisma.usuario.findUnique({
+            where: { 
+                id: parseInt(req.params.id)
+             },
+            select: {
+                id: true,
+                nome: true,
+                pontuacao: true
+            }
+        })
+        return res.json(usuario);
+    }
+
+}
+
+module.exports = { create, read, update, senha, del, login, readPontuacao };

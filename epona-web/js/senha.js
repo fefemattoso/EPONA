@@ -26,3 +26,8 @@ async function trocarSenha(email, senha){
         console.error(error);
     }
 }
+
+document.getElementById('voltar').addEventListener('click', (e) =>{
+    e.preventDefault()
+    window.location.href = "./login.html"
+})
