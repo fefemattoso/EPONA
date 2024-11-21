@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(usuarioid);
         checarDados();
         try {
-            let response = await fetch(`http://localhost:3000/atividade/${usuarioid}`, {
+            let response = await fetch(`http://localhost:3000/atividadeusuario/${usuarioid}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
@@ -42,11 +42,10 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             let atividade = await response.json()
             console.log(atividade);
-            const atividades = [];
-            atividades.push(atividade);
+            
 
             document.getElementById('atividadesList').innerHTML = ''
-            atividades.forEach(atividade => {
+            atividade.forEach(atividade => {
                 let atividadeCard = document.createElement('div');
                 atividadeCard.classList.add('atividadeCard');
                 if(atividade.concluido == true) {
@@ -133,6 +132,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) {
                 throw new Error('Erro ao adicionar atividade')
             }
+            let atividade = response.json();
+            console.log(atividade)
             alert('Atividade adicionada!')
             window.location.reload()
         } catch (e) {
@@ -193,26 +194,31 @@ function deletarAtividade(id) {
 }
 
 async function concluirAtividade(id) {
-    try {
-        let btn = document.getElementById(`btn${id}`)
-        btn.disabled = true
-        btn.style.backgroundColor = 'grey'
+    let btn = document.getElementById(`btn${id}`);
+    btn.disabled = true;
 
+    try {
         let response = await fetch(`http://localhost:3000/atividade/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({
-                concluido : true
-            })
-        })
+            body: JSON.stringify({ concluido: true })
+        });
 
-    } catch (e) {
-        console.error("Erro ao concluir atividade:", e)
+        if (response.ok) {
+            let result = await response.json();
+            console.log(result.message); // Mensagem de sucesso
+            window.location.reload()
+        } else {
+            console.error("Erro ao concluir a atividade");
+        }
+    } catch (error) {
+        console.error("Erro ao concluir a atividade:", error);
     }
 }
+
 
 function abrirRanking() {
     window.location.href = "./pontuacao.html"
