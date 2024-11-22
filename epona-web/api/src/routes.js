@@ -30,9 +30,12 @@ router.delete('/atividade/:id', Atividade.del);
 router.post('/agenda', Agenda.create);
 router.get('/agenda', Agenda.read);
 router.get('/agenda/:id', Agenda.read);
+router.get('/agenda/proximos', Agenda.readUpcoming);
+router.get('/agenda/porData', Agenda.readByDate);
 router.get('/agendausuario/:usuarioId', Agenda.readById);
 router.put('/agenda/:id', Agenda.update);
 router.delete('/agenda/:id', Agenda.del);
+
 
 router.post('/lista', Lista.create);
 router.get('/lista', Lista.read);

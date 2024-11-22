@@ -29,89 +29,50 @@
         </nav>
     </header>
     <main>
-        <div class="calendario">
-            <!-- Cabeçalho do calendário com navegação -->
-            <div class="cabecalho">
-                <button class="antBtn" id="antBtn">&#60;</button>
-                <span id="ano" class="ano">2024</span>
-                <button class="proxBtn" id="proxBtn">&#62;</button>
+        <div class="calendar">
+            <div class="calendar-header">
+                <button id="prev-month">❮</button>
+                <h2 id="month-year"></h2>
+                <button id="next-month">❯</button>
             </div>
-            
-            <!-- Nome do mês -->
-            <div class="mes" id="mes">Janeiro</div>
-            
-            <!-- Dias da semana -->
-            <div class="dias" id="dias">
-                <div>Seg</div>
-                <div>Ter</div>
-                <div>Qua</div>
-                <div>Qui</div>
-                <div>Sex</div>
-                <div>Sab</div>
-                <div>Dom</div>
-            </div>
-            
-            <!-- Dias do mês -->
-            <div class="dias-do-mes" id="dias-do-mes">
-                <!-- Os dias do mês serão adicionados dinamicamente aqui -->
-            </div>
-            
-            <!-- Detalhes do dia selecionado -->
-            <div class="dia-selecionado" id="dia">
-                <!-- Detalhes do dia selecionado aparecerão aqui -->
-            </div>
-
-            <!-- Formulário para adicionar lembretes -->
-            <div class="formulario-lembrete">
-                <h3>Adicionar Lembrete</h3>
-                <form id="form-lembrete">
-                    <label for="data-lembrete">Data:</label>
-                    <input type="date" id="data-lembrete" name="data-lembrete" required>
-
-                    <label for="texto-lembrete">Lembrete:</label>
-                    <input type="text" id="texto-lembrete" name="texto-lembrete" placeholder="Digite o lembrete até no maximo 25 caracteres" required>
-
-                    <label for="descricao-texto">Descrição:</label>
-                    <textarea id="descricao-texto" name="descricao-texto" placeholder="Digite a descrição" rows="4"></textarea>
-
-                    <button type="submit">Adicionar Lembrete</button>
-                </form>
-            </div>
-        </div>
-    </main>
-
-    <!-- Modal para confirmar exclusão de lembrete -->
-    <div id="overlay-delete" class="overlay-delete hidden">
-        <div class="modal-delete">
-            <h3>Confirmar Exclusão</h3>
-            <p>Você tem certeza que deseja excluir o lembrete?</p>
-            <p id="lembrete-delete-texto"></p>
-            <p id="lembrete-delete-data"></p>
-            <div class="btn-group-delete">
-                <button id="confirm-delete">Confirmar</button>
-                <button id="cancel-delete">Cancelar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal para editar lembrete -->
-    <div id="overlay-edit" class="overlay-edit hidden">
-        <div class="modal-edit">
-            <h3>Editar Lembrete</h3>
-            <form id="form-edit-lembrete">
-                <label for="Titulo">Lembrete:</label>
-                <input type="text" id="edit-texto-lembrete" name="Titulo" required>
-
-                <label for="descricao">Descrição:</label>
-                <textarea id="edit-descricao-texto" name="descricao" rows="4" required></textarea>
-
-                <div class="btn-group-edit">
-                    <button type="submit" id="confirm-edit">Salvar</button>
-                    <button type="button" id="cancel-edit">Cancelar</button>
+            <div class="calendar-body">
+                <div class="weekdays">
+                    <div>Dom</div>
+                    <div>Seg</div>
+                    <div>Ter</div>
+                    <div>Qua</div>
+                    <div>Qui</div>
+                    <div>Sex</div>
+                    <div>Sáb</div>
                 </div>
+                <div class="days" id="days"></div>
+            </div>
+        </div>
+        <div class="events" id="events-container">
+            <h3>Eventos Próximos</h3>
+            <div id="event-list"></div>
+        </div>        
+    </main>
+    
+    <!-- Modal para adicionar evento -->
+    <div id="modal" class="modal hidden">
+        <div class="modal-content">
+            <span id="modal-title">Adicionar Evento</span>
+            <form id="event-form">
+                <label for="event-title">Título</label>
+                <input type="text" id="event-title" name="titulo" required>
+    
+                <label for="event-description">Descrição</label>
+                <textarea id="event-description" name="descricao" required></textarea>
+    
+                <button type="submit">Salvar</button>
             </form>
+            <button id="close-modal">Fechar</button>
         </div>
     </div>
+    
+
+    
 
     <script src="../js/calendario.js"></script>
 </body>
