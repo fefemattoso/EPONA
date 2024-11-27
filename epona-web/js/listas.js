@@ -88,15 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const confirmModal = document.getElementById('confirmModal');
 
-    // const deletarLista = document.getElementById('deletarLista');
-    // deletarLista.addEventListener('click', () => {
-
-    //     // const idLista =  document.getElementById('listaId');
-    //     // idLista = id;
-    //     // console.log(idLista);
-    //     confirmModal.style.display = 'block';
-    // });
-
 
     //Evento de abrir um modal do card ao clicar neles ou nos textos dentre
     document.addEventListener('click', (e) => {
@@ -138,20 +129,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 let itemCard = document.createElement('div');
                 itemCard.classList.add('itemCard');
                 itemCard.style.display = 'flex';
+
+                const isChecked = item.concluido ? 'checked' : '';
+
                 itemCard.innerHTML = `
-            <input type="checkbox" id="concluido"}>
-            <p>${item.descricao}</p>
-            <div class="acoes">
-            <button class="editar" onclick="editarItem(${item.id}, '${item.descricao}')">Editar</button>
+           <input type="checkbox" ${isChecked} onclick="atualizarItemConcluido(${item.id}, this.checked)" id="concluido${item.id}">
+        <p>${item.descricao}</p>
+        <div class="acoes">
             <button class="deletar" onclick="deletarItem(${item.id})">Deletar</button>
+        </div>
             `
+            
                 document.getElementById('itensLista').appendChild(itemCard);
             });
         } catch (e) {
             console.error("Erro ao carregar itens da lista", e)
         }
     }
-
     //Adicionando itens a lista, e carregando 
     const formAddItem = document.getElementById('formAddItem');
     formAddItem.addEventListener('submit', async (e) => {
@@ -266,7 +260,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     carregarListas()
     preencherNome()
+
+
 });
+
+const token = localStorage.getItem('token');
 
 const confirmModal = document.getElementById('confirmModal');
 const cancelBtn = document.getElementById("cancelBtn");
@@ -297,7 +295,7 @@ async function deletarLista() {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${token}`
             }
         })
         if (response.status == 403) {
@@ -318,7 +316,7 @@ async function deletarItem(id) {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                'Authorization': `Bearer ${token}`
             }
         })
         if (response.status == 403) {
@@ -333,5 +331,26 @@ async function deletarItem(id) {
     } catch (e) {
         console.error('Erro ao deletar item:', e)
 
+    }
+}
+
+async function atualizarItemConcluido(id, concluido) {
+    try {
+        const response = await fetch(`http://localhost:3000/itemLista/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ concluido }) // Certifique-se de que `concluido` é um booleano
+        });
+
+        if (!response.ok) {
+            throw new Error('Erro ao atualizar o status do item.');
+        }
+        let item = await response.json();
+        console.log('Item atualizado com sucesso:', item);
+    } catch (e) {
+        console.error('Erro ao atualizar o item:', e);
     }
 }

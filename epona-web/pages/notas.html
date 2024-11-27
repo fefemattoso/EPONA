@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>notas</title>
+    <link rel="icon" href="../images/logo.png" type="image/png">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/notas.css">
+    <!-- Adicionando o link para a fonte Comfortaa -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="index.html"><img src="../images/logo.png" alt="Logo do projeto"></a>
+                <p>Epona</p>
+            </div>
+            <ul class="menu-items">
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="./calendario.html">Agenda</a></li>
+                <li><a href="./atividades.html">Atividades</a></li>
+                <li><a href="./listas.html">Listas</a></li>
+                <li><a href="./notas.html">Notas</a></li>
+            </ul>
+            <div class="perfil">
+                <span id="usuarioNome"></span>
+                <button id="sair">Sair</button>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <h1>Notas</h1>
+        <section class="notas">
+            <button id="addnotaBtn">Adicionar nota </button>
+            <div id="notasList">
+                <!-- As notas serão adicionadas aqui dinamicamente -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal para adicionar nota -->
+    <div id="addnotaModal" class="modal">
+        <div class="modal-content">
+            <h2>Adicionar nota</h2>
+            <form id="addnotaForm">
+                <label for="titulo">Título:</label>
+                <input type="text" id="titulo" name="titulo" required>
+                
+                <label for="descricao">Descrição:</label>
+                <textarea id="descricao" name="descricao" required></textarea>
+                
+                <div class="btn-group">
+                    <button type="button" id="cancel" class="cancelar">Cancelar</button>
+                    <button type="submit" class="confirmar">Adicionar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de remoção de nota individual -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <span id="confirmNotaClose" class="close">&times;</span>
+            <h2>Exclusão</h2>
+                <p>Deseja realmente excluir a nota?</p>
+                <input type="hidden" id="notaId">
+                <button type="button" id="cancelBtn">Cancelar</button>
+                <button type="button" id="btnConfirm" class="deletebtn">Deletar</button>
+        </div>
+    </div>
+
+    <script src="../js/notas.js"></script>
+</body>
+</html>

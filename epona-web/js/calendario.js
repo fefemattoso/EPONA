@@ -1,353 +1,218 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const diasDoMes = document.getElementById('dias-do-mes');
-    const diaSelecionado = document.getElementById('dia');
-    const formLembrete = document.getElementById('form-lembrete');
-    const dataLembreteInput = document.getElementById('data-lembrete');
-    const textoLembreteInput = document.getElementById('texto-lembrete');
-    const descricaoTextoInput = document.getElementById('descricao-texto');
-    const anoSpan = document.getElementById('ano');
-    const mesSpan = document.getElementById('mes');
-    const antBtn = document.getElementById('antBtn');
-    const proxBtn = document.getElementById('proxBtn');
-    const overlayDelete = document.getElementById('overlay-delete');
-    const confirmDeleteBtn = document.getElementById('confirm-delete');
-    const cancelDeleteBtn = document.getElementById('cancel-delete');
-    const lembreteDeleteTexto = document.getElementById('lembrete-delete-texto');
-    const lembreteDeleteData = document.getElementById('lembrete-delete-data');
+const usuario = JSON.parse(localStorage.getItem('usuario'));  
+const token = localStorage.getItem('token');  
 
-    // Modais de edição
-    const overlayEdit = document.getElementById('overlay-edit');
-    const formEditLembrete = document.getElementById('form-edit-lembrete');
-    const editTextoLembreteInput = document.getElementById('edit-texto-lembrete');
-    const editDescricaoTextoInput = document.getElementById('edit-descricao-texto');
-    const cancelEditBtn = document.getElementById('cancel-edit');
-    const confirmEditbtn = document.getElementById('confirm-edit')
+// Função para verificar se o token está expirado  
+function verificarTokenExpirado(token) {  
+    if (!token) return true; // Se o token não existe, consideramos expirado  
 
-    let lembretes = {}; // Armazena lembretes por data
-    let anoAtual = new Date().getFullYear();
-    let mesAtual = new Date().getMonth(); // 0 = Janeiro, 1 = Fevereiro, etc.
-    let lembreteParaExcluir = null; // Lembrete selecionado para exclusão
-    let lembreteParaEditar = null; // Lembrete selecionado para edição
+    // Decodificar o token JWT  
+    const payload = JSON.parse(atob(token.split('.')[1])); // Decodifica a parte 'payload' do token  
+    const expTimestamp = payload.exp * 1000; // A expiração vem em segundos, então multiplicamos por 1000 para converter para milissegundos  
+    const now = Date.now(); // Obtém a data atual em milissegundos  
 
-    function getUsuarioId() {
-        const usuario = JSON.parse(localStorage.getItem('usuario'));
-        return usuario ? usuario.id : null;
-    }
+    // Retorna true se o token estiver expirado  
+    return expTimestamp < now;  
+}  
 
+// Função para checar dados e redirecionar caso necessário  
+async function checarDados() {  
+    if (!usuario || !token) {  
+        alert('Por Favor, realize login no sistema');  
+        window.location.href = "./login.html";  
+    } else if (verificarTokenExpirado(token)) {  
+        alert('O seu token expirou, por favor, faça login novamente.');  
+        localStorage.removeItem('usuario');  
+        localStorage.removeItem('token');  
+        window.location.href = "./login.html"; // Redireciona para a página de login  
+    } else {  
+        console.log('Você está autenticado');  
+    }  
+} 
 
+const daysContainer = document.getElementById('days');
+const monthYear = document.getElementById('month-year');
+const prevMonth = document.getElementById('prev-month');
+const nextMonth = document.getElementById('next-month');
 
-    const API_URL = 'http://localhost:3000/agenda'; // URL da API
+let currentDate = new Date();
 
-    //Essa função está dando erro e o calendario não abre se filtrar por id
+function renderCalendar() {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
 
-    async function carregarLembretes() {
-        const usuarioId = getUsuarioId();
-        const token = localStorage.getItem('token');
-
-        if (usuarioId == null) {
-            window.location.href = "./login.html"
-        } else {
-            try {
-                const response = await fetch(`${API_URL}usuario/${usuarioId}`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                if (response.status == 403) {
-                    window.location.href = "./login.html"
-                } else if (!response.ok) throw new Error('Falha na resposta da API');
-                const agendas = await response.json();
-                lembretes = agendas.reduce((acc, lembrete) => {
-                    const data = lembrete.data.split('T')[0]; // Formata data para yyyy-mm-dd
-                    if (!acc[data]) acc[data] = [];
-                    acc[data].push({ texto: lembrete.titulo, descricao: lembrete.descricao, id: lembrete.id });
-                    return acc;
-                }, {});
-                gerarCalendario(anoAtual, mesAtual);
-            } catch (error) {
-                console.error('Erro ao carregar lembretes:', error);
-            }
-        }
-    }
-
-    async function salvarLembrete(data, texto, descricao) {
-        const usuarioId = getUsuarioId();
-        const token = localStorage.getItem('token')
-        if (usuarioId == null) {
-            window.location.href = "./login.html"
-        } else {
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        titulo: texto,
-                        descricao: descricao,
-                        data: new Date(data).toISOString(),
-                        usuarioId: usuarioId
-                    }),
-                });
-                if (response.status == 403) {
-                    window.location.href = "./login.html"
-                } else if (!response.ok) throw new Error('Falha ao salvar lembrete');
-
-                const novoLembrete = await response.json();
-                lembretes[data] = lembretes[data] || [];
-                lembretes[data].push({ texto: novoLembrete.titulo, descricao: novoLembrete.descricao, id: novoLembrete.id });
-
-                gerarCalendario(anoAtual, mesAtual);
-            } catch (error) {
-                console.error('Erro ao salvar lembrete:', error);
-            }
-        }
-    }
-
-    async function excluirLembreteAPI(id) {
-        const usuarioId = getUsuarioId()
-        const token = localStorage.getItem('token')
-
-        if (usuarioId == null) {
-            window.location.href = "./login.html"
-        } else {
-            try {
-                const response = await fetch(`${API_URL}/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                if(response.status == 403){
-                    window.location.href = "./login.html"
-                } else if (!response.ok) throw new Error('Falha ao excluir lembrete');
-            } catch (error) {
-                console.error('Erro ao excluir lembrete:', error);
-            }
-        }
-    }
-
-    async function excluirLembrete() {
-        if (lembreteParaExcluir) {
-            const { data, id } = lembreteParaExcluir;
-            await excluirLembreteAPI(id);
-            lembretes[data] = (lembretes[data] || []).filter(l => l.id !== id);
-            gerarCalendario(anoAtual, mesAtual);
-            lembreteParaExcluir = null;
-        }
-    }
-
-    function gerarCalendario(ano, mes) {
-        diasDoMes.innerHTML = '';
-        const primeiroDia = new Date(ano, mes, 1).getDay();
-        const diasNoMes = new Date(ano, mes + 1, 0).getDate();
-
-        // Ajustar primeiroDia para o calendário começar na segunda-feira
-        const ajusteDia = (primeiroDia === 0) ? 6 : primeiroDia - 1;
-
-        for (let i = 0; i < ajusteDia; i++) {
-            const vazio = document.createElement('div');
-            diasDoMes.appendChild(vazio);
-        }
-
-        for (let i = 1; i <= diasNoMes; i++) {
-            criarDia(i, `${ano}-${(mes + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`);
-        }
-
-        // Atualiza os detalhes do mês e ano
-        mesSpan.textContent = new Date(ano, mes).toLocaleString('pt-BR', { month: 'long' });
-        anoSpan.textContent = ano;
-    }
-
-    function criarDia(dia, data) {
-        const divDia = document.createElement('div');
-        divDia.classList.add('dia');
-        divDia.textContent = dia;
-        divDia.dataset.data = data;
-
-        divDia.addEventListener('click', () => {
-            dataLembreteInput.value = data;
-            mostrarDetalhesDia(data);
-        });
-
-        diasDoMes.appendChild(divDia);
-
-        if (lembretes[data]) {
-            lembretes[data].forEach(lembrete => {
-                const lembreteDiv = document.createElement('div');
-                lembreteDiv.classList.add('lembrete');
-                lembreteDiv.textContent = lembrete.texto;
-                lembreteDiv.addEventListener('click', (event) => {
-                    event.stopPropagation();
-                    prepararModalDeletar(data, lembrete.texto, lembrete.id);
-                });
-                divDia.appendChild(lembreteDiv);
-            });
-        }
-    }
-
-
-    function mostrarDetalhesDia(data) {
-        const lembretesDia = lembretes[data] || [];
-        diaSelecionado.innerHTML = `
-            <h3>Detalhes de ${data}</h3>
-            ${lembretesDia.map(l => `
-                <div class="lembrete">
-                    <strong>${l.texto}</strong>
-                    <p>${l.descricao}</p>
-                    <button class="edit-btn" data-id="${l.id}" data-data="${data}">Editar</button>
-                </div>
-            `).join('')}
-        `;
-        adicionarEventosEditar();
-    }
-
-    function prepararModalDeletar(data, texto, id) {
-        lembreteParaExcluir = { data, texto, id };
-        lembreteDeleteTexto.textContent = texto;
-        lembreteDeleteData.textContent = data;
-        overlayDelete.classList.remove('hidden');
-    }
-
-    async function editarLembrete() {
-        const usuarioId = getUsuarioId(); // Obtendo o usuarioId
-        const token = localStorage.getItem('token')
-        if (usuarioId == null) {
-            window.location.href = "./login.html"
-        } else {
-            if (lembreteParaEditar) {
-                const { id, data } = lembreteParaEditar;
-                const texto = editTextoLembreteInput.value;
-                const descricao = editDescricaoTextoInput.value;
-
-                try {
-                    const response = await fetch(`${API_URL}/${id}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({
-                            id,
-                            titulo: texto,
-                            descricao: descricao,
-                            data: new Date(data).toISOString(),
-                            usuarioId: usuarioId
-                        }),
-                    });
-                    if (response.status == 403) {
-                        window.location.href = "./login.html"
-                    } else if (!response.ok) throw new Error('Falha ao atualizar lembrete');
-
-                    const atualizado = await response.json();
-                    lembretes[data] = (lembretes[data] || []).map(l => l.id === id ? { ...l, texto: atualizado.titulo, descricao: atualizado.descricao } : l);
-
-                    gerarCalendario(anoAtual, mesAtual);
-                    overlayEdit.classList.add('hidden');
-                    lembreteParaEditar = null;
-                } catch (error) {
-                    console.error('Erro ao atualizar lembrete:', error);
-                }
-
-            }
-        }
-    }
-
-    function adicionarEventosEditar() {
-        document.querySelectorAll('.edit-btn').forEach(btn => {
-            btn.addEventListener('click', (event) => {
-                const id = event.target.dataset.id;
-                const data = event.target.dataset.data;
-
-                if (lembretes[data]) {
-
-                    const lembrete = lembretes[data].find(l => String(l.id) === String(id));
-
-                    overlayEdit.classList.remove('hidden');
-                    if (lembrete) {
-                        lembreteParaEditar = { ...lembrete, data };
-                        editTextoLembreteInput.value = lembrete.texto;
-                        editDescricaoTextoInput.value = lembrete.descricao;
-                    }
-                }
-            });
-        });
-    }
-
-
-
-
-
-    formLembrete.addEventListener('submit', async function (event) {
-        event.preventDefault();
-        const data = dataLembreteInput.value;
-        const texto = textoLembreteInput.value;
-        const descricao = descricaoTextoInput.value;
-
-        await salvarLembrete(data, texto, descricao);
-        formLembrete.reset();
+    // Atualiza o cabeçalho do calendário
+    monthYear.textContent = new Date(year, month).toLocaleString('default', {
+        month: 'long',
+        year: 'numeric',
     });
 
-    antBtn.addEventListener('click', function () {
-        if (mesAtual === 0) {
-            mesAtual = 11;
-            anoAtual--;
-        } else {
-            mesAtual--;
-        }
-        gerarCalendario(anoAtual, mesAtual);
-    });
+    // Obtém o primeiro dia do mês e a quantidade de dias no mês
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-    proxBtn.addEventListener('click', function () {
-        if (mesAtual === 11) {
-            mesAtual = 0;
-            anoAtual++;
-        } else {
-            mesAtual++;
-        }
-        gerarCalendario(anoAtual, mesAtual);
-    });
+    // Limpa os dias anteriores
+    daysContainer.innerHTML = '';
 
-    confirmDeleteBtn.addEventListener('click', async () => {
-        await excluirLembrete();
-        overlayDelete.classList.add('hidden');
-    });
-
-    formEditLembrete.addEventListener('submit', async () => {
-        await editarLembrete();
-        overlayEdit.classList.add('hidden');
-    })
-
-    cancelDeleteBtn.addEventListener('click', () => {
-        overlayDelete.classList.add('hidden');
-    });
-
-    cancelEditBtn.addEventListener('click', () => {
-        overlayEdit.classList.add('hidden');
-    });
-
-
-    carregarLembretes();
-
-    //Fazer logoff e exibir nome do usuario
-    const sair = document.getElementById("sair");
-    const nomeUsuario = document.getElementById("usuario")
-
-    sair.addEventListener("click", () => {
-        const usuario = JSON.parse(localStorage.getItem('usuario'));
-        localStorage.removeItem(usuario);
-
-        window.location.href = "./login.html";
-    });
-
-
-    function preencherNome() {
-        const usuario = JSON.parse(localStorage.getItem('usuario'));
-        nomeUsuario.innerHTML = `${usuario.nome}`
+    // Adiciona espaços em branco para os dias antes do primeiro dia do mês
+    for (let i = 0; i < firstDay; i++) {
+        const emptyDiv = document.createElement('div');
+        daysContainer.appendChild(emptyDiv);
     }
 
-    preencherNome()
+    // Adiciona os dias do mês
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dayDiv = document.createElement('div');
+        dayDiv.textContent = day;
+    
+        // Adiciona a classe "day" para identificar os dias
+        dayDiv.classList.add('day');
+    
+        // Marca o dia atual
+        if (
+            day === new Date().getDate() &&
+            month === new Date().getMonth() &&
+            year === new Date().getFullYear()
+        ) {
+            dayDiv.classList.add('today');
+        }
+
+        // Adiciona o atributo data-date com o formato "YYYY-MM-DD"
+        const dayString = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+        dayDiv.setAttribute('data-date', dayString);
+
+        daysContainer.appendChild(dayDiv);
+    }
+}
+
+    
+
+// Navegação entre meses
+prevMonth.addEventListener('click', () => {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    renderCalendar();
 });
+
+nextMonth.addEventListener('click', () => {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    renderCalendar();
+});
+
+// Renderiza o calendário na inicialização
+renderCalendar();
+
+//Detectar o dia clicado
+document.addEventListener('click', (e) => {
+    // Verifica se o elemento clicado tem a classe "day"
+    if (e.target.classList.contains('day')) {
+        console.log(`Dia clicado: ${e.target.textContent}`);
+    }
+});
+
+//Relacionado aos modais
+
+const modal = document.getElementById('modal');
+const closeModal = document.getElementById('close-modal');
+const eventForm = document.getElementById('event-form');
+let selectedDate = null; // Para rastrear o dia clicado
+
+// Abrir o modal
+let isoDate;  // Declaração global da isoDate, para que possa ser acessada em qualquer lugar do código
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('day')) {
+        selectedDate = e.target.dataset.date; // Ex: "2024-11-22"
+        
+        // Convertendo a data para o formato ISO (sem hora definida, será às 00:00:00)
+        isoDate = new Date(selectedDate).toISOString();
+
+        // Exibe a data no console (no formato ISO)
+        console.log('Data ISO:', isoDate);
+
+        // Atualiza o título do modal
+        document.getElementById('modal-title').textContent = `Adicionar Evento - ${selectedDate}`;
+        
+        // Remover a classe 'hidden' para mostrar o modal
+        modal.classList.remove('hidden');
+    }
+});
+
+// Fechar o modal
+
+closeModal.addEventListener('click', () => {
+    modal.classList.add('hidden'); // Adiciona a classe 'hidden' para esconder o modal
+});
+
+// Enviar o formulário
+eventForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const titulo = document.getElementById('event-title').value;
+    const descricao = document.getElementById('event-description').value;
+
+    if (!isoDate) {
+        alert('Por favor, selecione uma data para o evento.');
+        return;
+    }
+
+    const evento = { titulo, descricao, data: isoDate, usuarioId: usuario.id };
+
+    try {
+        await fetch(`http://localhost:3000/agenda`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(evento),
+        });
+        alert('Evento adicionado com sucesso!');
+        modal.classList.add('hidden');
+        renderCalendar(); // Recarregar o calendário
+    } catch (error) {
+        console.error('Erro ao adicionar evento:', error);
+    }
+});
+
+//Mostrar eventos
+const eventsContainer = document.getElementById('events-container');
+
+// Buscar e exibir eventos
+async function fetchEvents() {
+    let usuarioId = usuario.id
+    console.log(usuarioId)
+    const response = await fetch(`http://localhost:3000/agendausuario/${usuarioId}`);
+    return await response.json();
+}
+
+// Exibir eventos próximos
+async function displayUpcomingEvents() {
+    const eventos = await fetchEvents('http://localhost:3000/agenda/proximos');
+    renderEvents(eventos, 'Eventos Próximos');
+}
+
+// Exibir eventos de uma data específica
+async function displayEventsForDate(date) {
+    const eventos = await fetchEvents(`/agenda/by-date?usuarioId=${usuario.id}&data=${date}`);
+    renderEvents(eventos, `Eventos de ${date}`);
+}
+
+// Renderizar eventos
+function renderEvents(eventos, title) {
+    eventsContainer.innerHTML = `<h3>${title}</h3>`;
+    eventos.forEach((evento) => {
+        eventsContainer.innerHTML += `
+            <div class="event">
+                <h4>${evento.titulo}</h4>
+                <p>${evento.descricao}</p>
+                <p>${new Date(evento.data).toLocaleDateString()}</p>
+            </div>
+        `;
+    });
+}
+
+// Inicialização
+displayUpcomingEvents();
+
+
+function preencherNome() {  
+    const nomeUsuario = document.getElementById("usuario");  
+    const usuario = JSON.parse(localStorage.getItem('usuario'));  
+    nomeUsuario.innerHTML = `${usuario.nome}`;  
+}
+
+preencherNome();  
