@@ -6750,6 +6750,11 @@ react-native-mask-input@^1.2.3:
   resolved "https://registry.npmjs.org/react-native-mask-input/-/react-native-mask-input-1.2.3.tgz"
   integrity sha512-RWx+gc1EaBslJWR6dsvGdILJ5XvnvZuyEsgJaH9uAMukB3Z9eOlxra1E7Ovck8NSMVcYWpBB/lzojO4LwqqXgA==
 
+react-native-plugin@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-plugin/-/react-native-plugin-1.0.0.tgz#164a57ca2f851ae8c3cea2162eb5db9e84fdb798"
+  integrity sha512-lRg5PkqdywRwVCtaWdOLr3FUrcdlFdQLb/VPhXien91cVD0coI70FC4NKiep6gg8onShaHGQZ90jjB669LoYkA==
+
 react-native-reanimated@^3.16.3:
   version "3.16.3"
   resolved "https://registry.yarnpkg.com/react-native-reanimated/-/react-native-reanimated-3.16.3.tgz#3b559dca49e9e40abcf5de834dc27fc05f856b66"
@@ -6767,7 +6772,7 @@ react-native-reanimated@^3.16.3:
     convert-source-map "^2.0.0"
     invariant "^2.2.4"
 
-react-native-safe-area-context@^4.14.0:
+react-native-safe-area-context@4.14.0:
   version "4.14.0"
   resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-4.14.0.tgz#138f4b2e180cb7517c78bd5f4d4cf91325ba0b1a"
   integrity sha512-/SyYpCulWQOnnXhRq6wepkhoyQMowHm1ptDyRz20s+YS/R9mbd+mK+jFyFCyXFJn8jp7vFl43VUCgspuOiEbwA==
