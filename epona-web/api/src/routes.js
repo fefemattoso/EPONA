@@ -9,12 +9,15 @@ const Lista = require('./controllers/listas');
 const itemLista = require('./controllers/itemLista');
 const notas = require('./controllers/notas');
 
-router.put('/senha', Usuario.senha)
+//Rotas sem valida acesso
 
+router.put('/senha', Usuario.senha)
 router.post('/login', Usuario.login)
 router.post('/usuario', Usuario.create);
 router.get('/usuario', Usuario.read);
 router.get('/usuario/:id', Usuario.read);
+
+//Rotas que precisam de validaAcesso (estão sem para facilitar o progesso de programação)
 router.get('/ranking', Usuario.readPontuacao);
 router.get('/ranking/:id', Usuario.readPontuacao);
 router.put('/usuario', Usuario.update);
@@ -30,7 +33,7 @@ router.delete('/atividade/:id', Atividade.del);
 router.post('/agenda', Agenda.create);
 router.get('/agenda', Agenda.read);
 router.get('/agenda/:id', Agenda.read);
-router.get('/agenda/proximos', Agenda.readUpcoming);
+router.get('/agendas/proximos', Agenda.readUpcoming);
 router.get('/agenda/porData', Agenda.readByDate);
 router.get('/agendausuario/:usuarioId', Agenda.readById);
 router.put('/agenda/:id', Agenda.update);

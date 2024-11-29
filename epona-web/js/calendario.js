@@ -1,8 +1,8 @@
-const usuario = JSON.parse(localStorage.getItem('usuario'));  
-const token = localStorage.getItem('token');  
+const usuario = JSON.parse(localStorage.getItem('usuario'));
+const token = localStorage.getItem('token');
 
 // Função para verificar se o token está expirado  
-function verificarTokenExpirado(token) {  
+function verificarTokenExpirado(token) {
     if (!token) return true; // Se o token não existe, consideramos expirado  
 
     // Decodificar o token JWT  
@@ -11,23 +11,23 @@ function verificarTokenExpirado(token) {
     const now = Date.now(); // Obtém a data atual em milissegundos  
 
     // Retorna true se o token estiver expirado  
-    return expTimestamp < now;  
-}  
+    return expTimestamp < now;
+}
 
 // Função para checar dados e redirecionar caso necessário  
-async function checarDados() {  
-    if (!usuario || !token) {  
-        alert('Por Favor, realize login no sistema');  
-        window.location.href = "./login.html";  
-    } else if (verificarTokenExpirado(token)) {  
-        alert('O seu token expirou, por favor, faça login novamente.');  
-        localStorage.removeItem('usuario');  
-        localStorage.removeItem('token');  
+async function checarDados() {
+    if (!usuario || !token) {
+        alert('Por Favor, realize login no sistema');
+        window.location.href = "./login.html";
+    } else if (verificarTokenExpirado(token)) {
+        alert('O seu token expirou, por favor, faça login novamente.');
+        localStorage.removeItem('usuario');
+        localStorage.removeItem('token');
         window.location.href = "./login.html"; // Redireciona para a página de login  
-    } else {  
-        console.log('Você está autenticado');  
-    }  
-} 
+    } else {
+        console.log('Você está autenticado');
+    }
+}
 
 const daysContainer = document.getElementById('days');
 const monthYear = document.getElementById('month-year');
@@ -36,7 +36,7 @@ const nextMonth = document.getElementById('next-month');
 
 let currentDate = new Date();
 
-function renderCalendar() {
+function carregarCalendario() {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
 
@@ -63,10 +63,10 @@ function renderCalendar() {
     for (let day = 1; day <= daysInMonth; day++) {
         const dayDiv = document.createElement('div');
         dayDiv.textContent = day;
-    
+
         // Adiciona a classe "day" para identificar os dias
         dayDiv.classList.add('day');
-    
+
         // Marca o dia atual
         if (
             day === new Date().getDate() &&
@@ -84,21 +84,21 @@ function renderCalendar() {
     }
 }
 
-    
+
 
 // Navegação entre meses
 prevMonth.addEventListener('click', () => {
     currentDate.setMonth(currentDate.getMonth() - 1);
-    renderCalendar();
+    carregarCalendario();
 });
 
 nextMonth.addEventListener('click', () => {
     currentDate.setMonth(currentDate.getMonth() + 1);
-    renderCalendar();
+    carregarCalendario();
 });
 
 // Renderiza o calendário na inicialização
-renderCalendar();
+carregarCalendario();
 
 //Detectar o dia clicado
 document.addEventListener('click', (e) => {
@@ -120,7 +120,7 @@ let isoDate;  // Declaração global da isoDate, para que possa ser acessada em 
 document.addEventListener('click', (e) => {
     if (e.target.classList.contains('day')) {
         selectedDate = e.target.dataset.date; // Ex: "2024-11-22"
-        
+
         // Convertendo a data para o formato ISO (sem hora definida, será às 00:00:00)
         isoDate = new Date(selectedDate).toISOString();
 
@@ -129,7 +129,7 @@ document.addEventListener('click', (e) => {
 
         // Atualiza o título do modal
         document.getElementById('modal-title').textContent = `Adicionar Evento - ${selectedDate}`;
-        
+
         // Remover a classe 'hidden' para mostrar o modal
         modal.classList.remove('hidden');
     }
@@ -146,12 +146,6 @@ eventForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const titulo = document.getElementById('event-title').value;
     const descricao = document.getElementById('event-description').value;
-
-    if (!isoDate) {
-        alert('Por favor, selecione uma data para o evento.');
-        return;
-    }
-
     const evento = { titulo, descricao, data: isoDate, usuarioId: usuario.id };
 
     try {
@@ -162,7 +156,7 @@ eventForm.addEventListener('submit', async (e) => {
         });
         alert('Evento adicionado com sucesso!');
         modal.classList.add('hidden');
-        renderCalendar(); // Recarregar o calendário
+        carregarCalendario(); // Recarregar o calendário
     } catch (error) {
         console.error('Erro ao adicionar evento:', error);
     }
@@ -171,48 +165,52 @@ eventForm.addEventListener('submit', async (e) => {
 //Mostrar eventos
 const eventsContainer = document.getElementById('events-container');
 
-// Buscar e exibir eventos
-async function fetchEvents() {
+// Buscar todos os eventos
+async function fetchEventos() {
     let usuarioId = usuario.id
     console.log(usuarioId)
     const response = await fetch(`http://localhost:3000/agendausuario/${usuarioId}`);
-    return await response.json();
+    let evento = await response.json();
+    console.log(evento)
 }
 
 // Exibir eventos próximos
-async function displayUpcomingEvents() {
-    const eventos = await fetchEvents('http://localhost:3000/agenda/proximos');
-    renderEvents(eventos, 'Eventos Próximos');
-}
+async function fetchEventosProximos() {
+    const eventos = await fetch('http://localhost:3000/agendas/proximos');
+    // carregarEventos(eventos);
+    let evento = await eventos.json();
+    console.log(evento)
 
-// Exibir eventos de uma data específica
-async function displayEventsForDate(date) {
-    const eventos = await fetchEvents(`/agenda/by-date?usuarioId=${usuario.id}&data=${date}`);
-    renderEvents(eventos, `Eventos de ${date}`);
-}
-
-// Renderizar eventos
-function renderEvents(eventos, title) {
-    eventsContainer.innerHTML = `<h3>${title}</h3>`;
-    eventos.forEach((evento) => {
+    eventsContainer.innerHTML = `<h3>Eventos mais próximos</h3>`;
+    evento.forEach((evento) => {
+        //Talvez esteja voltando no dia pelos eventos estarem sendo adicionados à 00:00 e ao utilzar localeString ele volta em 3 horas
+        console.log("Data normal = ", new Date(evento.data).toLocaleDateString())
+        console.log("Data 'Certa' =", evento.data.split('T')[0])
+        // const dataEvento = new Date(evento.data)
+        // console.log("new Date(evento.data) = ", dataEvento)
+        // const dataFormatada = dataEvento.toLocaleDateString('pt-BR', {
+        //     timeZone: 'America/Sao_Paulo'
+        // })
+        // console.log("dataFormatada = ", dataFormatada)
         eventsContainer.innerHTML += `
             <div class="event">
+            <p>${new Date(evento.data).toLocaleDateString()}</p>
                 <h4>${evento.titulo}</h4>
                 <p>${evento.descricao}</p>
-                <p>${new Date(evento.data).toLocaleDateString()}</p>
             </div>
         `;
-    });
+    })
+
 }
 
 // Inicialização
-displayUpcomingEvents();
+fetchEventosProximos();
 
 
-function preencherNome() {  
-    const nomeUsuario = document.getElementById("usuario");  
-    const usuario = JSON.parse(localStorage.getItem('usuario'));  
-    nomeUsuario.innerHTML = `${usuario.nome}`;  
+function preencherNome() {
+    const nomeUsuario = document.getElementById("usuario");
+    const usuario = JSON.parse(localStorage.getItem('usuario'));
+    nomeUsuario.innerHTML = `${usuario.nome}`;
 }
 
 preencherNome();  
