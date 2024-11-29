@@ -1,86 +1,77 @@
-import React from 'react';
-import { View, Text, Button, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Animated, TouchableOpacity, Image } from 'react-native';
 
-function FunctionSelection({ onSelect }) {
+const Home = ({ onContinue }) => {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 1000,
+      useNativeDriver: true,
+    }).start();
+  }, [fadeAnim]);
+
   return (
-    <View style={styles.functionSelection}>
-      <Text style={styles.title}>Selecione uma Função</Text>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => onSelect('agenda')}>
-          <Text style={styles.buttonText}>AGENDA</Text>
-      </TouchableOpacity>
-  
-      <TouchableOpacity style={styles.button} onPress={() => onSelect('dailyTasks')}>
-        <Text style={styles.buttonText}>TAREFAS DIÁRIAS</Text>
-      </TouchableOpacity>
-  
-      <TouchableOpacity style={styles.button} onPress={() => onSelect('customList')}>
-        <Text style={styles.buttonText}>LISTA PERSONALIZADA</Text>
-      </TouchableOpacity>
-</View>
+    <Animated.View style={{ ...styles.container, opacity: fadeAnim }}>
+      {/* Logo ou imagem principal */}
+      <Image
+        source={require('../assets/NEW/Design sem nome (1).png')}
+        style={styles.logo}
+      />
 
-
-      {/* Adicionando as folhinhas */}
-      <Image source={require('../assets/planta2.png')} style={styles.leafTopLeft} />
-      <Image source={require('../assets/planta.png')} style={styles.leafBottomRight} />
-    </View>
+      {/* Título e slogan */}
+      <Text style={styles.title}>Bem-vindo ao Epona</Text>
+      <Text style={styles.subtitle}>
+        Organização, produtividade e serenidade no seu dia a dia.
+      </Text>
+    </Animated.View>
   );
-}
-
-export default FunctionSelection;
+};
 
 const styles = StyleSheet.create({
-  functionSelection: {
+  container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#badda8', // Cor da paleta
-    position: 'relative',
-    textAlign: 'center',
+    backgroundColor: '#fff8dd', // Fundo claro
+    paddingHorizontal: 20,
+  },
+  logo: {
+    width: 150,
+    height: 150,
+    marginBottom: 20,
+    resizeMode: 'contain',
   },
   title: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
-    color: '#162040',
-    marginBottom: 30,
+    color: '#162040', // Azul-escuro da paleta
     textAlign: 'center',
+    marginBottom: 10,
   },
-  buttonContainer: {
-    width: '85%',
-    maxWidth: 400,
-    flexDirection: 'column',
-    gap: 15,
+  subtitle: {
+    fontSize: 18,
+    color: '#547699', // Azul suave
+    textAlign: 'center',
     marginBottom: 30,
   },
   button: {
-    backgroundColor: '#162040', // Cor do botão conforme a paleta
-    padding: 10,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#8AC66D', // Verde da paleta
+    paddingVertical: 12,
+    paddingHorizontal: 40,
+    borderRadius: 25,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 5,
   },
   buttonText: {
-    fontSize: 15,
+    fontSize: 18,
+    color: '#FFF',
     fontWeight: 'bold',
-    color: '#fff', // Cor escura da paleta
-    marginBottom: 10,
-    marginTop: 5,
   },
-  leafTopLeft: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: 150,
-    height: 150,
-    transform: [{ rotate: '45deg' }],  // Gira a imagem 45 graus
-  },
-  leafBottomRight: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: 150,
-    height: 150,
-    transform: [{ rotate: '-40deg' }],  // Gira a imagem -45 graus
-    marginRight: 60,
-  },  
 });
+
+export default Home;
