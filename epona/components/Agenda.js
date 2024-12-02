@@ -172,11 +172,11 @@ const App = () => {
         }}
         theme={{
           backgroundColor: '#ffffff',
-          calendarBackground: '#ffffff',
-          textSectionTitleColor: '#b6c1cd',
+          calendarBackground: '#ffc4c7',
+          textSectionTitleColor: '#255140',
           selectedDayBackgroundColor: '#00adf5',
           selectedDayTextColor: '#ffffff',
-          todayTextColor: '#00adf5',
+          todayTextColor: '#255140',
           dayTextColor: '#2d4150',
           textDisabledColor: '#d9e1e8'
         }}
@@ -287,18 +287,18 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#badda8', // Fundo suave
+    padding: 50,
+    backgroundColor: '#fff8dd', // Fundo suave
   },
   centeredView: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#badda8', // Escurece o fundo quando o modal está aberto
+    backgroundColor: '#addaff', // Escurece o fundo quando o modal está aberto
   },
   modalView: {
     margin: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#fff8dd',
     borderRadius: 20,
     padding: 40,
     alignItems: 'center',
@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
     color: '#162040', // Azul escuro
   },
   buttonSave: {
-    backgroundColor: '#8AC66D', // Verde claro
+    backgroundColor: '#62a084', // Verde claro
     padding: 15,
     borderRadius: 15,
     marginTop: 15,
@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonDelete: {
-    backgroundColor: '#2F5911', // Verde escuro
+    backgroundColor: '#255140', // Verde escuro
     padding: 15,
     borderRadius: 15,
     marginTop: 15,
@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonClose: {
-    backgroundColor: '#C7E8FD', // Azul claro
+    backgroundColor: '#fec3c7', // Azul claro
     padding: 15,
     borderRadius: 15,
     marginTop: 15,
@@ -365,7 +365,7 @@ const styles = StyleSheet.create({
   },
   eventItem: {
     padding: 10,
-    backgroundColor: '#e8f5e9',
+    backgroundColor: '#b6d2aa',
     borderRadius: 10,
     marginVertical: 5,
   },

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, Animated, TouchableOpacity, ImageBackground, Image } from 'react-native';
 
 const Home = ({ onContinue }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -14,17 +14,26 @@ const Home = ({ onContinue }) => {
 
   return (
     <Animated.View style={{ ...styles.container, opacity: fadeAnim }}>
-      {/* Logo ou imagem principal */}
-      <Image
-        source={require('../assets/NEW/Design sem nome (1).png')}
-        style={styles.logo}
-      />
+      <ImageBackground
+        source={require('../assets/NEW/borrao.png')}
+        style={styles.backgroundImage}
+        resizeMode="cover"
+      >
+        {/* Conteúdo da página */}
+        <View style={styles.content}>
+          {/* Logo ou imagem principal */}
+          <Image
+            source={require('../assets/NEW/Design sem nome (1).png')}
+            style={styles.logo}
+          />
 
-      {/* Título e slogan */}
-      <Text style={styles.title}>Bem-vindo ao Epona</Text>
-      <Text style={styles.subtitle}>
-        Organização, produtividade e serenidade no seu dia a dia.
-      </Text>
+          {/* Título e slogan */}
+          <Text style={styles.title}>Bem-vindo ao Epona</Text>
+          <Text style={styles.subtitle}>
+            Organização, produtividade e serenidade no seu dia a dia.
+          </Text>
+        </View>
+      </ImageBackground>
     </Animated.View>
   );
 };
@@ -32,9 +41,18 @@ const Home = ({ onContinue }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff8dd', // Fundo claro
+  },
+  backgroundImage: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff8dd', // Fundo claro
+    height: 800,
+    width: 420,
+  },
+  content: {
+    justifyContent: 'center',
+    alignItems: 'center',
     paddingHorizontal: 20,
   },
   logo: {
@@ -55,22 +73,6 @@ const styles = StyleSheet.create({
     color: '#547699', // Azul suave
     textAlign: 'center',
     marginBottom: 30,
-  },
-  button: {
-    backgroundColor: '#8AC66D', // Verde da paleta
-    paddingVertical: 12,
-    paddingHorizontal: 40,
-    borderRadius: 25,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 5,
-  },
-  buttonText: {
-    fontSize: 18,
-    color: '#FFF',
-    fontWeight: 'bold',
   },
 });
 
