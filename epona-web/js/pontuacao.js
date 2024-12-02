@@ -32,6 +32,7 @@ const divPontuacao = document.getElementById('ranking')
 
 // Função para carregar o ranking
 async function carregarRanking() {
+    await checarDados();
     try{
         let response = await fetch('http://localhost:3000/ranking', {
             method: 'GET',

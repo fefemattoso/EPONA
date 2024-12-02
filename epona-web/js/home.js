@@ -7,7 +7,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const termsLink = document.querySelector('#user-options li a[href="./termos.html"]');
     const termsModal = document.getElementById('terms-modal');
     const closeModal = document.querySelector('.close-modal');
+    const usuario = JSON.parse(localStorage.getItem('usuario'));  
+    const token = localStorage.getItem('token');  
 
+    function verificarTokenExpirado(token) {
+        if (!token) return true; // Se o token não existe, consideramos expirado  
+    
+        // Decodificar o token JWT  
+        const payload = JSON.parse(atob(token.split('.')[1])); // Decodifica a parte 'payload' do token  
+        const expTimestamp = payload.exp * 1000; // A expiração vem em segundos, então multiplicamos por 1000 para converter para milissegundos  
+        const now = Date.now(); // Obtém a data atual em milissegundos  
+    
+        // Retorna true se o token estiver expirado  
+        return expTimestamp < now;
+    }
+    
+    // Função para checar dados e redirecionar caso necessário  
+    async function checarDados() {
+        if (!usuario || !token) {
+            alert('Por Favor, realize login no sistema');
+            window.location.href = "./login.html";
+        } else if (verificarTokenExpirado(token)) {
+            alert('O seu token expirou, por favor, faça login novamente.');
+            localStorage.removeItem('usuario');
+            localStorage.removeItem('token');
+            window.location.href = "./login.html"; // Redireciona para a página de login  
+        }
+    }
+    
     // Abrir o modal
     termsLink.addEventListener('click', (e) => {
         e.preventDefault(); // Previne o redirecionamento padrão
@@ -73,4 +100,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     preencherNome()
+    checarDados()
 })

@@ -43,13 +43,15 @@ const read = async (req, res) => {
 // Buscar eventos por ID do usuário
 const readById = async (req, res) => {
     try {
-        const { usuarioId } = req.params;
         const eventos = await prisma.agenda.findMany({
-            where: { usuarioId: parseInt(usuarioId) },
+            where: {
+                usuarioId: parseInt(req.params.usuarioId)
+            } 
         });
         return res.json(eventos);
     } catch (error) {
-        return res.status(400).json({ message: "Erro ao localizar eventos do usuário" });
+        console.error(error);
+        return res.status(400).json({ message: "Erro ao localizar eventos do usuário", error });
     }
 };
 
@@ -64,25 +66,6 @@ const readUpcoming = async (req, res) => {
             orderBy: { data: 'asc' },
         });
         return res.json(eventosProximos);
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-};
-
-// Buscar eventos por data específica
-const readByDate = async (req, res) => {
-    try {
-        const { usuarioId, data } = req.body;
-        if (!usuarioId || !data) {
-            return res.status(400).json({ message: "Usuário e data são obrigatórios" });
-        }
-        const eventos = await prisma.agenda.findMany({
-            where: {
-                usuarioId: parseInt(usuarioId),
-                data: new Date(data), // Comparação direta com a data
-            },
-        });
-        return res.json(eventos);
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -120,7 +103,6 @@ module.exports = {
     read,
     readById,
     readUpcoming,
-    readByDate,
     update,
     del,
 };
