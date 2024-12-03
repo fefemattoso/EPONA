@@ -70,7 +70,24 @@
         </div>
     </div>
     
+<!-- Modal para editar evento -->
+<div id="modalEditarEvento" class="modal hidden">
+    <div class="modal-content">
+        <span id="modal-titleEdit">Editar Evento</span>
+        <form id="editEvent-form">
+            <input type="hidden" name="idEvento" id="idEvento">
+            <label for="event-titleEdit">Título</label>
+            <input type="text" id="event-titleEdit" name="titulo" required>
 
+            <label for="event-descriptionEdit">Descrição</label>
+            <textarea id="event-descriptionEdit" name="descricao" required></textarea>
+
+            <button type="submit">Salvar</button>
+        </form>
+        <button id="close-modalEdit">Fechar</button>
+        <button onclick="deletarEvento()">Excluir</button>
+    </div>
+</div>
     
 
     <script src="../js/calendario.js"></script>

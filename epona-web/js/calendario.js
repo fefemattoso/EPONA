@@ -146,8 +146,7 @@ eventForm.addEventListener('submit', async (e) => {
             body: JSON.stringify(evento),
         });
         alert('Evento adicionado com sucesso!');
-        modal.classList.add('hidden');
-        carregarCalendario(); // Recarregar o calendário
+        window.location.reload();
     } catch (error) {
         console.error('Erro ao adicionar evento:', error);
     }
@@ -159,7 +158,7 @@ const eventsContainer = document.getElementById('events-container');
 // Exibir eventos próximos
 async function fetchEventosProximos() {
     await checarDados();
-    const eventos = await fetch('http://localhost:3000/agendas/proximos',{
+    const eventos = await fetch('http://localhost:3000/agendas/proximos', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -208,6 +207,8 @@ async function fetchTodosEventos() {
             if (diaCalendario.getAttribute('data-date') === eventoDia) {
                 // Muda o fundo do dia para azul
                 diaCalendario.style.backgroundColor = "lightgreen";
+                diaCalendario.id = evento.id
+                diaCalendario.classList.add('temEvento');
                 let hoje = document.querySelector('.today');
                 hoje.style.backgroundColor = "lightblue";
             }
@@ -215,8 +216,110 @@ async function fetchTodosEventos() {
     });
 }
 
+//adicionar função de deletar e editar eventos
+const modalEditarEvento = document.getElementById('modalEditarEvento');
+const closeModalEvento = document.getElementById('close-modalEdit')
 
+closeModalEvento.addEventListener('click', () => {
+    modalEditarEvento.classList.add('hidden')
+})
 
+//detectar evento clicando na div com um evento marcado
+document.addEventListener('click', async (e) => {
+    if (e.target.classList.contains('temEvento')) {
+        modal.classList.add('hidden');
+        let dataDia = e.target.dataset.date
+        let dia = dataDia.split('-')[2];
+        let mes = dataDia.split('-')[1];
+        let ano = dataDia.split('-')[0];
+        let dataComFormato = dia + '/' + mes + '/' + ano;
+        console.log(dataComFormato);
+
+        let idEvento = e.target.id
+        console.log(idEvento);
+
+        modalEditEvento(idEvento)
+        modalEditarEvento.classList.remove('hidden');
+
+        let tituloModal = document.getElementById('modal-titleEdit')
+        tituloModal.textContent = `Editar Evento - ${dataComFormato}`;
+    }
+})
+
+async function modalEditEvento(id) {
+    await checarDados();
+    let titulo = document.getElementById('event-titleEdit');
+    let descricao = document.getElementById('event-descriptionEdit')
+    let idEvento = document.getElementById('idEvento')
+    idEvento.value = id
+
+    try {
+        let response = await fetch(`http://localhost:3000/agenda/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+        });
+        if (response.ok) {
+            let dados = await response.json();
+            titulo.value = dados.titulo;
+            descricao.value = dados.descricao;
+
+        }
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+let formEditEvento = document.getElementById('editEvent-form')
+formEditEvento.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    let titulo = document.getElementById('event-titleEdit').value
+    let descricao = document.getElementById('event-descriptionEdit').value
+    let idEvento = document.getElementById('idEvento').value
+
+    try {
+        let response = await fetch(`http://localhost:3000/agenda/${idEvento}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ titulo, descricao })
+        });
+        if (response.ok) {
+            alert('Evento alterado com sucesso')
+            window.location.reload()
+        }
+    } catch (e) {
+        console.error(e)
+    }
+})
+
+async function deletarEvento(){
+    let id = document.getElementById('idEvento').value
+    let confirma = confirm('Deseja mesmo deletar este evento?')
+    if(confirma){
+        try {
+            let response = await fetch(`http://localhost:3000/agenda/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+            if (response.ok) {
+                alert('Evento deletado com sucesso')
+                window.location.reload()
+            }
+        } catch (e) {
+            console.error(e)
+        }
+    } else {
+        alert('Operação cancelada')
+    }
+}
 
 function preencherNome() {
     const nomeUsuario = document.getElementById("usuario");

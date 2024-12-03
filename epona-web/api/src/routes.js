@@ -9,24 +9,23 @@ const Lista = require('./controllers/listas');
 const itemLista = require('./controllers/itemLista');
 const notas = require('./controllers/notas');
 
-//Rotas sem valida acesso
 
 router.put('/senha',Usuario.senha)
 router.post('/login', Usuario.login)
-router.post('/usuario', Usuario.create);
-router.get('/usuario', Usuario.read);
-router.get('/usuario/:id', Usuario.read);
 
-//Rotas que precisam de ,validaAcesso (estão sem para facilitar o progesso de programação)
-router.get('/ranking',validaAcesso, Usuario.readPontuacao);
-router.get('/ranking/:id',validaAcesso, Usuario.readPontuacao);
+router.post('/usuario', Usuario.create);
+router.get('/usuario',validaAcesso, Usuario.read);
+router.get('/usuario/:id',validaAcesso, Usuario.read);
 router.put('/usuario',validaAcesso, Usuario.update);
 router.delete('/usuario/:id',validaAcesso, Usuario.del);
+
+router.get('/ranking',validaAcesso, Usuario.readPontuacao);
+router.get('/ranking/:id',validaAcesso, Usuario.readPontuacao);
 
 router.post('/atividade',validaAcesso, Atividade.create);
 router.get('/atividade',validaAcesso, Atividade.read);
 router.get('/atividade/:id',validaAcesso, Atividade.read);
-router.get('/atividadeusuario/:usuarioId',validaAcesso, Atividade.readById);
+router.get('/atividadeusuario/:usuarioId',validaAcesso, Atividade.readById);//
 router.put('/atividade/:id',validaAcesso, Atividade.update);
 router.delete('/atividade/:id',validaAcesso, Atividade.del);
 
@@ -37,7 +36,6 @@ router.get('/agendas/proximos',validaAcesso, Agenda.readUpcoming);
 router.get('/agendausuario/:usuarioId',validaAcesso, Agenda.readById);
 router.put('/agenda/:id',validaAcesso, Agenda.update);
 router.delete('/agenda/:id',validaAcesso, Agenda.del);
-
 
 router.post('/lista',validaAcesso, Lista.create);
 router.get('/lista',validaAcesso ,Lista.read);

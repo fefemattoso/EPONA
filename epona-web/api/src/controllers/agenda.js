@@ -74,13 +74,16 @@ const readUpcoming = async (req, res) => {
 // Atualizar um evento
 const update = async (req, res) => {
     try {
-        const { id, titulo, descricao, data } = req.body;
+        const {titulo, descricao} = req.body;
         const agenda = await prisma.agenda.update({
-            where: { id: Number(id) },
-            data: { titulo, descricao, data },
+            where: {
+                id: parseInt(req.params.id)
+            },
+            data: {titulo, descricao},
         });
         return res.status(202).json(agenda);
     } catch (error) {
+        console.log(error.message);
         return res.status(404).json({ message: "Evento não encontrado" });
     }
 };
