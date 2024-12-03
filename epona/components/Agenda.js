@@ -1,42 +1,40 @@
-import {LocaleConfig} from 'react-native-calendars';
-import React, {useState, useEffect} from 'react';
-import {Calendar} from 'react-native-calendars';
-import {
+import { LocaleConfig } from 'react-native-calendars';
+import React, { useState, useEffect } from 'react';
+import { 
   View, 
   Text, 
   Modal, 
-  Button, 
   TextInput, 
   StyleSheet, 
-  TouchableOpacity,
-  FlatList
+  TouchableOpacity, 
+  FlatList 
 } from 'react-native';
-import {db} from '../firebaseconfig';
-import {collection, addDoc, getDocs, doc, updateDoc, deleteDoc} from 'firebase/firestore';
+import { Calendar } from 'react-native-calendars';
+import { db } from '../firebaseconfig';
+import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 
 LocaleConfig.locales['br'] = {
   monthNames: [
     'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro',
   ],
   monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
   dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
   dayNamesShort: ['Dom.', 'Seg.', 'Ter.', 'Qua.', 'Qui', 'Sex.', 'Sab.'],
-  today: 'Hoje'
+  today: 'Hoje',
 };
-
 LocaleConfig.defaultLocale = 'br';
 
-const App = () => {
+const App = ({ isDarkMode }) => {
   const [selected, setSelected] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [descricao, setDescricao] = useState('');
   const [markedDates, setMarkedDates] = useState({});
   const [modalDescriptionVisible, setModalDescriptionVisible] = useState(false);
   const [selectedDescription, setSelectedDescription] = useState('');
-  const [selectedDateId, setSelectedDateId] = useState(null); // Para armazenar o ID do documento no Firebase
-  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1); // Mês atual
-  const [monthlyEvents, setMonthlyEvents] = useState([]); // Eventos do mês atual
+  const [selectedDateId, setSelectedDateId] = useState(null);
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
+  const [monthlyEvents, setMonthlyEvents] = useState([]);
 
   useEffect(() => {
     fetchDatesFromFirebase();
@@ -51,16 +49,16 @@ const App = () => {
       const querySnapshot = await getDocs(collection(db, 'Dates'));
       const marked = {};
       querySnapshot.forEach(docSnapshot => {
-        const {date, descricao} = docSnapshot.data();
+        const { date, descricao } = docSnapshot.data();
         marked[date] = {
-          marked: true, 
-          selected: false, 
+          marked: true,
+          selected: false,
           customStyles: {
-            container: {backgroundColor: 'green'}, 
-            text: {color: 'white'}
-          }, 
+            container: { backgroundColor: isDarkMode ? '#62a084' : 'green' },
+            text: { color: isDarkMode ? '#FFFFFF' : 'white' },
+          },
           descricao,
-          id: docSnapshot.id // Armazena o ID do documento do Firebase
+          id: docSnapshot.id,
         };
       });
       setMarkedDates(marked);
@@ -70,22 +68,21 @@ const App = () => {
   };
 
   const filterEventsByMonth = () => {
-    const events = Object.keys(markedDates).filter(date => {
-      const eventMonth = new Date(date).getMonth() + 1;
-      return eventMonth === currentMonth;
-    }).map(date => ({
-      date,
-      descricao: markedDates[date].descricao
-    }));
+    const events = Object.keys(markedDates)
+      .filter(date => new Date(date).getMonth() + 1 === currentMonth)
+      .map(date => ({
+        date,
+        descricao: markedDates[date].descricao,
+      }));
     setMonthlyEvents(events);
   };
 
   const handleDayPress = (day) => {
     const dayKey = day.dateString;
-    
+
     if (markedDates[dayKey]) {
       setSelectedDescription(markedDates[dayKey].descricao);
-      setSelectedDateId(markedDates[dayKey].id); 
+      setSelectedDateId(markedDates[dayKey].id);
       setModalDescriptionVisible(true);
     } else {
       setSelected(dayKey);
@@ -101,46 +98,47 @@ const App = () => {
     try {
       const docRef = await addDoc(collection(db, 'Dates'), {
         date: selected,
-        descricao: descricao
+        descricao,
       });
 
       setMarkedDates({
         ...markedDates,
         [selected]: {
-          marked: true, 
-          customStyles: {container: {backgroundColor: 'green'}, text: {color: 'white'}}, 
+          marked: true,
+          customStyles: {
+            container: { backgroundColor: isDarkMode ? '#62a084' : 'green' },
+            text: { color: isDarkMode ? '#FFFFFF' : 'white' },
+          },
           descricao,
-          id: docRef.id 
-        }
+          id: docRef.id,
+        },
       });
 
       alert('Data cadastrada com sucesso!');
       setModalVisible(false);
       setDescricao('');
     } catch (e) {
-      console.error("Erro ao salvar a data: ", e);
+      console.error('Erro ao salvar a data: ', e);
     }
   };
 
   const updateDescriptionInFirebase = async () => {
     try {
       const docRef = doc(db, 'Dates', selectedDateId);
-      await updateDoc(docRef, {
-        descricao: selectedDescription
-      });
+      await updateDoc(docRef, { descricao: selectedDescription });
 
       setMarkedDates({
         ...markedDates,
         [selected]: {
           ...markedDates[selected],
-          descricao: selectedDescription
-        }
+          descricao: selectedDescription,
+        },
       });
 
       alert('Descrição atualizada com sucesso!');
       setModalDescriptionVisible(false);
     } catch (e) {
-      console.error("Erro ao atualizar a descrição: ", e);
+      console.error('Erro ao atualizar a descrição: ', e);
     }
     fetchDatesFromFirebase();
   };
@@ -150,55 +148,73 @@ const App = () => {
       const docRef = doc(db, 'Dates', selectedDateId);
       await deleteDoc(docRef);
 
-      const updatedMarkedDates = {...markedDates};
-      delete updatedMarkedDates[selected]; 
+      const updatedMarkedDates = { ...markedDates };
+      delete updatedMarkedDates[selected];
 
       setMarkedDates(updatedMarkedDates);
       alert('Data excluída com sucesso!');
       setModalDescriptionVisible(false);
     } catch (e) {
-      console.error("Erro ao excluir a data: ", e);
+      console.error('Erro ao excluir a data: ', e);
     }
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: isDarkMode ? '#1e3d31' : '#fff8dd' }]}>
       <Calendar
         style={{
           borderWidth: 1,
-          borderColor: 'gray',
+          borderColor: isDarkMode ? '#ffc4c7' : 'gray',
           height: 350,
           borderRadius: 20,
         }}
         theme={{
-          backgroundColor: '#ffffff',
-          calendarBackground: '#ffc4c7',
-          textSectionTitleColor: '#255140',
+          backgroundColor: isDarkMode ? '#121212' : '#ffffff',
+          calendarBackground: isDarkMode ? '#1E1E1E' : '#ffc4c7',
+          textSectionTitleColor: isDarkMode ? '#BBBBBB' : '#255140',
           selectedDayBackgroundColor: '#00adf5',
           selectedDayTextColor: '#ffffff',
-          todayTextColor: '#255140',
-          dayTextColor: '#2d4150',
-          textDisabledColor: '#d9e1e8'
+          todayTextColor: isDarkMode ? '#62a084' : '#255140',
+          dayTextColor: isDarkMode ? '#E0E0E0' : '#2d4150',
+          textDisabledColor: '#d9e1e8',
         }}
         onDayPress={handleDayPress}
-        onMonthChange={handleMonthChange} // Para capturar a mudança de mês
+        onMonthChange={handleMonthChange}
         markedDates={markedDates}
         markingType={'custom'}
       />
 
-      {/* Lista de eventos do mês */}
-      <Text style={styles.eventListTitle}>Eventos de {LocaleConfig.locales['br'].monthNames[currentMonth - 1]}:</Text>
+      <Text
+        style={[
+          styles.eventListTitle,
+          { color: isDarkMode ? '#FFc5c7' : '#162040' },
+        ]}
+      >
+        Eventos de {LocaleConfig.locales['br'].monthNames[currentMonth - 1]}:
+      </Text>
+
       <FlatList
         data={monthlyEvents}
         keyExtractor={item => item.date}
-        renderItem={({item}) => (
-          <View style={styles.eventItem}>
+        renderItem={({ item }) => (
+          <View
+            style={[
+              styles.eventItem,
+              { backgroundColor: isDarkMode ? 'gray' : '#b6d2aa' },
+            ]}
+          >
             <Text style={styles.eventDate}>{item.date}</Text>
-            <Text style={styles.eventDescription}>{item.descricao}</Text>
+            <Text
+              style={[
+                styles.eventDescription,
+                { color: isDarkMode ? '#E0E0E0' : '#000000' },
+              ]}
+            >
+              {item.descricao}
+            </Text>
           </View>
         )}
       />
-
       {/* Modal para adicionar descrição */}
       <Modal
         animationType="slide"
@@ -282,6 +298,8 @@ const App = () => {
       </Modal>
     </View>
   );
+  
+  
 };
 
 const styles = StyleSheet.create({
