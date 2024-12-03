@@ -171,6 +171,13 @@ nav .perfil button:hover{
     width: 300px;
 }
 
+.tem-evento {
+    background-color: #ffeb3b; /* Amarelo claro para destacar os dias com eventos */
+    color: #000; /* Texto em preto */
+    font-weight: bold; /* Texto em negrito para dar destaque */
+}
+
+
 button {
     cursor: pointer;
 }

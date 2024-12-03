@@ -1,4 +1,4 @@
-import { StatusBar } from 'expo-status-bar';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,9 +7,9 @@ import {
   Modal,
   Animated,
 } from 'react-native';
-import React, { useState, useEffect, useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Icon from 'react-native-vector-icons/FontAwesome'; // Importando ícones
 import Login from './components/Login';
 import FunctionSelection from './components/FunctionSelection';
 import Agenda from './components/Agenda';
@@ -23,6 +23,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [showWelcome, setShowWelcome] = useState(true);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current; // Controle de animação
 
   useEffect(() => {
@@ -51,6 +52,52 @@ function App() {
     setShowLogoutModal(false);
   };
 
+  const toggleDarkMode = () => {
+    setIsDarkMode((prevMode) => !prevMode);
+  };
+
+  const Menu = ({ navigation }) => {
+    const [menuVisible, setMenuVisible] = useState(false);
+
+    const handleMenuToggle = () => {
+      setMenuVisible(!menuVisible);
+    };
+
+    return (
+      <View style={styles.menuContainer}>
+        <TouchableOpacity onPress={handleMenuToggle} style={styles.menuButton}>
+          <Text style={styles.menuText}>☰</Text>
+        </TouchableOpacity>
+        {menuVisible && (
+          <View style={styles.dropdown}>
+            <TouchableOpacity style={styles.dropdownItem} onPress={handleLogout}>
+              <Icon name="sign-out" size={20} color="#C7E8FD" style={styles.icon} />
+              <Text style={styles.dropdownText}>Logout</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.dropdownItem} onPress={toggleDarkMode}>
+              <Icon
+                name={isDarkMode ? 'sun-o' : 'moon-o'}
+                size={20}
+                color="#C7E8FD"
+                style={styles.icon}
+              />
+              <Text style={styles.dropdownText}>
+                {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.dropdownItem}
+              onPress={() => navigation.navigate('Perfil')}
+            >
+              <Icon name="user" size={20} color="#C7E8FD" style={styles.icon} />
+              <Text style={styles.dropdownText}>Perfil</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+    );
+  };
+
   if (showWelcome) {
     return (
       <Animated.View style={{ ...styles.container, opacity: fadeAnim }}>
@@ -70,24 +117,48 @@ function App() {
   return (
     <>
       <NavigationContainer>
-        <Tab.Navigator
-          screenOptions={{
-            headerShown: false,
-            tabBarStyle: { backgroundColor: '#162040' },
-            tabBarActiveTintColor: '#8AC66D',
-            tabBarInactiveTintColor: '#C7E8FD',
-          }}
-        >
-          <Tab.Screen
-            name="Seleção de Função"
-            component={() => (
-              <FunctionSelection onLogout={handleLogout} />
-            )}
-          />
-          <Tab.Screen name="Agenda" component={Agenda} />
-          <Tab.Screen name="Tarefas Diárias" component={DailyTasks} />
-          <Tab.Screen name="Lista Personalizada" component={CustomList} />
-        </Tab.Navigator>
+      <Tab.Navigator
+  screenOptions={({ route }) => ({
+    headerShown: true,
+    headerStyle: {
+      backgroundColor: isDarkMode ? '#000' : '#255140',
+    },
+    headerTintColor: isDarkMode ? '#FFF' : '#C7E8FD',
+    tabBarStyle: { backgroundColor: isDarkMode ? '#000' : '#255140' },
+    tabBarActiveTintColor: '#8AC66D',
+    tabBarInactiveTintColor: '#C7E8FD',
+    headerRight: ({ navigation }) => <Menu navigation={navigation} />,
+    tabBarIcon: ({ color, size }) => {
+      let iconName;
+
+      switch (route.name) {
+        case 'Home':
+          iconName = 'home'; // Ícone para esta aba
+          break;
+        case 'Agenda':
+          iconName = 'calendar'; // Ícone para Agenda
+          break;
+        case 'Tarefas':
+          iconName = 'check-square'; // Ícone para Tarefas Diárias
+          break;
+        case 'Listas':
+          iconName = 'list'; // Ícone para Lista Personalizada
+          break;
+        default:
+          iconName = 'circle'; // Ícone padrão
+          break;
+      }
+
+      return <Icon name={iconName} size={size} color={color} />;
+    },
+  })}
+>
+  <Tab.Screen name="Home" component={FunctionSelection} />
+  <Tab.Screen name="Agenda" component={Agenda} />
+  <Tab.Screen name="Tarefas" component={DailyTasks} />
+  <Tab.Screen name="Listas" component={CustomList} />
+</Tab.Navigator>
+
       </NavigationContainer>
 
       {/* Modal de Logout */}
@@ -111,6 +182,7 @@ function App() {
           </View>
         </View>
       </Modal>
+      
     </>
   );
 }
@@ -121,6 +193,44 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff8dd',
+  },
+  menuContainer: {
+    marginHorizontal: 10,
+    position: 'relative',
+  },
+  menuButton: {
+    padding: 10,
+  },
+  menuText: {
+    fontSize: 24,
+    color: '#FFF',
+  },
+  dropdown: {
+    position: 'absolute',
+    top: 40,
+    right: 0,
+    backgroundColor: '#62a084',
+    borderRadius: 5,
+    padding: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    zIndex: 1000,
+    width: 300,
+  },
+  dropdownItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+  },
+  dropdownText: {
+    fontSize: 16,
+    color: '#C7E8FD',
+    marginLeft: 10,
+  },
+  icon: {
+    marginRight: 10,
   },
   modalContainer: {
     flex: 1,

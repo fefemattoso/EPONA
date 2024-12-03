@@ -83,14 +83,12 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('usuario');
             localStorage.removeItem('token');
             window.location.href = "./login.html"; // Redireciona para a página de login
-        } else {
-            console.log('Você está autenticado');
         }
     }
 
 
     async function carregarListas() {
-        checarDados();
+        await checarDados();
         const usuarioId = usuario.id
 
         if (usuarioId == null) {
@@ -111,8 +109,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     const listas = await response.json();
                     listas.forEach(item => {
-                        console.log(item);
-
                         // Criar o card para cada lista
                         let card = document.createElement('div');
                         card.setAttribute('id', item.id);
@@ -152,10 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target.classList.contains('card')) {
             let idLista = e.target.id; // pega o id do card (lista)
             let titulo = e.target.querySelector('h3').innerText;
-            console.log(idLista, titulo);
-
             abrirModalLista(idLista, titulo);
-
             // Define o valor do input hidden (idDaLista) dentro do modal
             const idDaListaInput = document.getElementById('idDaLista');
             idDaListaInput.value = idLista; // Atribui o id da lista ao input hidden
@@ -167,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const exibirItensModal = document.getElementById('exibirItensModal');
 
     async function abrirModalLista(idLista, titulo) {
-        checarDados();
+        await checarDados();
         exibirItensModal.style.display = 'block';
         const tituloLista = document.getElementById('tituloLista')
         tituloLista.innerHTML = titulo;
@@ -197,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <button class="deletar" onclick="deletarItem(${item.id})">Deletar</button>
         </div>
             `
-            
+
                 document.getElementById('itensLista').appendChild(itemCard);
             });
         } catch (e) {
@@ -207,36 +200,36 @@ document.addEventListener('DOMContentLoaded', () => {
     //Adicionando itens a lista, e carregando 
     const formAddItem = document.getElementById('formAddItem');
     formAddItem.addEventListener('submit', async (e) => {
-        checarDados();
+        await checarDados();
         e.preventDefault();
         const novoItem = formAddItem.novoItem.value;
         const usuarioId = usuario.id
         const listaId = parseInt(document.getElementById('idDaLista').value)
-        console.log(novoItem, listaId, usuarioId)
 
-        if (!novoItem){
+        if (!novoItem) {
             alert('Por favor, preencha a descrição do item')
             return;
         }
-        else{
+        else {
 
-        try {
-            let response = await fetch(`http://localhost:3000/itemLista`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ usuarioId, listaId, descricao: novoItem })
-            });
-            if (!response.ok) {
-                throw new Error('Não foi possível adicionar o item.')
+            try {
+                let response = await fetch(`http://localhost:3000/itemLista`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ usuarioId, listaId, descricao: novoItem })
+                });
+                if (!response.ok) {
+                    throw new Error('Não foi possível adicionar o item.')
+                }
+                alert('Item Adicionado')
+                window.location.reload()
+            } catch (e) {
+                console.error("Erro ao adicionar novo item", e)
             }
-            alert('Item Adicionado')
-            window.location.reload()
-        } catch (e) {
-            console.error("Erro ao adicionar novo item", e)
-        }}
+        }
     })
 
     const exibirItensClose = document.getElementById('exibirItensClose');
@@ -256,32 +249,33 @@ document.addEventListener('DOMContentLoaded', () => {
     const formAddLista = document.getElementById('formAddLista');
     formAddLista.addEventListener('submit', async (e) => {
         e.preventDefault()
+        await checarDados();
         const titulo = formAddLista.novaLista.value
         const usuarioId = usuario.id
 
-        if (!titulo){
+        if (!titulo) {
             alert('Por favor, preencha o título da lista.')
             return;
         }
-        else{
-        try{
-            let response = await fetch(`http://localhost:3000/lista`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ usuarioId, titulo })
-            });
-            if (!response.ok) {
-                throw new Error('Não foi possível adicionar a lista.')
+        else {
+            try {
+                let response = await fetch(`http://localhost:3000/lista`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ usuarioId, titulo })
+                });
+                if (!response.ok) {
+                    throw new Error('Não foi possível adicionar a lista.')
+                }
+                alert('Lista Adicionada')
+                window.location.reload()
+            } catch (e) {
+                console.error("Erro ao adicionar nova lista", e)
             }
-            alert('Lista Adicionada')
-            window.location.reload()
-        } catch (e) {
-            console.error("Erro ao adicionar nova lista", e)
         }
-    }
     })
 
 
@@ -310,13 +304,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
+    checarDados()
     carregarListas()
     preencherNome()
-
 
 });
 
 const token = localStorage.getItem('token');
+const usuario = JSON.parse(localStorage.getItem('usuario'));
+
+function verificarTokenExpirado(token) {
+    if (!token) return true; // Se o token não existe, consideramos expirado
+
+    // Decodificar o token JWT
+    const payload = JSON.parse(atob(token.split('.')[1])); // Decodifica a parte 'payload' do token
+    const expTimestamp = payload.exp * 1000; // A expiração vem em segundos, então multiplicamos por 1000 para converter para milissegundos
+    const now = Date.now(); // Obtém a data atual em milissegundos
+
+    // Retorna true se o token estiver expirado
+    return expTimestamp < now;
+}
+
+// Função para checar dados e redirecionar caso necessário
+async function checarDados() {
+    if (!usuario || !token) {
+        alert('Por Favor, realize login no sistema');
+        window.location.href = "./login.html";
+    } else if (verificarTokenExpirado(token)) {
+        alert('O seu token expirou, por favor, faça login novamente.');
+        localStorage.removeItem('usuario');
+        localStorage.removeItem('token');
+        window.location.href = "./login.html"; // Redireciona para a página de login
+    }
+}
 
 const confirmModal = document.getElementById('confirmModal');
 const cancelBtn = document.getElementById("cancelBtn");
@@ -330,16 +350,16 @@ btnConfirm.addEventListener("click", () => {
 });
 
 
-function abrirModalDeletar(id){
+function abrirModalDeletar(id) {
     confirmModal.style.display = 'block';
     const listaId = document.getElementById("listaId");
     listaId.value = id;
-    console.log(id);
 }
 
 
 //Deletar lista
 async function deletarLista() {
+    await checarDados();
     const listaId = document.getElementById("listaId").value;
 
     try {
@@ -363,6 +383,7 @@ async function deletarLista() {
 }
 
 async function deletarItem(id) {
+    await checarDados();
     try {
         let response = await fetch(`http://localhost:3000/itemLista/${id}`, {
             method: 'DELETE',
@@ -387,6 +408,7 @@ async function deletarItem(id) {
 }
 
 async function atualizarItemConcluido(id, concluido) {
+    await checarDados();
     try {
         const response = await fetch(`http://localhost:3000/itemLista/${id}`, {
             method: 'PUT',
