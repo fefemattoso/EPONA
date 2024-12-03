@@ -49,18 +49,10 @@
         <p style="color: aliceblue;">&copy; 2024 Epona. Todos os direitos reservados.</p>
     </footer>
 
-    <script>
-        function toggleMenu() {
-            const menuItems = document.querySelector('.menu-items');
-            menuItems.classList.toggle('active');
-        }
-    </script>
-
 <div id="user-options" class="user-options hidden">
     <button class="close-btn">X</button>
     <ul>
-        <li><a href="./perfil.html">Perfil</a></li>
-        <li><a href="./termos.html">Termos de Serviço</a></li>
+        <li id="termos">Termos de Serviço</li>
         <li>
             <img id="dark-mode-icon" src="../images/moon.png" alt="Modo Escuro" class="dark-mode-icon">
         </li>

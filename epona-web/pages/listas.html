@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minhas Listas - Epona</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <!-- <link rel="stylesheet" href="../css/style.css"> -->
     <link rel="stylesheet" href="../css/listas.css">
     <link rel="icon" href="../images/logo.png" type="image/png">
 </head>
@@ -26,7 +26,6 @@
             </ul>
             <div class="perfil">
                 <span id="usuario" aria-label="Usuário"></span>
-                <button id="sair" type="button">Sair</button>
             </div>
         </nav>
     </header>
@@ -78,6 +77,38 @@
                 <input type="text" name="novoItem" placeholder="Digite o nome do item...">
                 <button type="submit">Adicionar novo item</button>
             </form>
+        </div>
+    </div>
+
+    <div id="user-options" class="user-options hidden">
+        <button class="close-btn">X</button>
+        <ul>
+            <li id="termos">Termos de Serviço</li>
+            <li>
+                <img id="dark-mode-icon" src="../images/moon.png" alt="Modo Escuro" class="dark-mode-icon">
+            </li>
+            <li>
+                <button id="sair" class="sair">Sair</button>
+            </li>
+        </ul>
+    </div>
+    
+    <!-- Modal de Termos de Serviço -->
+    <div id="terms-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <h2>Termos de Serviço</h2>
+            <p>
+                Bem-vindo ao Epona! Estes são os Termos de Serviço para o uso do nosso aplicativo.
+                Ao utilizar o Epona, você concorda com as seguintes condições:
+            </p>
+            <ul>
+                <li>Você é responsável por todas as informações fornecidas no aplicativo.</li>
+                <li>O Epona não se responsabiliza por perda de dados devido a falhas técnicas.</li>
+                <li>O uso do Epona deve estar em conformidade com as leis locais.</li>
+                <li>Reservamos o direito de atualizar esses Termos a qualquer momento.</li>
+            </ul>
+            <p>Obrigado por usar o Epona!</p>
         </div>
     </div>
 

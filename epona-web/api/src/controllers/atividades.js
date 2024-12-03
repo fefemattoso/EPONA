@@ -76,7 +76,7 @@ const readById = async (req, res) => {
 
 const update = async (req, res) => {
     try {
-        const { concluido } = req.body; // Verifica se o status foi alterado para 'concluido'
+        const { concluido } = req.body;
         const atividadeId = parseInt(req.params.id);
 
         // Obtenha a atividade existente
@@ -108,7 +108,7 @@ const update = async (req, res) => {
         // Atualiza apenas a atividade se não for uma mudança para 'concluido: true'
         const atividadeAtualizada = await prisma.atividade.update({
             where: { id: atividadeId },
-            data: { concluido }
+            data: req.body
         });
 
         return res.status(200).json(atividadeAtualizada);

@@ -43,13 +43,15 @@ const read = async (req, res) => {
 // Buscar eventos por ID do usuário
 const readById = async (req, res) => {
     try {
-        const { usuarioId } = req.params;
         const eventos = await prisma.agenda.findMany({
-            where: { usuarioId: parseInt(usuarioId) },
+            where: {
+                usuarioId: parseInt(req.params.usuarioId)
+            } 
         });
         return res.json(eventos);
     } catch (error) {
-        return res.status(400).json({ message: "Erro ao localizar eventos do usuário" });
+        console.error(error);
+        return res.status(400).json({ message: "Erro ao localizar eventos do usuário", error });
     }
 };
 
@@ -69,35 +71,19 @@ const readUpcoming = async (req, res) => {
     }
 };
 
-// Buscar eventos por data específica
-const readByDate = async (req, res) => {
-    try {
-        const { usuarioId, data } = req.body;
-        if (!usuarioId || !data) {
-            return res.status(400).json({ message: "Usuário e data são obrigatórios" });
-        }
-        const eventos = await prisma.agenda.findMany({
-            where: {
-                usuarioId: parseInt(usuarioId),
-                data: new Date(data), // Comparação direta com a data
-            },
-        });
-        return res.json(eventos);
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-};
-
 // Atualizar um evento
 const update = async (req, res) => {
     try {
-        const { id, titulo, descricao, data } = req.body;
+        const {titulo, descricao} = req.body;
         const agenda = await prisma.agenda.update({
-            where: { id: Number(id) },
-            data: { titulo, descricao, data },
+            where: {
+                id: parseInt(req.params.id)
+            },
+            data: {titulo, descricao},
         });
         return res.status(202).json(agenda);
     } catch (error) {
+        console.log(error.message);
         return res.status(404).json({ message: "Evento não encontrado" });
     }
 };
@@ -120,7 +106,6 @@ module.exports = {
     read,
     readById,
     readUpcoming,
-    readByDate,
     update,
     del,
 };

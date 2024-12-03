@@ -26,7 +26,6 @@
             </ul>
             <div class="perfil">
                 <span id="usuarioNome"></span>
-                <button id="sair">Sair</button>
             </div>
         </nav>
     </header>
@@ -68,6 +67,39 @@
                 <input type="hidden" id="notaId">
                 <button type="button" id="cancelBtn">Cancelar</button>
                 <button type="button" id="btnConfirm" class="deletebtn">Deletar</button>
+        </div>
+    </div>
+
+
+    <div id="user-options" class="user-options hidden">
+        <button class="close-btn">X</button>
+        <ul>
+            <li id="termos">Termos de Serviço</li>
+            <li>
+                <img id="dark-mode-icon" src="../images/moon.png" alt="Modo Escuro" class="dark-mode-icon">
+            </li>
+            <li>
+                <button id="sair" class="sair">Sair</button>
+            </li>
+        </ul>
+    </div>
+    
+    <!-- Modal de Termos de Serviço -->
+    <div id="terms-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <h2>Termos de Serviço</h2>
+            <p>
+                Bem-vindo ao Epona! Estes são os Termos de Serviço para o uso do nosso aplicativo.
+                Ao utilizar o Epona, você concorda com as seguintes condições:
+            </p>
+            <ul>
+                <li>Você é responsável por todas as informações fornecidas no aplicativo.</li>
+                <li>O Epona não se responsabiliza por perda de dados devido a falhas técnicas.</li>
+                <li>O uso do Epona deve estar em conformidade com as leis locais.</li>
+                <li>Reservamos o direito de atualizar esses Termos a qualquer momento.</li>
+            </ul>
+            <p>Obrigado por usar o Epona!</p>
         </div>
     </div>
 

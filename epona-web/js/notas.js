@@ -1,6 +1,40 @@
 document.addEventListener('DOMContentLoaded', () => {
     const usuario = JSON.parse(localStorage.getItem('usuario'));
     const token = localStorage.getItem('token');
+    const userName = document.getElementById("usuarioNome");
+    const userOptions = document.getElementById("user-options");
+    const closeBtn = document.querySelector(".close-btn");
+    const termsLink = document.querySelector('#termos');
+    const termsModal = document.getElementById('terms-modal');
+    const closeModal = document.querySelector('.close-modal');
+
+    termsLink.addEventListener('click', (e) => {
+        e.preventDefault(); // Previne o redirecionamento padrão
+        termsModal.classList.remove('hidden');
+    });
+
+    // Fechar o modal
+    closeModal.addEventListener('click', () => {
+        termsModal.classList.add('hidden');
+    });
+
+    // Fechar o modal ao clicar fora dele
+    window.addEventListener('click', (e) => {
+        if (e.target === termsModal) {
+            termsModal.classList.add('hidden');
+        }
+    });
+
+    userName.addEventListener("click", () => {
+        userOptions.classList.add("active");
+        userOptions.classList.remove("hidden");
+    });
+
+    // Fechar o menu lateral
+    closeBtn.addEventListener("click", () => {
+        userOptions.classList.add("hidden");
+        userOptions.classList.remove("active");
+    });
     // Função para verificar se o token está expirado
     function verificarTokenExpirado(token) {
         if (!token) return true; // Se o token não existe, consideramos expirado
@@ -23,13 +57,11 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('usuario');
             localStorage.removeItem('token');
             window.location.href = "./login.html"; 
-        } else {
-            console.log('Você está autenticado');
         }
     }
 
     async function carregarnotas() {
-        checarDados();
+        await checarDados();
         try {
             let response = await fetch('http://localhost:3000/notas', {
                 headers: {
@@ -67,9 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
         confirmModal.style.display = 'none';
     });
 
-    //Abrir modal de adicionar notas
-    const addnotaModal = document.getElementById('addnotaModal');
-
     const addnotaBtn = document.getElementById('addnotaBtn')
     addnotaBtn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -81,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const addnotaForm = document.getElementById('addnotaForm');
     addnotaForm.addEventListener('submit', async (e) => {
         e.preventDefault()
+        await checarDados();
         let titulo = addnotaForm.titulo.value;
         let descricao = addnotaForm.descricao.value;
         let usuarioId = usuario.id;
@@ -114,26 +144,59 @@ document.addEventListener('DOMContentLoaded', () => {
         nomeUsuario.innerHTML = `${usuario.nome}`
     }
 
-    carregarnotas();
     preencherNome();
+    checarDados()
+    carregarnotas();
 
 });
+
+const usuario = JSON.parse(localStorage.getItem('usuario'));
 const token = localStorage.getItem('token');
+
+// Função para verificar se o token está expirado
+function verificarTokenExpirado(token) {
+    if (!token) return true; // Se o token não existe, consideramos expirado
+
+    // Decodificar o token JWT
+    const payload = JSON.parse(atob(token.split('.')[1])); // Decodifica a parte 'payload' do token
+    const expTimestamp = payload.exp * 1000; // A expiração vem em segundos, então multiplicamos por 1000 para converter para milissegundos
+    const now = Date.now(); // Obtém a data atual em milissegundos
+
+    // Retorna true se o token estiver expirado
+    return expTimestamp < now;
+}
+
+async function checarDados() {
+    if (!usuario || !token) {
+        alert('Por Favor, realize login no sistema');
+        window.location.href = "./login.html";
+    } else if (verificarTokenExpirado(token)) {
+        alert('O seu token expirou, por favor, faça login novamente.');
+        localStorage.removeItem('usuario');
+        localStorage.removeItem('token');
+        window.location.href = "./login.html"; 
+    }
+}
 
     function abrirModalDeletar(id){
         const confirmModal = document.getElementById('confirmModal');
         confirmModal.style.display = 'block';
         const notaId = document.getElementById("notaId");
         notaId.value = id;
-        console.log(id);
     }
+
+    cancel = document.getElementById('cancel');
+
+    cancel.addEventListener("click", () => {
+        const addnotaModal = document.getElementById("addnotaModal");
+        addnotaModal.style.display = 'none';
+    });
 
 const cancelBtn = document.getElementById("cancelBtn");
 cancelBtn.addEventListener("click", () => {
     const confirmModal = document.getElementById('confirmModal');
     confirmModal.style.display = 'none';
 });
-
 const btnConfirm = document.getElementById("btnConfirm");
 btnConfirm.addEventListener("click", () => {
     deletarnota();
@@ -142,6 +205,7 @@ btnConfirm.addEventListener("click", () => {
 
 async function deletarnota() {
     const notaId = document.getElementById("notaId").value;
+    await checarDados();
 
     try {
         let response = await fetch(`http://localhost:3000/notas/${notaId}`, {

@@ -24,8 +24,6 @@ async function checarDados() {
         localStorage.removeItem('usuario');
         localStorage.removeItem('token');
         window.location.href = "./login.html"; // Redireciona para a página de login  
-    } else {
-        console.log('Você está autenticado');
     }
 }
 
@@ -82,6 +80,7 @@ function carregarCalendario() {
 
         daysContainer.appendChild(dayDiv);
     }
+    fetchTodosEventos()
 }
 
 
@@ -100,32 +99,20 @@ nextMonth.addEventListener('click', () => {
 // Renderiza o calendário na inicialização
 carregarCalendario();
 
-//Detectar o dia clicado
-document.addEventListener('click', (e) => {
-    // Verifica se o elemento clicado tem a classe "day"
-    if (e.target.classList.contains('day')) {
-        console.log(`Dia clicado: ${e.target.textContent}`);
-    }
-});
-
 //Relacionado aos modais
 
 const modal = document.getElementById('modal');
 const closeModal = document.getElementById('close-modal');
 const eventForm = document.getElementById('event-form');
-let selectedDate = null; // Para rastrear o dia clicado
 
 // Abrir o modal
-let isoDate;  // Declaração global da isoDate, para que possa ser acessada em qualquer lugar do código
+let isoDate;
 document.addEventListener('click', (e) => {
     if (e.target.classList.contains('day')) {
         selectedDate = e.target.dataset.date; // Ex: "2024-11-22"
 
         // Convertendo a data para o formato ISO (sem hora definida, será às 00:00:00)
         isoDate = new Date(selectedDate).toISOString();
-
-        // Exibe a data no console (no formato ISO)
-        console.log('Data ISO:', isoDate);
 
         // Atualiza o título do modal
         document.getElementById('modal-title').textContent = `Adicionar Evento - ${selectedDate}`;
@@ -147,16 +134,19 @@ eventForm.addEventListener('submit', async (e) => {
     const titulo = document.getElementById('event-title').value;
     const descricao = document.getElementById('event-description').value;
     const evento = { titulo, descricao, data: isoDate, usuarioId: usuario.id };
+    await checarDados();
 
     try {
         await fetch(`http://localhost:3000/agenda`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify(evento),
         });
         alert('Evento adicionado com sucesso!');
-        modal.classList.add('hidden');
-        carregarCalendario(); // Recarregar o calendário
+        window.location.reload();
     } catch (error) {
         console.error('Erro ao adicionar evento:', error);
     }
@@ -165,47 +155,171 @@ eventForm.addEventListener('submit', async (e) => {
 //Mostrar eventos
 const eventsContainer = document.getElementById('events-container');
 
-// Buscar todos os eventos
-async function fetchEventos() {
-    let usuarioId = usuario.id
-    console.log(usuarioId)
-    const response = await fetch(`http://localhost:3000/agendausuario/${usuarioId}`);
-    let evento = await response.json();
-    console.log(evento)
-}
-
 // Exibir eventos próximos
 async function fetchEventosProximos() {
-    const eventos = await fetch('http://localhost:3000/agendas/proximos');
-    // carregarEventos(eventos);
+    await checarDados();
+    const eventos = await fetch('http://localhost:3000/agendas/proximos', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+    });
     let evento = await eventos.json();
-    console.log(evento)
 
     eventsContainer.innerHTML = `<h3>Eventos mais próximos</h3>`;
     evento.forEach((evento) => {
-        //Talvez esteja voltando no dia pelos eventos estarem sendo adicionados à 00:00 e ao utilzar localeString ele volta em 3 horas
-        console.log("Data normal = ", new Date(evento.data).toLocaleDateString())
-        console.log("Data 'Certa' =", evento.data.split('T')[0])
-        // const dataEvento = new Date(evento.data)
-        // console.log("new Date(evento.data) = ", dataEvento)
-        // const dataFormatada = dataEvento.toLocaleDateString('pt-BR', {
-        //     timeZone: 'America/Sao_Paulo'
-        // })
-        // console.log("dataFormatada = ", dataFormatada)
+        let ano = evento.data.split('-')[0]
+        let mes = evento.data.split('-')[1]
+        let dia = evento.data.split('-')[2].split('T')[0]
         eventsContainer.innerHTML += `
             <div class="event">
-            <p>${new Date(evento.data).toLocaleDateString()}</p>
+            <p>${dia}/${mes}/${ano}</p>
                 <h4>${evento.titulo}</h4>
                 <p>${evento.descricao}</p>
             </div>
         `;
     })
-
 }
 
-// Inicialização
-fetchEventosProximos();
+async function fetchTodosEventos() {
+    await checarDados();
+    // Fetch todos os eventos do usuário
+    const eventos = await fetch(`http://localhost:3000/agendausuario/${usuario.id}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+    });
+    let todosEventos = await eventos.json();
 
+    // Obtém todos os elementos com a classe 'day'
+    const diasCalendario = document.querySelectorAll('.day');
+
+    todosEventos.forEach(evento => {
+        // Extraímos a data do evento no formato 'YYYY-MM-DD'
+        const eventoDia = evento.data.split('T')[0];
+
+        // Iteramos sobre todos os dias do calendário
+        diasCalendario.forEach(diaCalendario => {
+            // Comparando a data do evento com o atributo data-date do dia
+            if (diaCalendario.getAttribute('data-date') === eventoDia) {
+                // Muda o fundo do dia para azul
+                diaCalendario.style.backgroundColor = "lightgreen";
+                diaCalendario.id = evento.id
+                diaCalendario.classList.add('temEvento');
+                let hoje = document.querySelector('.today');
+                hoje.style.backgroundColor = "lightblue";
+            }
+        });
+    });
+}
+
+//adicionar função de deletar e editar eventos
+const modalEditarEvento = document.getElementById('modalEditarEvento');
+const closeModalEvento = document.getElementById('close-modalEdit')
+
+closeModalEvento.addEventListener('click', () => {
+    modalEditarEvento.classList.add('hidden')
+})
+
+//detectar evento clicando na div com um evento marcado
+document.addEventListener('click', async (e) => {
+    if (e.target.classList.contains('temEvento')) {
+        modal.classList.add('hidden');
+        let dataDia = e.target.dataset.date
+        let dia = dataDia.split('-')[2];
+        let mes = dataDia.split('-')[1];
+        let ano = dataDia.split('-')[0];
+        let dataComFormato = dia + '/' + mes + '/' + ano;
+        console.log(dataComFormato);
+
+        let idEvento = e.target.id
+        console.log(idEvento);
+
+        modalEditEvento(idEvento)
+        modalEditarEvento.classList.remove('hidden');
+
+        let tituloModal = document.getElementById('modal-titleEdit')
+        tituloModal.textContent = `Editar Evento - ${dataComFormato}`;
+    }
+})
+
+async function modalEditEvento(id) {
+    await checarDados();
+    let titulo = document.getElementById('event-titleEdit');
+    let descricao = document.getElementById('event-descriptionEdit')
+    let idEvento = document.getElementById('idEvento')
+    idEvento.value = id
+
+    try {
+        let response = await fetch(`http://localhost:3000/agenda/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+        });
+        if (response.ok) {
+            let dados = await response.json();
+            titulo.value = dados.titulo;
+            descricao.value = dados.descricao;
+
+        }
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+let formEditEvento = document.getElementById('editEvent-form')
+formEditEvento.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    let titulo = document.getElementById('event-titleEdit').value
+    let descricao = document.getElementById('event-descriptionEdit').value
+    let idEvento = document.getElementById('idEvento').value
+
+    try {
+        let response = await fetch(`http://localhost:3000/agenda/${idEvento}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ titulo, descricao })
+        });
+        if (response.ok) {
+            alert('Evento alterado com sucesso')
+            window.location.reload()
+        }
+    } catch (e) {
+        console.error(e)
+    }
+})
+
+async function deletarEvento(){
+    let id = document.getElementById('idEvento').value
+    let confirma = confirm('Deseja mesmo deletar este evento?')
+    if(confirma){
+        try {
+            let response = await fetch(`http://localhost:3000/agenda/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+            if (response.ok) {
+                alert('Evento deletado com sucesso')
+                window.location.reload()
+            }
+        } catch (e) {
+            console.error(e)
+        }
+    } else {
+        alert('Operação cancelada')
+    }
+}
 
 function preencherNome() {
     const nomeUsuario = document.getElementById("usuario");
@@ -213,4 +327,7 @@ function preencherNome() {
     nomeUsuario.innerHTML = `${usuario.nome}`;
 }
 
-preencherNome();  
+preencherNome();
+checarDados();
+fetchEventosProximos();
+fetchTodosEventos()
