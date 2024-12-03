@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const userOptions = document.getElementById("user-options");
     const closeBtn = document.querySelector(".close-btn");
     const darkModeIcon = document.getElementById("dark-mode-icon");
-    const termsLink = document.querySelector('#user-options li a[href="./termos.html"]');
+    const termsLink = document.querySelector('#termos');
     const termsModal = document.getElementById('terms-modal');
     const closeModal = document.querySelector('.close-modal');
 

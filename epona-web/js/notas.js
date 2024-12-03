@@ -1,6 +1,40 @@
 document.addEventListener('DOMContentLoaded', () => {
     const usuario = JSON.parse(localStorage.getItem('usuario'));
     const token = localStorage.getItem('token');
+    const userName = document.getElementById("usuarioNome");
+    const userOptions = document.getElementById("user-options");
+    const closeBtn = document.querySelector(".close-btn");
+    const termsLink = document.querySelector('#termos');
+    const termsModal = document.getElementById('terms-modal');
+    const closeModal = document.querySelector('.close-modal');
+
+    termsLink.addEventListener('click', (e) => {
+        e.preventDefault(); // Previne o redirecionamento padrão
+        termsModal.classList.remove('hidden');
+    });
+
+    // Fechar o modal
+    closeModal.addEventListener('click', () => {
+        termsModal.classList.add('hidden');
+    });
+
+    // Fechar o modal ao clicar fora dele
+    window.addEventListener('click', (e) => {
+        if (e.target === termsModal) {
+            termsModal.classList.add('hidden');
+        }
+    });
+
+    userName.addEventListener("click", () => {
+        userOptions.classList.add("active");
+        userOptions.classList.remove("hidden");
+    });
+
+    // Fechar o menu lateral
+    closeBtn.addEventListener("click", () => {
+        userOptions.classList.add("hidden");
+        userOptions.classList.remove("active");
+    });
     // Função para verificar se o token está expirado
     function verificarTokenExpirado(token) {
         if (!token) return true; // Se o token não existe, consideramos expirado
@@ -128,12 +162,18 @@ const token = localStorage.getItem('token');
         console.log(id);
     }
 
+    cancel = document.getElementById('cancel');
+
+    cancel.addEventListener("click", () => {
+        const addnotaModal = document.getElementById("addnotaModal");
+        addnotaModal.style.display = 'none';
+    });
+
 const cancelBtn = document.getElementById("cancelBtn");
 cancelBtn.addEventListener("click", () => {
     const confirmModal = document.getElementById('confirmModal');
     confirmModal.style.display = 'none';
 });
-
 const btnConfirm = document.getElementById("btnConfirm");
 btnConfirm.addEventListener("click", () => {
     deletarnota();
