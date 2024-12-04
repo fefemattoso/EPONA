@@ -71,14 +71,14 @@ function App() {
         {menuVisible && (
           <View style={styles.dropdown}>
             <TouchableOpacity style={styles.dropdownItem} onPress={handleLogout}>
-              <Icon name="sign-out" size={20} color="#C7E8FD" style={styles.icon} />
+              <Icon name="sign-out" size={20} color="#255140" style={styles.icon} />
               <Text style={styles.dropdownText}>Logout</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.dropdownItem} onPress={toggleDarkMode}>
               <Icon
                 name={isDarkMode ? 'sun-o' : 'moon-o'}
                 size={20}
-                color="#C7E8FD"
+                color="#255140"
                 style={styles.icon}
               />
               <Text style={styles.dropdownText}>
@@ -89,7 +89,7 @@ function App() {
               style={styles.dropdownItem}
               onPress={() => navigation.navigate('Perfil')}
             >
-              <Icon name="user" size={20} color="#C7E8FD" style={styles.icon} />
+              <Icon name="user" size={20} color="#255140" style={styles.icon} />
               <Text style={styles.dropdownText}>Perfil</Text>
             </TouchableOpacity>
           </View>
@@ -121,31 +121,31 @@ function App() {
   screenOptions={({ route }) => ({
     headerShown: true,
     headerStyle: {
-      backgroundColor: isDarkMode ? '#000' : '#255140',
+      backgroundColor: isDarkMode ? '#152b23' : '#b6d2aa',
     },
-    headerTintColor: isDarkMode ? '#FFF' : '#C7E8FD',
-    tabBarStyle: { backgroundColor: isDarkMode ? '#000' : '#255140' },
-    tabBarActiveTintColor: '#8AC66D',
-    tabBarInactiveTintColor: '#C7E8FD',
+    headerTintColor: isDarkMode ? '#FFF8dd' : '#255140',
+    tabBarStyle: { backgroundColor: isDarkMode ? '#152b23' : '#b6d2aa' },
+    tabBarActiveTintColor: isDarkMode ? '#FFF8dd' : '#FFF8dd',
+    tabBarInactiveTintColor: isDarkMode ? '#FFc5c7' : '#255140',
     headerRight: ({ navigation }) => <Menu navigation={navigation} />,
     tabBarIcon: ({ color, size }) => {
       let iconName;
 
       switch (route.name) {
         case 'Home':
-          iconName = 'home'; // Ícone para esta aba
+          iconName = 'home';
           break;
         case 'Agenda':
-          iconName = 'calendar'; // Ícone para Agenda
+          iconName = 'calendar';
           break;
         case 'Tarefas':
-          iconName = 'check-square'; // Ícone para Tarefas Diárias
+          iconName = 'check-square';
           break;
         case 'Listas':
-          iconName = 'list'; // Ícone para Lista Personalizada
+          iconName = 'list';
           break;
         default:
-          iconName = 'circle'; // Ícone padrão
+          iconName = 'circle';
           break;
       }
 
@@ -153,11 +153,12 @@ function App() {
     },
   })}
 >
-  <Tab.Screen name="Home" component={FunctionSelection} />
-  <Tab.Screen name="Agenda" component={Agenda} />
-  <Tab.Screen name="Tarefas" component={DailyTasks} />
-  <Tab.Screen name="Listas" component={CustomList} />
+  <Tab.Screen name="Home" component={() => <FunctionSelection isDarkMode={isDarkMode} />} />
+  <Tab.Screen name="Agenda" component={() => <Agenda isDarkMode={isDarkMode} />} />
+  <Tab.Screen name="Tarefas" component={() => <DailyTasks isDarkMode={isDarkMode} />} />
+  <Tab.Screen name="Listas" component={() => <CustomList isDarkMode={isDarkMode} />} />
 </Tab.Navigator>
+
 
       </NavigationContainer>
 
@@ -226,7 +227,7 @@ const styles = StyleSheet.create({
   },
   dropdownText: {
     fontSize: 16,
-    color: '#C7E8FD',
+    color: '#255140',
     marginLeft: 10,
   },
   icon: {

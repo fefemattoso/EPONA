@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated, TouchableOpacity, ImageBackground, Image } from 'react-native';
+import { View, Text, StyleSheet, Animated, ImageBackground, Image } from 'react-native';
 
-const Home = ({ onContinue }) => {
+const Home = ({ onContinue, isDarkMode }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -13,7 +13,13 @@ const Home = ({ onContinue }) => {
   }, [fadeAnim]);
 
   return (
-    <Animated.View style={{ ...styles.container, opacity: fadeAnim }}>
+    <Animated.View
+      style={[
+        styles.container,
+        { backgroundColor: isDarkMode ? '#1e3d31' : '#fff8dd' }, // Fundo ajustado para o modo escuro
+        { opacity: fadeAnim },
+      ]}
+    >
       <ImageBackground
         source={require('../assets/NEW/borrao.png')}
         style={styles.backgroundImage}
@@ -28,8 +34,20 @@ const Home = ({ onContinue }) => {
           />
 
           {/* Título e slogan */}
-          <Text style={styles.title}>Bem-vindo ao Epona</Text>
-          <Text style={styles.subtitle}>
+          <Text
+            style={[
+              styles.title,
+              { color: isDarkMode ? '#FFF8dd' : '#162040' }, // Título ajustado para o modo escuro
+            ]}
+          >
+            Bem-vindo ao Epona
+          </Text>
+          <Text
+            style={[
+              styles.subtitle,
+              { color: isDarkMode ? '#BBBBBB' : '#547699' }, // Subtítulo ajustado para o modo escuro
+            ]}
+          >
             Organização, produtividade e serenidade no seu dia a dia.
           </Text>
         </View>
@@ -41,7 +59,6 @@ const Home = ({ onContinue }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff8dd', // Fundo claro
   },
   backgroundImage: {
     flex: 1,
@@ -64,13 +81,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#162040', // Azul-escuro da paleta
     textAlign: 'center',
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 18,
-    color: '#547699', // Azul suave
     textAlign: 'center',
     marginBottom: 30,
   },
