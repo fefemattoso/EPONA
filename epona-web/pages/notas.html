@@ -7,7 +7,6 @@
     <link rel="icon" href="../images/logo.png" type="image/png">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/notas.css">
-    <!-- Adicionando o link para a fonte Comfortaa -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap">
 </head>
 <body>
@@ -40,7 +39,7 @@
     </main>
 
     <!-- Modal para adicionar nota -->
-    <div id="addnotaModal" class="modal">
+    <div id="addnotaModal" class="modal hidden">
         <div class="modal-content">
             <h2>Adicionar nota</h2>
             <form id="addnotaForm">
@@ -59,31 +58,30 @@
     </div>
 
     <!-- Modal de remoção de nota individual -->
-    <div id="confirmModal" class="modal">
+    <div id="confirmModal" class="modal hidden">
         <div class="modal-content">
             <span id="confirmNotaClose" class="close">&times;</span>
             <h2>Exclusão</h2>
-                <p>Deseja realmente excluir a nota?</p>
-                <input type="hidden" id="notaId">
-                <button type="button" id="cancelBtn">Cancelar</button>
-                <button type="button" id="btnConfirm" class="deletebtn">Deletar</button>
+            <p>Deseja realmente excluir a nota?</p>
+            <input type="hidden" id="notaId">
+            <button type="button" id="cancelBtn">Cancelar</button>
+            <button type="button" id="btnConfirm" class="deletebtn">Deletar</button>
         </div>
     </div>
 
-
     <!-- Menu sanduiche -->
-<div id="user-options" class="user-options hidden">
-    <button class="close-btn">X</button>
-    <ul>
-        <li id="termos">Termos de Serviço</li>
-        <li>
-            <img id="dark-mode-icon" src="../images/moon.png" alt="Modo Escuro" class="dark-mode-icon">
-        </li>
-        <li>
-            <button id="sair" class="sair">Sair</button>
-        </li>
-    </ul>
-</div>
+    <div id="user-options" class="user-options hidden">
+        <button class="close-btn">X</button>
+        <ul>
+            <li id="termos">Termos de Serviço</li>
+            <li>
+                <img id="dark-mode-icon" src="../images/moon.png" alt="Modo Escuro" class="dark-mode-icon">
+            </li>
+            <li>
+                <button id="sair" class="sair">Sair</button>
+            </li>
+        </ul>
+    </div>
     
     <!-- Modal de Termos de Serviço -->
     <div id="terms-modal" class="modal hidden">

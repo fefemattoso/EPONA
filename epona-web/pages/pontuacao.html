@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pontuação</title>
+    <link rel="icon" href="../images/logo.png" type="image/png">
     <link rel="stylesheet" href="../css/style.css">
-
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap">
 </head>
+
 <body>
     <header>
         <nav>
@@ -23,14 +26,82 @@
             </ul>
             <div class="perfil">
                 <span id="usuario"></span>
-                <button id="sair">Sair</button>
             </div>
         </nav>
     </header>
-    <h2>Ranking de Pontuação</h2>
-    <div id="ranking">
+    <main>
+        <h2>Ranking de Pontuação</h2>
+        <div id="ranking">
+            <!-- O ranking será adicionado aqui dinamicamente -->
+        </div>
+    </main>
 
+    <!-- Menu sanduiche -->
+    <div id="user-options" class="user-options hidden">
+        <button class="close-btn">X</button>
+        <ul>
+            <li id="termos">Termos de Serviço</li>
+            <li>
+                <img id="dark-mode-icon" src="../images/moon.png" alt="Modo Escuro" class="dark-mode-icon">
+            </li>
+            <li>
+                <button id="sair" class="sair">Sair</button>
+            </li>
+        </ul>
     </div>
+
+    <!-- Modal de Termos de Serviço -->
+    <div id="terms-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close-modal">&times;</button>
+            <h2>Termos de Serviço</h2>
+            <p>
+                Bem-vindo ao Epona! Estes são os Termos de Serviço para o uso do nosso aplicativo.
+                Ao utilizar o Epona, você concorda com as seguintes condições:
+            </p>
+            <ul>
+                <li>Você é responsável por todas as informações fornecidas no aplicativo.</li>
+                <li>O Epona não se responsabiliza por perda de dados devido a falhas técnicas.</li>
+                <li>O uso do Epona deve estar em conformidade com as leis locais.</li>
+                <li>Reservamos o direito de atualizar esses Termos a qualquer momento.</li>
+            </ul>
+            <p>Obrigado por usar o Epona!</p>
+        </div>
+    </div>
+    <!-- Menu sanduiche -->
+    <div id="user-options" class="user-options hidden">
+        <button class="close-btn">X</button>
+        <ul>
+            <li id="termos">Termos de Serviço</li>
+            <li>
+                <img id="dark-mode-icon" src="../images/moon.png" alt="Modo Escuro" class="dark-mode-icon">
+            </li>
+            <li>
+                <button id="sair" class="sair">Sair</button>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Modal de Termos de Serviço -->
+    <div id="terms-modal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close-modalTermos">&times;</button>
+            <h2>Termos de Serviço</h2>
+            <p>
+                Bem-vindo ao Epona! Estes são os Termos de Serviço para o uso do nosso aplicativo.
+                Ao utilizar o Epona, você concorda com as seguintes condições:
+            </p>
+            <ul>
+                <li>Você é responsável por todas as informações fornecidas no aplicativo.</li>
+                <li>O Epona não se responsabiliza por perda de dados devido a falhas técnicas.</li>
+                <li>O uso do Epona deve estar em conformidade com as leis locais.</li>
+                <li>Reservamos o direito de atualizar esses Termos a qualquer momento.</li>
+            </ul>
+            <p>Obrigado por usar o Epona!</p>
+        </div>
+    </div>
+
 </body>
 <script src="../js/pontuacao.js"></script>
+
 </html>
