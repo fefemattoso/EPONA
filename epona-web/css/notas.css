@@ -29,12 +29,12 @@ nav .logo p{
     margin-right: 10px;
 }
 
-
- nav div {
+nav div {
     display: flex;
     align-items: center;
     gap: 10px;
 }
+
 nav ul {
     display: flex;
     gap: 1rem;
@@ -72,7 +72,6 @@ nav .perfil button:hover{
     background-color: #24356b;
 }
 
-
 .notas {
     padding: 20px;
 }
@@ -83,7 +82,7 @@ nav .perfil button:hover{
 
 /* Botões */
 button {
-    background-color: #162040; /* Verde escuro para os botões */
+    background-color: #162040;
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -95,35 +94,7 @@ button {
 }
 
 button:hover {
-    background-color: #1e2a40; /* Cor escura ao passar o mouse */
-}
-
-/* Modal e Overlay */
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.modal {
-    display: none;
-    background-color: #fff; /* Fundo branco para o modal */
-    border-radius: 10px;
-    padding: 20px;
-    max-width: 500px;
-    width: 100%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.hidden {
-    display: none;
+    background-color: #1e2a40;
 }
 
 .btn-group {
@@ -159,13 +130,13 @@ button:hover {
 
 #addnotaForm textarea, #editnotaForm textarea {
     font-size: 1rem;
-    min-height: 150px; /* Altura mínima do textarea */
-    resize: vertical; /* Permitir redimensionar verticalmente */
+    min-height: 150px;
+    resize: vertical;
 }
 
 /* Botões do modal */
 button.cancelar {
-    background-color: #e74c3c; /* Cor do botão cancelar */
+    background-color: #e74c3c;
 }
 
 button.cancelar:hover {
@@ -173,7 +144,7 @@ button.cancelar:hover {
 }
 
 button.confirmar {
-    background-color: #2ecc71; /* Cor do botão confirmar */
+    background-color: #2ecc71;
 }
 
 button.confirmar:hover {
@@ -188,74 +159,28 @@ button.confirmar:hover {
     width: 50px;
 }
 
-.card {
-    background-color: #fff; /* Fundo branco para os cards */
-    border: 1px solid #ddd; /* Cor da borda dos cards */
+.notaCard {
+    background-color: #fff;
+    border: 1px solid #ddd;
     border-radius: 8px;
     margin-bottom: 15px;
     padding: 15px;
     position: relative;
 }
 
-.card .headerCard {
+.notaCard .headerCard {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.card .titulo {
+.notaCard h3 {
     margin: 0;
     font-size: 1.2rem;
 }
 
-.card .remove-nota {
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: #e74c3c;
-}
-.card .edit-nota{
-    font-size: 1.5rem;
-    cursor: pointer;
-}
-
-.card .descricao {
-    margin: 20px 0;
-    font-size: 1rem; /* Tamanho da fonte da descrição */
-    line-height: 1.5; /* Altura da linha para melhor legibilidade */
-}
-
-.card .concluido-btn {
-    background-color: #2ecc71; /* Verde para botão de concluído */
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 5px 10px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    margin-top: 10px; /* Espaço acima do botão */
-}
-
-.card .concluido-btn:hover {
-    background-color: #27ae60; /* Verde mais escuro ao passar o mouse */
-}
-
-.card.concluida {
-    background-color: #e0e0e0; /* Cor de fundo para nota concluída */
-    text-decoration: line-through; /* Riscar texto da nota concluída */
-}
-
-.card .restaurar-btn {
-    background-color: #007bff; /* Azul para botão de restaurar */
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    padding: 5px 10px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    margin-top: 10px; /* Espaço acima do botão */
-    display: none; /* Inicialmente oculto */
-}
-
-.card .restaurar-btn:hover {
-    background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
+.notaCard p {
+    margin: 10px 0;
+    font-size: 1rem;
+    line-height: 1.5;
 }

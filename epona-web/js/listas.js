@@ -13,9 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     termsLink.addEventListener('click', (e) => {
         e.preventDefault();
-        console.log(termsModal.classList);
         termsModal.classList.remove('hidden');
-        console.log(termsModal.classList);
     });
 
     // Fechar o modal
@@ -418,12 +416,9 @@ async function atualizarItemConcluido(id, concluido) {
             },
             body: JSON.stringify({ concluido }) // Certifique-se de que `concluido` é um booleano
         });
-
         if (!response.ok) {
             throw new Error('Erro ao atualizar o status do item.');
         }
-        let item = await response.json();
-        console.log('Item atualizado com sucesso:', item);
     } catch (e) {
         console.error('Erro ao atualizar o item:', e);
     }
