@@ -1,7 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Button, TextInput, FlatList, TouchableOpacity, Animated, Switch, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react'; 
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  FlatList,
+  TouchableOpacity,
+  Animated,
+  Switch,
+  ScrollView,
+  Modal,
+} from 'react-native';
 import { db } from '../firebaseconfig';
-import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import {
+  collection,
+  addDoc,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+  doc,
+} from 'firebase/firestore';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default function DailyTasks() {
@@ -12,69 +30,75 @@ export default function DailyTasks() {
   const [editingItemId, setEditingItemId] = useState(null);
   const fadeAnim = useState(new Animated.Value(0))[0];
   const [isRead, setIsRead] = useState(false);
+  const [xp, setXp] = useState(0);
+  const [taskCompletionLog, setTaskCompletionLog] = useState({});
+  const [showActions, setShowActions] = useState(null);  // Estado para mostrar ações
 
   const adicionarOuAtualizarItem = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-
       if (editingItemId) {
         const ItemRef = doc(db, 'Tasks', editingItemId);
-        await updateDoc(ItemRef, {
-          nome: nomeItem,
-          descricao: descItem,
-          isRead: isRead,
-        });
-        alert('Tarefa atualizada com sucesso!');
+        await updateDoc(ItemRef, { nome: nomeItem, descricao: descItem, isRead });
         setEditingItemId(null);
       } else {
-        await addDoc(collection(db, 'Tasks'), {
-          nome: nomeItem,
-          descricao: descItem,
-          isRead: isRead,
-        });
-        alert('Tarefa adicionada com sucesso!');
+        await addDoc(collection(db, 'Tasks'), { nome: nomeItem, descricao: descItem, isRead });
       }
-
       setNomeItem('');
       setDescItem('');
       setIsRead(false);
       fetchItems();
-    } catch (e) {
-      console.error("Erro ao salvar Tarefa: ", e);
     } finally {
       setLoading(false);
     }
   };
 
   const fetchItems = async () => {
-    try {
-      const querySnapshot = await getDocs(collection(db, 'Tasks'));
-      const ItemsList = querySnapshot.docs.map(doc => ({
-        ...doc.data(),
-        id: doc.id
-      }));
-      setItems(ItemsList);
-      Animated.timing(fadeAnim, { toValue: 1, duration: 1000, useNativeDriver: true }).start();
-    } catch (e) {
-      console.error("Erro ao buscar Tarefas: ", e);
-    }
+    const querySnapshot = await getDocs(collection(db, 'Tasks'));
+    const ItemsList = querySnapshot.docs.map(doc => ({
+      ...doc.data(),
+      id: doc.id,
+    }));
+    setItems(ItemsList);
+    Animated.timing(fadeAnim, { toValue: 1, duration: 500, useNativeDriver: true }).start();
   };
 
-  const editarItem = (Item) => {
-    setNomeItem(Item.nome);
-    setDescItem(Item.descricao);
-    setIsRead(Item.isRead);
-    setEditingItemId(Item.id);
+  const handleTaskCompletion = async (item, valor) => {
+    const today = new Date().toISOString().split('T')[0];
+    const taskLog = taskCompletionLog[item.id] || {};
+
+    if (valor && (!taskLog[today] || taskLog[today] === false)) {
+      setXp(xp + 15);
+      setTaskCompletionLog({
+        ...taskCompletionLog,
+        [item.id]: { ...taskLog, [today]: true },
+      });
+    } else if (!valor) {
+      setTaskCompletionLog({
+        ...taskCompletionLog,
+        [item.id]: { ...taskLog, [today]: false },
+      });
+    }
+
+    const ItemRef = doc(db, 'Tasks', item.id);
+    await updateDoc(ItemRef, { isRead: valor });
+    fetchItems();
   };
 
-  const excluirItem = async (ItemId) => {
-    try {
-      await deleteDoc(doc(db, 'Tasks', ItemId));
-      alert('Tarefa excluída com sucesso!');
-      fetchItems();
-    } catch (e) {
-      console.error("Erro ao excluir Tarefa: ", e);
-    }
+  const editarItem = item => {
+    setNomeItem(item.nome);
+    setDescItem(item.descricao);
+    setIsRead(item.isRead);
+    setEditingItemId(item.id);
+  };
+
+  const excluirItem = async itemId => {
+    await deleteDoc(doc(db, 'Tasks', itemId));
+    fetchItems();
+  };
+
+  const toggleActions = (itemId) => {
+    setShowActions(showActions === itemId ? null : itemId);  // Alterna a visibilidade das ações
   };
 
   useEffect(() => {
@@ -84,6 +108,7 @@ export default function DailyTasks() {
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Tarefas Diárias</Text>
+      <Text style={styles.xp}>XP: {xp}</Text>
 
       <Text style={styles.label}>Nome da Tarefa</Text>
       <TextInput
@@ -95,63 +120,70 @@ export default function DailyTasks() {
 
       <Text style={styles.label}>Descrição</Text>
       <TextInput
-        style={styles.input}
+        style={[styles.input, styles.textArea]}
         placeholder="Digite a descrição da tarefa"
         value={descItem}
         onChangeText={setDescItem}
-        multiline={true}
-        numberOfLines={4}
+        multiline
       />
 
-      <Button
-        title={loading ? "Salvando..." : editingItemId ? "Atualizar Tarefa" : "Adicionar Tarefa"}
+      <TouchableOpacity
+        style={[styles.button, loading && styles.buttonDisabled]}
         onPress={adicionarOuAtualizarItem}
-        color="#162040"
-      />
+        disabled={loading}
+      >
+        <Text style={styles.buttonText}>
+          {loading ? 'Salvando...' : editingItemId ? 'Atualizar Tarefa' : 'Adicionar Tarefa'}
+        </Text>
+      </TouchableOpacity>
 
       <Text style={styles.sectionTitle}>Lista de Tarefas</Text>
 
-      <Animated.View style={{ opacity: fadeAnim, flex: 1 }}>
-  <FlatList
-    data={Items}
-    keyExtractor={(item) => item.id}
-    renderItem={({ item }) => (
-      <View style={styles.itemTask}>
-        <View style={styles.itemDetails}>
-          <Text style={styles.itemName}>{item.nome}</Text>
-          <Text style={styles.itemDesc}>{item.descricao}</Text>
-          <Switch
-            value={item.isRead}
-            onValueChange={(valor) => {
-              const ItemRef = doc(db, 'Tasks', item.id);
-              updateDoc(ItemRef, { isRead: valor });
-              fetchItems();
-            }}
-            trackColor={{ false: "#C0C0C0", true: "#48D1CC" }}
-            thumbColor={item.isRead ? "#FFD700" : "#FFF"}
-            ios_backgroundColor="#c7e8fd"
-          />
-          <Text style={[styles.itemStatus, { color: item.isRead ? '#32CD32' : '#FF4500' }]}>
-            {item.isRead ? "Concluída" : "Pendente"}
-          </Text>
-        </View>
-
-        <View style={styles.actionButtons}>
-          <TouchableOpacity onPress={() => editarItem(item)} style={styles.actionButton}>
-            <Icon name="edit" size={25} color="#4169E1" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => excluirItem(item.id)} style={styles.actionButton}>
-            <Icon name="trash" size={25} color="#FF4500" />
-          </TouchableOpacity>
-        </View>
-      </View>
-    )}
-    // Adicionando um Footer para garantir espaço extra no final
-    ListFooterComponent={<View style={{ height: 30 }} />}
-    contentContainerStyle={{ paddingBottom: 30 }} // Garantir que o último item não seja cortado
-  />
-</Animated.View>
-
+      <Animated.View style={{ opacity: fadeAnim }}>
+        <FlatList
+          data={Items}
+          keyExtractor={item => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.item}>
+              <View style={styles.itemContent}>
+                <Text style={styles.itemTitle}>{item.nome}</Text>
+                <Text style={styles.itemDesc}>{item.descricao}</Text>
+                <Switch
+                  value={item.isRead}
+                  onValueChange={valor => handleTaskCompletion(item, valor)}
+                  trackColor={{ false: '#dcdcdc', true: '#48D1CC' }}
+                  thumbColor={item.isRead ? '#FFD700' : '#FFF'}
+                  ios_backgroundColor="#c7e8fd"
+                />
+                <Text
+                  style={[
+                    styles.itemStatus,
+                    { color: item.isRead ? '#32CD32' : '#FF4500' },
+                  ]}
+                >
+                  {item.isRead ? 'Concluída' : 'Pendente'}
+                </Text>
+              </View>
+              
+              <View style={styles.itemActions}>
+                <TouchableOpacity onPress={() => toggleActions(item.id)}>
+                  <Icon name="ellipsis-v" size={20} color="#4169E1" />
+                </TouchableOpacity>
+                {showActions === item.id && ( // Exibe as ações apenas se o item corresponder
+                  <View style={styles.actionsMenu}>
+                    <TouchableOpacity onPress={() => editarItem(item)}>
+                      <Icon name="edit" size={20} color="#4169E1" />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => excluirItem(item.id)}>
+                      <Icon name="trash" size={20} color="#FF4500" />
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+            </View>
+          )}
+        />
+      </Animated.View>
     </ScrollView>
   );
 }
@@ -159,70 +191,102 @@ export default function DailyTasks() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#badda8',
-    padding: 40,
+    backgroundColor: '#fff8dd',
+    padding: 20,
   },
   title: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: 'bold',
+    color: '#162040',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  xp: {
+    fontSize: 18,
     color: '#162040',
     textAlign: 'center',
     marginBottom: 20,
   },
   label: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#2f5911',
     marginBottom: 8,
   },
   input: {
-    borderColor: '#4682B4',
-    borderWidth: 1.5,
-    borderRadius: 12,
-    padding: 12,
+    borderColor: '#e3dab6',
+    borderWidth: 1,
+    borderRadius: 15,
+    padding: 10,
+    backgroundColor: '#fff',
     marginBottom: 15,
-    backgroundColor: '#FFF',
+    height: 40,
+  },
+  textArea: {
+    height: 60,
+    textAlignVertical: 'top',
+  },
+  button: {
+    backgroundColor: '#162040',
+    borderRadius: 15,
+    paddingVertical: 12,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  buttonDisabled: {
+    backgroundColor: '#666',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   sectionTitle: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#162040',
-    marginBottom: 12,
-  },
-  itemTask: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#C7E8FD', // Cor de fundo alterada
-    padding: 15,
-    borderRadius: 12,
     marginBottom: 10,
-    borderColor: '#547699', // Cor da borda alterada
-    borderWidth: 1.5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
   },
-  itemDetails: {
+  item: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#C7E8FD',
+    padding: 15,
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  itemContent: {
     flex: 1,
   },
-  itemName: {
-    fontSize: 18,
+  itemTitle: {
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#162040', // Cor do texto mais escura
+    color: '#162040',
   },
   itemDesc: {
-    fontSize: 16,
-    color: '#547699', // Cor da descrição mais suave
-    marginBottom: 8,
+    fontSize: 14,
+    color: '#547699',
+    marginBottom: 5,
   },
   itemStatus: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
   },
-  actionButtons: {
+  itemActions: {
     flexDirection: 'row',
+    gap: 8,
   },
-  actionButton: {
-    marginHorizontal: 8,
+  actionsMenu: {
+    backgroundColor: 'white',
+    position: 'absolute',
+    right: 0,
+    top: 30,
+    borderRadius: 5,
+    padding: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
+  
 });

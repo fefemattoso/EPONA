@@ -29,7 +29,7 @@ const Home = ({ onContinue, isDarkMode }) => {
         <View style={styles.content}>
           {/* Logo ou imagem principal */}
           <Image
-            source={require('../assets/NEW/Design sem nome (1).png')}
+            source={require('../assets/NEW/Epona (4).png')}
             style={styles.logo}
           />
 

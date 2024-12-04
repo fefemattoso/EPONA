@@ -76,6 +76,8 @@ export default function CustomList() {
     fetchItems();
   }, []);
 
+  const [menuVisible, setMenuVisible] = useState(false);
+
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Lista Personalizada</Text>
@@ -97,45 +99,53 @@ export default function CustomList() {
       <Text style={styles.sectionTitle}>Itens</Text>
 
       <Animated.View style={{ opacity: fadeAnim, flex: 1 }}>
-  <FlatList
-    data={Items}
-    keyExtractor={(item) => item.id}
-    renderItem={({ item }) => (
-      <View style={styles.itemContainer}>
-        <View style={styles.itemDetails}>
-          <Text style={styles.itemName}>{item.nome}</Text>
-          <Switch
-            value={item.isRead}
-            onValueChange={(valor) => {
-              const ItemRef = doc(db, 'Items', item.id);
-              updateDoc(ItemRef, { isRead: valor });
-              fetchItems();
-            }}
-            trackColor={{ false: "#767577", true: "#81b0ff" }}
-            thumbColor={item.isRead ? "#4CAF50" : "#f4f3f4"}
-            ios_backgroundColor="#3e3e3e"
-          />
-          <Text style={[styles.itemStatus, { color: item.isRead ? '#4CAF50' : '#F44336' }]}>
-            {item.isRead ? "Concluído" : "Pendente"}
-          </Text>
-        </View>
+        <FlatList
+          data={Items}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.itemContainer}>
+              <View style={styles.itemDetails}>
+                <Text style={styles.itemName}>{item.nome}</Text>
+                <Switch
+                  value={item.isRead}
+                  onValueChange={(valor) => {
+                    const ItemRef = doc(db, 'Items', item.id);
+                    updateDoc(ItemRef, { isRead: valor });
+                    fetchItems();
+                  }}
+                  trackColor={{ false: "#767577", true: "#81b0ff" }}
+                  thumbColor={item.isRead ? "#4CAF50" : "#f4f3f4"}
+                  ios_backgroundColor="#3e3e3e"
+                />
+                <Text style={[styles.itemStatus, { color: item.isRead ? '#4CAF50' : '#F44336' }]}>
+                  {item.isRead ? "Concluído" : "Pendente"}
+                </Text>
+              </View>
 
-        <View style={styles.actionButtons}>
-          <TouchableOpacity onPress={() => editarItem(item)} style={styles.actionButton}>
-            <Icon name="edit" size={25} color="#547699" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => excluirItem(item.id)} style={styles.actionButton}>
-            <Icon name="trash" size={25} color="#F44336" />
-          </TouchableOpacity>
-        </View>
-      </View>
-    )}
-    // Adicionando um Footer para criar espaço no final
-    ListFooterComponent={<View style={{ height: 30 }} />} 
-    contentContainerStyle={{ paddingBottom: 20 }} // Espaço adicional para garantir visibilidade
-  />
-</Animated.View>
+              <View style={styles.actionButtons}>
+                {/* Botão de três pontinhos */}
+                <TouchableOpacity onPress={() => setMenuVisible(!menuVisible)} style={styles.actionButton}>
+                  <Icon name="ellipsis-h" size={25} color="#547699" />
+                </TouchableOpacity>
 
+                {/* Menu de opções */}
+                {menuVisible && (
+                  <View style={styles.menu}>
+                    <TouchableOpacity onPress={() => editarItem(item)} style={styles.actionButton}>
+                      <Icon name="edit" size={25} color="#547699" />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => excluirItem(item.id)} style={styles.actionButton}>
+                      <Icon name="trash" size={25} color="#F44336" />
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+            </View>
+          )}
+          ListFooterComponent={<View style={{ height: 30 }} />}
+          contentContainerStyle={{ paddingBottom: 20 }}
+        />
+      </Animated.View>
     </ScrollView>
   );
 }
@@ -143,7 +153,7 @@ export default function CustomList() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#badda8',
+    backgroundColor: '#fff8dd',
     padding: 50,
   },
   title: {
@@ -176,7 +186,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 15,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#ffc4c7',
     borderRadius: 10,
     marginBottom: 10,
     shadowColor: '#000',
@@ -198,8 +208,23 @@ const styles = StyleSheet.create({
   },
   actionButtons: {
     flexDirection: 'row',
+    position: 'absolute',
+    right: 10,
+    top: 10,
   },
   actionButton: {
     marginHorizontal: 5,
+  },
+  menu: {
+    backgroundColor: 'white',
+    position: 'absolute',
+    right: 0,
+    top: 30,
+    borderRadius: 5,
+    padding: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
 });
