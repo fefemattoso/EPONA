@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModal = document.querySelector('.close-modal');
     const usuario = JSON.parse(localStorage.getItem('usuario'));  
     const token = localStorage.getItem('token');  
+    const blur = document.querySelector(".blur");
 
     checarDados()
 
@@ -61,12 +62,15 @@ document.addEventListener('DOMContentLoaded', () => {
     userName.addEventListener("click", () => {
         userOptions.classList.add("active");
         userOptions.classList.remove("hidden");
+        blur.classList.remove("hidden");
+
     });
 
     // Fechar o menu lateral
     closeBtn.addEventListener("click", () => {
         userOptions.classList.add("hidden");
         userOptions.classList.remove("active");
+        blur.classList.add("hidden");
     });
 
     darkModeIcon.addEventListener("click", () => {
