@@ -9,7 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModal = document.querySelector('.close-modal');
     const usuario = JSON.parse(localStorage.getItem('usuario'));  
     const token = localStorage.getItem('token');  
-
+    
+    checarDados()
      // Abrir o modal
      termsLink.addEventListener('click', (e) => {
         e.preventDefault(); // Previne o redirecionamento padrão
@@ -163,8 +164,9 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     sair.addEventListener("click", () => {
-        const usuario = JSON.parse(localStorage.getItem('usuario'));
-        localStorage.removeItem(usuario);
+        localStorage.removeItem("usuario");
+        localStorage.removeItem("token");
+
 
         window.location.href = "./login.html";
         });
@@ -178,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     preencherNome();
-    checarDados()
+    
     carregarnotas();
 
 });
