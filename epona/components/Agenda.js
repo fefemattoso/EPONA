@@ -164,19 +164,19 @@ const App = ({ isDarkMode }) => {
       <Calendar
         style={{
           borderWidth: 1,
-          borderColor: isDarkMode ? '#ffc4c7' : 'gray',
+          borderColor: isDarkMode ? '#121212' : '#ffc4c7',
           height: 350,
           borderRadius: 20,
         }}
         theme={{
           backgroundColor: isDarkMode ? '#121212' : '#ffffff',
           calendarBackground: isDarkMode ? '#1E1E1E' : '#ffc4c7',
-          textSectionTitleColor: isDarkMode ? '#BBBBBB' : '#255140',
+          textSectionTitleColor: isDarkMode ? '#ffc4c7' : '#255140',
           selectedDayBackgroundColor: '#00adf5',
           selectedDayTextColor: '#ffffff',
           todayTextColor: isDarkMode ? '#62a084' : '#255140',
           dayTextColor: isDarkMode ? '#E0E0E0' : '#2d4150',
-          textDisabledColor: '#d9e1e8',
+          textDisabledColor: 'gray',
         }}
         onDayPress={handleDayPress}
         onMonthChange={handleMonthChange}
@@ -216,86 +216,186 @@ const App = ({ isDarkMode }) => {
         )}
       />
       {/* Modal para adicionar descrição */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
+<Modal
+  animationType="slide"
+  transparent={true}
+  visible={modalVisible}
+  onRequestClose={() => {
+    setModalVisible(!modalVisible);
+  }}
+>
+  <View
+    style={[
+      styles.centeredView,
+      { backgroundColor: isDarkMode ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)' },
+    ]}
+  >
+    <View
+      style={[
+        styles.modalView,
+        { backgroundColor: isDarkMode ? '#333' : '#fff' },
+      ]}
+    >
+      <Text
+        style={[
+          styles.modalText,
+          { color: isDarkMode ? '#e0e0e0' : '#000' },
+        ]}
       >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Cadastrar Data</Text>
-            <Text style={styles.label}>Data Selecionada: {selected}</Text>
-
-            <TextInput
-              style={styles.input}
-              placeholder="Digite a descrição"
-              value={descricao}
-              onChangeText={setDescricao}
-            />
-
-            <TouchableOpacity
-              style={styles.buttonSave}
-              onPress={saveDateToFirebase}
-            >
-              <Text style={styles.textStyle}>Salvar Data</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity
-              style={styles.buttonClose}
-              onPress={() => setModalVisible(false)}
-            >
-              <Text style={styles.textStyle}>Fechar</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
-      {/* Modal para exibir e editar a descrição da data cadastrada */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalDescriptionVisible}
-        onRequestClose={() => {
-          setModalDescriptionVisible(!modalDescriptionVisible);
-        }}
+        Cadastrar Data
+      </Text>
+      <Text
+        style={[
+          styles.label,
+          { color: isDarkMode ? '#c0c0c0' : '#333' },
+        ]}
       >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Descrição da Data</Text>
+        Data Selecionada: {selected}
+      </Text>
 
-            <TextInput
-              style={styles.input}
-              placeholder="Edite a descrição"
-              value={selectedDescription}
-              onChangeText={setSelectedDescription}
-            />
+      <TextInput
+        style={[
+          styles.input,
+          { backgroundColor: isDarkMode ? '#444' : '#fff', color: isDarkMode ? '#e0e0e0' : '#000' },
+        ]}
+        placeholder="Digite a descrição"
+        placeholderTextColor={isDarkMode ? '#888' : '#aaa'}
+        value={descricao}
+        onChangeText={setDescricao}
+      />
 
-            <TouchableOpacity
-              style={styles.buttonSave}
-              onPress={updateDescriptionInFirebase}
-            >
-              <Text style={styles.textStyle}>Atualizar Descrição</Text>
-            </TouchableOpacity>
+      <TouchableOpacity
+        style={[
+          styles.buttonSave,
+          { backgroundColor: isDarkMode ? '#48D1CC' : '#b6d2aa' },
+        ]}
+        onPress={saveDateToFirebase}
+      >
+        <Text
+          style={[
+            styles.textStyle,
+            { color: isDarkMode ? '#000' : '#fff' },
+          ]}
+        >
+          Salvar Data
+        </Text>
+      </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.buttonDelete}
-              onPress={deleteDateFromFirebase}
-            >
-              <Text style={styles.textStyle}>Excluir Data</Text>
-            </TouchableOpacity>
+      <TouchableOpacity
+        style={[
+          styles.buttonClose,
+          { backgroundColor: isDarkMode ? '#555' : '#ddd' },
+        ]}
+        onPress={() => setModalVisible(false)}
+      >
+        <Text
+          style={[
+            styles.textStyle,
+            { color: isDarkMode ? '#e0e0e0' : '#000' },
+          ]}
+        >
+          Fechar
+        </Text>
+      </TouchableOpacity>
+    </View>
+  </View>
+</Modal>
 
-            <TouchableOpacity
-              style={styles.buttonClose}
-              onPress={() => setModalDescriptionVisible(false)}
-            >
-              <Text style={styles.textStyle}>Fechar</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+{/* Modal para exibir e editar a descrição da data cadastrada */}
+<Modal
+  animationType="slide"
+  transparent={true}
+  visible={modalDescriptionVisible}
+  onRequestClose={() => {
+    setModalDescriptionVisible(!modalDescriptionVisible);
+  }}
+>
+  <View
+    style={[
+      styles.centeredView,
+      { backgroundColor: isDarkMode ? 'rgba(0, 0, 0, 0.8)' : 'rgba(255, 255, 255, 0.8)' },
+    ]}
+  >
+    <View
+      style={[
+        styles.modalView,
+        { backgroundColor: isDarkMode ? '#333' : '#fff' },
+      ]}
+    >
+      <Text
+        style={[
+          styles.modalText,
+          { color: isDarkMode ? '#e0e0e0' : '#000' },
+        ]}
+      >
+        Descrição da Data
+      </Text>
+
+      <TextInput
+        style={[
+          styles.input,
+          { backgroundColor: isDarkMode ? '#444' : '#fff', color: isDarkMode ? '#e0e0e0' : '#000' },
+        ]}
+        placeholder="Edite a descrição"
+        placeholderTextColor={isDarkMode ? '#888' : '#aaa'}
+        value={selectedDescription}
+        onChangeText={setSelectedDescription}
+      />
+
+      <TouchableOpacity
+        style={[
+          styles.buttonSave,
+          { backgroundColor: isDarkMode ? '#48D1CC' : '#b6d2aa' },
+        ]}
+        onPress={updateDescriptionInFirebase}
+      >
+        <Text
+          style={[
+            styles.textStyle,
+            { color: isDarkMode ? '#000' : '#fff' },
+          ]}
+        >
+          Atualizar Descrição
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[
+          styles.buttonDelete,
+          { backgroundColor: isDarkMode ? '#d9534f' : '#f5c6cb' },
+        ]}
+        onPress={deleteDateFromFirebase}
+      >
+        <Text
+          style={[
+            styles.textStyle,
+            { color: isDarkMode ? '#fff' : '#000' },
+          ]}
+        >
+          Excluir Data
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[
+          styles.buttonClose,
+          { backgroundColor: isDarkMode ? '#555' : '#ddd' },
+        ]}
+        onPress={() => setModalDescriptionVisible(false)}
+      >
+        <Text
+          style={[
+            styles.textStyle,
+            { color: isDarkMode ? '#e0e0e0' : '#000' },
+          ]}
+        >
+          Fechar
+        </Text>
+      </TouchableOpacity>
+    </View>
+  </View>
+</Modal>
+
     </View>
   );
   

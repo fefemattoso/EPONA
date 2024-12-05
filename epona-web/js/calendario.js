@@ -12,9 +12,7 @@
 
     termsLink.addEventListener('click', (e) => {
         e.preventDefault();
-        console.log(termsModal.classList);
         termsModal.classList.remove('hidden');
-        console.log(termsModal.classList);
     });
 
     // Fechar o modal
@@ -292,10 +290,8 @@ document.addEventListener('click', async (e) => {
         let mes = dataDia.split('-')[1];
         let ano = dataDia.split('-')[0];
         let dataComFormato = dia + '/' + mes + '/' + ano;
-        console.log(dataComFormato);
 
         let idEvento = e.target.id
-        console.log(idEvento);
 
         modalEditEvento(idEvento)
         modalEditarEvento.classList.remove('hidden');
@@ -327,7 +323,7 @@ async function modalEditEvento(id) {
 
         }
     } catch (e) {
-        console.log(e)
+        console.error(e)
     }
 }
 

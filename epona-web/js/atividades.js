@@ -207,8 +207,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify({ titulo, descricao })
             });
             if (response.ok) {
-                let atividade = await response.json();
-                console.log(atividade)
                 alert('Atividade atualizada!');
                 window.location.reload();
             }
@@ -346,8 +344,6 @@ async function concluirAtividade(id) {
         });
 
         if (response.ok) {
-            let result = await response.json();
-            console.log(result.message); // Mensagem de sucesso
             window.location.reload()
         } else {
             console.error("Erro ao concluir a atividade");

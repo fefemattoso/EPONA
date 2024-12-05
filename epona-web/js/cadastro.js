@@ -9,7 +9,7 @@ form.addEventListener('submit', async (e) => {
                 window.location.href = "./login.html"
             } else {
                 alert('Ocorreu um erro ao cadastrar o usuário.')
-                console.log(form.email.value, form.nome.value, form.nascimento.value, form.senha.value)
+                window.location.reload();
             }
         } else {
             alert('As senhas não conferem.')
