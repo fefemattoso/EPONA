@@ -106,13 +106,13 @@ function App() {
     );
   }
 
-  if (!user) {
-    return (
-      <Animated.View style={{ ...styles.container, opacity: fadeAnim }}>
-        <Login onLogin={handleLogin} />
-      </Animated.View>
-    );
-  }
+  // if (!user) {
+  //   return (
+  //     <Animated.View style={{ ...styles.container, opacity: fadeAnim }}>
+  //       <Login onLogin={handleLogin} />
+  //     </Animated.View>
+  //   );
+  // }
 
   return (
     <>

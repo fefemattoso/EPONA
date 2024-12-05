@@ -119,7 +119,14 @@ export default function CustomList({ isDarkMode }) {
           renderItem={({ item }) => (
             <View style={styles.itemContainer}>
               <View style={styles.itemDetails}>
-                <Text style={styles.itemName}>{item.nome}</Text>
+                <Text
+                  style={[
+                    styles.itemName,
+                    item.isRead && styles.completedItem,
+                  ]}
+                >
+                  {item.nome}
+                </Text>
                 <Switch
                   value={item.isRead}
                   onValueChange={(valor) => {
@@ -131,14 +138,6 @@ export default function CustomList({ isDarkMode }) {
                   thumbColor={item.isRead ? "#4CAF50" : "#f4f3f4"}
                   ios_backgroundColor="#3e3e3e"
                 />
-                <Text
-                  style={[
-                    styles.itemStatus,
-                    { color: item.isRead ? '#4CAF50' : '#F44336' },
-                  ]}
-                >
-                  {item.isRead ? "Concluído" : "Pendente"}
-                </Text>
               </View>
 
               <View style={styles.actionButtons}>
@@ -230,9 +229,9 @@ const createStyles = (isDarkMode) =>
       fontWeight: 'bold',
       color: isDarkMode ? '#FFF8DD' : '#162040',
     },
-    itemStatus: {
-      fontSize: 16,
-      fontWeight: 'bold',
+    completedItem: {
+      textDecorationLine: 'line-through',
+      color: isDarkMode ? '#888' : '#999',
     },
     actionButtons: {
       flexDirection: 'row',

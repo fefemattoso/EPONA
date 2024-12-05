@@ -9,6 +9,7 @@ import {
   Animated,
   Switch,
   ScrollView,
+  Modal,
 } from 'react-native';
 import { db } from '../firebaseconfig';
 import {
@@ -19,163 +20,381 @@ import {
   deleteDoc,
   doc,
 } from 'firebase/firestore';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default function DailyTasks({ isDarkMode }) {
   const [nomeItem, setNomeItem] = useState('');
   const [descItem, setDescItem] = useState('');
-  const [Items, setItems] = useState([]);
+  const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [editingItemId, setEditingItemId] = useState(null);
   const fadeAnim = useState(new Animated.Value(0))[0];
+  const [isRead, setIsRead] = useState(false);
   const [xp, setXp] = useState(0);
+  const [taskCompletionLog, setTaskCompletionLog] = useState({});
+  const [showActions, setShowActions] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState(null);
 
-  const themeStyles = isDarkMode ? darkStyles : lightStyles;
-
+  // Adicionar ou atualizar tarefa
   const adicionarOuAtualizarItem = async () => {
+    if (!nomeItem.trim() || !descItem.trim()) {
+      alert('Por favor, preencha todos os campos.');
+      return;
+    }
+
     setLoading(true);
     try {
       if (editingItemId) {
-        const ItemRef = doc(db, 'Tasks', editingItemId);
-        await updateDoc(ItemRef, { nome: nomeItem, descricao: descItem });
+        const itemRef = doc(db, 'Tasks', editingItemId);
+        await updateDoc(itemRef, { nome: nomeItem, descricao: descItem, isRead });
         setEditingItemId(null);
       } else {
-        await addDoc(collection(db, 'Tasks'), { nome: nomeItem, descricao: descItem });
+        await addDoc(collection(db, 'Tasks'), { nome: nomeItem, descricao: descItem, isRead });
       }
       setNomeItem('');
       setDescItem('');
+      setIsRead(false);
       fetchItems();
     } finally {
       setLoading(false);
     }
   };
 
+  // Buscar tarefas do banco de dados
   const fetchItems = async () => {
-    const querySnapshot = await getDocs(collection(db, 'Tasks'));
-    const ItemsList = querySnapshot.docs.map(doc => ({
-      ...doc.data(),
-      id: doc.id,
-    }));
-    setItems(ItemsList);
-    Animated.timing(fadeAnim, { toValue: 1, duration: 500, useNativeDriver: true }).start();
+    setLoading(true);
+    try {
+      const querySnapshot = await getDocs(collection(db, 'Tasks'));
+      const itemsList = querySnapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id,
+      }));
+      setItems(itemsList);
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const editarItem = item => {
-    setNomeItem(item.nome);
-    setDescItem(item.descricao);
-    setEditingItemId(item.id);
-  };
+  // Atualizar estado da tarefa (completa ou pendente)
+  const handleTaskCompletion = async (item, valor) => {
+    const today = new Date().toISOString().split('T')[0];
+    const taskLog = taskCompletionLog[item.id] || {};
 
-  const excluirItem = async itemId => {
-    await deleteDoc(doc(db, 'Tasks', itemId));
+    if (valor && (!taskLog[today] || !taskLog[today])) {
+      setXp(prevXp => prevXp + 15);
+      setTaskCompletionLog({
+        ...taskCompletionLog,
+        [item.id]: { ...taskLog, [today]: true },
+      });
+    } else if (!valor) {
+      setTaskCompletionLog({
+        ...taskCompletionLog,
+        [item.id]: { ...taskLog, [today]: false },
+      });
+    }
+
+    const itemRef = doc(db, 'Tasks', item.id);
+    await updateDoc(itemRef, { isRead: valor });
     fetchItems();
   };
 
+  // Editar tarefa
+  const editarItem = item => {
+    setNomeItem(item.nome);
+    setDescItem(item.descricao);
+    setIsRead(item.isRead);
+    setEditingItemId(item.id);
+  };
+
+  // Confirmar exclusão
+  const confirmarExclusao = itemId => {
+    setItemToDelete(itemId);
+    setModalVisible(true);
+  };
+
+  // Excluir tarefa
+  const excluirItem = async () => {
+    if (itemToDelete) {
+      await deleteDoc(doc(db, 'Tasks', itemToDelete));
+      fetchItems();
+    }
+    setModalVisible(false);
+    setItemToDelete(null);
+  };
+
+  // Alternar visibilidade do menu de ações
+  const toggleActions = itemId => {
+    setShowActions(showActions === itemId ? null : itemId);
+  };
+
+  // Buscar tarefas ao carregar o componente
   useEffect(() => {
     fetchItems();
   }, []);
 
-  return (
-    <ScrollView style={themeStyles.container}>
-      <Text style={themeStyles.title}>Tarefas Diárias</Text>
-      <Text style={themeStyles.xp}>XP: {xp}</Text>
+  // Cores para tema claro e escuro
+  const colors = isDarkMode
+    ? {
+        background: '#1e3d31',
+        text: '#FFFFFF',
+        card: '#1E1E1E',
+        border: '#333333',
+        button: '#ffc4c7',
+        buttonText: '#000000',
+        switchTrack: '#666666',
+        switchThumb: '#ffc4c7',
+        modalBackground: '#1E1E1E',
+        modalText: '#FFFFFF',
+      }
+    : {
+        background: '#fff8dd',
+        text: '#1e3d31',
+        card: '#addaff',
+        border: '#e3dab6',
+        button: '#255140',
+        buttonText: '#FFFFFF',
+        switchTrack: '#dcdcdc',
+        switchThumb: '#FFD700',
+        modalBackground: '#FFFFFF',
+        modalText: '#000000',
+      };
 
-      <Text style={themeStyles.label}>Nome da Tarefa</Text>
+  const styles = getStyles(colors);
+
+  return (
+    <ScrollView style={styles.container}>
+      <Text style={styles.title}>Tarefas Diárias</Text>
+      <Text style={styles.xp}>XP: {xp}</Text>
+
+      {/* Inputs */}
+      <Text style={styles.label}>Nome da Tarefa</Text>
       <TextInput
-        style={themeStyles.input}
+        style={styles.input}
         placeholder="Digite o nome da tarefa"
-        placeholderTextColor={isDarkMode ? '#aaa' : '#555'}
+        placeholderTextColor={colors.text}
         value={nomeItem}
         onChangeText={setNomeItem}
       />
-
-      <Text style={themeStyles.label}>Descrição</Text>
+      <Text style={styles.label}>Descrição</Text>
       <TextInput
-        style={[themeStyles.input, themeStyles.textArea]}
+        style={[styles.input, styles.textArea]}
         placeholder="Digite a descrição da tarefa"
-        placeholderTextColor={isDarkMode ? '#aaa' : '#555'}
+        placeholderTextColor={colors.text}
         value={descItem}
         onChangeText={setDescItem}
         multiline
       />
-
       <TouchableOpacity
-        style={[themeStyles.button, loading && themeStyles.buttonDisabled]}
+        style={[styles.button, loading && styles.buttonDisabled]}
         onPress={adicionarOuAtualizarItem}
         disabled={loading}
       >
-        <Text style={themeStyles.buttonText}>
+        <Text style={styles.buttonText}>
           {loading ? 'Salvando...' : editingItemId ? 'Atualizar Tarefa' : 'Adicionar Tarefa'}
         </Text>
       </TouchableOpacity>
 
-      <Text style={themeStyles.sectionTitle}>Lista de Tarefas</Text>
-
+      {/* Lista de Tarefas */}
+      <Text style={styles.sectionTitle}>Lista de Tarefas</Text>
       <Animated.View style={{ opacity: fadeAnim }}>
         <FlatList
-          data={Items}
+          data={items}
           keyExtractor={item => item.id}
           renderItem={({ item }) => (
-            <View style={themeStyles.item}>
-              <View style={themeStyles.itemContent}>
-                <Text style={themeStyles.itemTitle}>{item.nome}</Text>
-                <Text style={themeStyles.itemDesc}>{item.descricao}</Text>
-                <TouchableOpacity
-                  onPress={() => editarItem(item)}
-                  style={themeStyles.editButton}
-                >
-                  <Text style={themeStyles.editButtonText}>Editar</Text>
+            <View style={styles.item}>
+              <View style={styles.itemContent}>
+                <Text style={styles.itemTitle}>{item.nome}</Text>
+                <Text style={styles.itemDesc}>{item.descricao}</Text>
+                <Switch
+                  value={item.isRead}
+                  onValueChange={valor => handleTaskCompletion(item, valor)}
+                  trackColor={{ false: colors.switchTrack, true: colors.switchThumb }}
+                  thumbColor={item.isRead ? colors.switchThumb : colors.text}
+                  ios_backgroundColor={colors.border}
+                />
+                <Text style={styles.itemStatus}>
+                  {item.isRead ? 'Concluída' : 'Pendente'}
+                </Text>
+              </View>
+              <View style={styles.itemActions}>
+                <TouchableOpacity onPress={() => toggleActions(item.id)}>
+                  <Icon name="ellipsis-v" size={20} color={colors.text} />
                 </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => excluirItem(item.id)}
-                  style={themeStyles.deleteButton}
-                >
-                  <Text style={themeStyles.deleteButtonText}>Excluir</Text>
-                </TouchableOpacity>
+                {showActions === item.id && (
+                  <View style={styles.actionsMenu}>
+                    <TouchableOpacity onPress={() => editarItem(item)}>
+                      <Icon name="edit" size={20} color={colors.text} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => confirmarExclusao(item.id)}>
+                      <Icon name="trash" size={20} color="#FF4500" />
+                    </TouchableOpacity>
+                  </View>
+                )}
               </View>
             </View>
           )}
         />
       </Animated.View>
+
+      {/* Modal de Confirmação */}
+      <Modal
+        transparent={true}
+        visible={modalVisible}
+        animationType="fade"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>Tem certeza que deseja excluir esta tarefa?</Text>
+            <View style={styles.modalActions}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalButtonCancel]}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={styles.modalButtonText}>Cancelar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalButtonConfirm]}
+                onPress={excluirItem}
+              >
+                <Text style={styles.modalButtonText}>Excluir</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
 
-const lightStyles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff8dd', padding: 20 },
-  title: { fontSize: 26, fontWeight: 'bold', color: '#162040', textAlign: 'center' },
-  xp: { fontSize: 18, color: '#162040', textAlign: 'center', marginBottom: 20 },
-  label: { fontSize: 16, color: '#2f5911', marginBottom: 8 },
-  input: { backgroundColor: '#fff', borderColor: '#e3dab6', borderWidth: 1, borderRadius: 15, padding: 10, marginBottom: 15 },
-  button: { backgroundColor: '#162040', borderRadius: 15, paddingVertical: 12, alignItems: 'center', marginBottom: 20 },
-  buttonDisabled: { backgroundColor: '#666' },
-  buttonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
-  sectionTitle: { fontSize: 20, fontWeight: 'bold', color: '#162040', marginBottom: 10 },
-  item: { backgroundColor: '#C7E8FD', padding: 15, borderRadius: 8, marginBottom: 10 },
-  itemContent: { flex: 1 },
-  itemTitle: { fontSize: 20, fontWeight: 'bold', color: '#162040' },
-  itemDesc: { fontSize: 14, color: '#547699', marginBottom: 5 },
-  editButton: { backgroundColor: '#62a084', padding: 5, borderRadius: 5 },
-  deleteButton: { backgroundColor: '#d9534f', padding: 5, borderRadius: 5, marginTop: 5 },
-  editButtonText: { color: '#fff', fontSize: 14 },
-  deleteButtonText: { color: '#fff', fontSize: 14 },
-});
-
-const darkStyles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#1e3d31', padding: 20 },
-  title: { fontSize: 26, fontWeight: 'bold', color: '#fff', textAlign: 'center' },
-  xp: { fontSize: 18, color: '#aaa', textAlign: 'center', marginBottom: 20 },
-  label: { fontSize: 16, color: '#aaa', marginBottom: 8 },
-  input: { backgroundColor: '#333', borderColor: '#555', borderWidth: 1, borderRadius: 15, padding: 10, marginBottom: 15 },
-  button: { backgroundColor: '#1e88e5', borderRadius: 15, paddingVertical: 12, alignItems: 'center', marginBottom: 20 },
-  buttonDisabled: { backgroundColor: '#444' },
-  buttonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
-  sectionTitle: { fontSize: 20, fontWeight: 'bold', color: '#fff', marginBottom: 10 },
-  item: { backgroundColor: '#333', padding: 15, borderRadius: 8, marginBottom: 10 },
-  itemContent: { flex: 1 },
-  itemTitle: { fontSize: 20, fontWeight: 'bold', color: '#fff' },
-  itemDesc: { fontSize: 14, color: '#ccc', marginBottom: 5 },
-  editButton: { backgroundColor: '#62a084', padding: 5, borderRadius: 5 },
-  deleteButton: { backgroundColor: '#d9534f', padding: 5, borderRadius: 5, marginTop: 5 },
-  editButtonText: { color: '#fff', fontSize: 14 },
-  deleteButtonText: { color: '#fff', fontSize: 14 },
-});
+const getStyles = colors =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+      padding: 20,
+    },
+    title: {
+      fontSize: 26,
+      fontWeight: 'bold',
+      color: colors.text,
+      textAlign: 'center',
+    },
+    xp: {
+      textAlign: 'center',
+      fontSize: 18,
+      color: colors.text,
+    },
+    label: {
+      fontSize: 16,
+      color: colors.text,
+      marginBottom: 8,
+    },
+    input: {
+      borderColor: colors.border,
+      borderWidth: 1,
+      borderRadius: 15,
+      padding: 10,
+      backgroundColor: 'white',
+      marginBottom: 15,
+      height: 40,
+      color: colors.text,
+    },
+    button: {
+      backgroundColor: colors.button,
+      borderRadius: 15,
+      paddingVertical: 12,
+      alignItems: 'center',
+      marginBottom: 10,
+    },
+    buttonText: {
+      color: colors.buttonText,
+      fontWeight: 'bold',
+    },
+    sectionTitle: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: colors.text,
+      marginBottom: 10,
+    },
+    item: {
+      backgroundColor: colors.card,
+      borderRadius: 10,
+      padding: 15,
+      marginBottom: 10,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    itemContent: {
+      flex: 1,
+    },
+    itemTitle: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      color: colors.text,
+    },
+    itemDesc: {
+      fontSize: 14,
+      color: colors.text,
+      marginTop: 5,
+    },
+    itemStatus: {
+      fontSize: 12,
+      color: colors.text,
+      marginTop: 5,
+    },
+    itemActions: {
+      marginLeft: 10,
+      alignItems: 'flex-end',
+    },
+    actionsMenu: {
+      marginTop: 10,
+    },
+    modalOverlay: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+      width: '80%',
+      backgroundColor: colors.modalBackground,
+      borderRadius: 10,
+      padding: 20,
+      alignItems: 'center',
+    },
+    modalText: {
+      color: colors.modalText,
+      fontSize: 16,
+      textAlign: 'center',
+      marginBottom: 20,
+    },
+    modalActions: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      width: '100%',
+    },
+    modalButton: {
+      borderRadius: 10,
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      alignItems: 'center',
+    },
+    modalButtonCancel: {
+      backgroundColor: '#B0B0B0',
+    },
+    modalButtonConfirm: {
+      backgroundColor: '#FF4500',
+    },
+    modalButtonText: {
+      color: '#FFFFFF',
+      fontWeight: 'bold',
+    },
+  });
