@@ -24,7 +24,6 @@ function App() {
   const [showWelcome, setShowWelcome] = useState(true);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [showProfileModal, setShowProfileModal] = useState(false); // Novo estado para o modal de perfil
   const fadeAnim = useRef(new Animated.Value(0)).current; // Controle de animação
 
   useEffect(() => {
@@ -57,10 +56,6 @@ function App() {
     setIsDarkMode((prevMode) => !prevMode);
   };
 
-  const handleProfileModalToggle = () => {
-    setShowProfileModal(!showProfileModal); // Alterna a visibilidade do modal de perfil
-  };
-
   const Menu = ({ navigation }) => {
     const [menuVisible, setMenuVisible] = useState(false);
 
@@ -90,10 +85,9 @@ function App() {
                 {isDarkMode ? 'Light Mode' : 'Dark Mode'}
               </Text>
             </TouchableOpacity>
-            {/* Alterado para abrir o modal de perfil */}
             <TouchableOpacity
               style={styles.dropdownItem}
-              onPress={handleProfileModalToggle}
+              onPress={() => navigation.navigate('Perfil')}
             >
               <Icon name="user" size={20} color="#255140" style={styles.icon} />
               <Text style={styles.dropdownText}>Perfil</Text>
@@ -112,71 +106,61 @@ function App() {
     );
   }
 
+  if (!user) {
+    return (
+      <Animated.View style={{ ...styles.container, opacity: fadeAnim }}>
+        <Login onLogin={handleLogin} />
+      </Animated.View>
+    );
+  }
+
   return (
     <>
       <NavigationContainer>
-        <Tab.Navigator
-          screenOptions={({ route }) => ({
-            headerShown: true,
-            headerStyle: {
-              backgroundColor: isDarkMode ? '#152b23' : '#b6d2aa',
-            },
-            headerTintColor: isDarkMode ? '#FFF8dd' : '#255140',
-            tabBarStyle: { backgroundColor: isDarkMode ? '#152b23' : '#b6d2aa' },
-            tabBarActiveTintColor: isDarkMode ? '#FFF8dd' : '#FFF8dd',
-            tabBarInactiveTintColor: isDarkMode ? '#FFc5c7' : '#255140',
-            headerRight: ({ navigation }) => <Menu navigation={navigation} />,
-            tabBarIcon: ({ color, size }) => {
-              let iconName;
+      <Tab.Navigator
+  screenOptions={({ route }) => ({
+    headerShown: true,
+    headerStyle: {
+      backgroundColor: isDarkMode ? '#152b23' : '#b6d2aa',
+    },
+    headerTintColor: isDarkMode ? '#FFF8dd' : '#255140',
+    tabBarStyle: { backgroundColor: isDarkMode ? '#152b23' : '#b6d2aa' },
+    tabBarActiveTintColor: isDarkMode ? '#FFF8dd' : '#FFF8dd',
+    tabBarInactiveTintColor: isDarkMode ? '#FFc5c7' : '#255140',
+    headerRight: ({ navigation }) => <Menu navigation={navigation} />,
+    tabBarIcon: ({ color, size }) => {
+      let iconName;
 
-              switch (route.name) {
-                case 'Home':
-                  iconName = 'home';
-                  break;
-                case 'Agenda':
-                  iconName = 'calendar';
-                  break;
-                case 'Tarefas':
-                  iconName = 'check-square';
-                  break;
-                case 'Listas':
-                  iconName = 'list';
-                  break;
-                default:
-                  iconName = 'circle';
-                  break;
-              }
+      switch (route.name) {
+        case 'Home':
+          iconName = 'home';
+          break;
+        case 'Agenda':
+          iconName = 'calendar';
+          break;
+        case 'Tarefas':
+          iconName = 'check-square';
+          break;
+        case 'Listas':
+          iconName = 'list';
+          break;
+        default:
+          iconName = 'circle';
+          break;
+      }
 
-              return <Icon name={iconName} size={size} color={color} />;
-            },
-          })}
-        >
-          <Tab.Screen name="Home" component={() => <FunctionSelection isDarkMode={isDarkMode} />} />
-          <Tab.Screen name="Agenda" component={() => <Agenda isDarkMode={isDarkMode} />} />
-          <Tab.Screen name="Tarefas" component={() => <DailyTasks isDarkMode={isDarkMode} />} />
-          <Tab.Screen name="Listas" component={() => <CustomList isDarkMode={isDarkMode} />} />
-        </Tab.Navigator>
+      return <Icon name={iconName} size={size} color={color} />;
+    },
+  })}
+>
+  <Tab.Screen name="Home" component={() => <FunctionSelection isDarkMode={isDarkMode} />} />
+  <Tab.Screen name="Agenda" component={() => <Agenda isDarkMode={isDarkMode} />} />
+  <Tab.Screen name="Tarefas" component={() => <DailyTasks isDarkMode={isDarkMode} />} />
+  <Tab.Screen name="Listas" component={() => <CustomList isDarkMode={isDarkMode} />} />
+</Tab.Navigator>
+
+
       </NavigationContainer>
-
-      {/* Modal de Perfil */}
-      <Modal
-        animationType="slide"
-        transparent={false}
-        visible={showProfileModal}
-        onRequestClose={handleProfileModalToggle}
-      >
-        <View style={styles.profileModalContainer}>
-          <View style={styles.profileModalContent}>
-            <Text style={styles.profileModalText}>Perfil do Usuário</Text>
-            <TouchableOpacity
-              style={styles.profileModalButton}
-              onPress={handleProfileModalToggle}
-            >
-              <Text style={styles.profileModalButtonText}>Fechar</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
 
       {/* Modal de Logout */}
       <Modal
@@ -199,6 +183,7 @@ function App() {
           </View>
         </View>
       </Modal>
+      
     </>
   );
 }
@@ -280,34 +265,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalButtonText: {
-    fontSize: 18,
-    color: '#162040',
-  },
-  profileModalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff8dd',
-  },
-  profileModalContent: {
-    width: '90%',
-    padding: 20,
-    backgroundColor: '#547699',
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  profileModalText: {
-    fontSize: 24,
-    color: '#C7E8FD',
-    marginBottom: 20,
-  },
-  profileModalButton: {
-    backgroundColor: '#8AC66D',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  profileModalButtonText: {
     fontSize: 18,
     color: '#162040',
   },
