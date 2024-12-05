@@ -1,304 +1,78 @@
 :root {
-    --azul-petroleo: #162040;
-    --azul-claro: #C7E8FD;
-    --azul-escuro: #547699
-    --verde-claro: #8AC66D
-    --verde-escuro: #2f5911
+    --verde: #62A084;
+    --verde-claro: #B6D2AA;
+    --bege: #FFF8DD;
+    --rosa: #FFC5C7;
+    --verde-escuro: #255140;
+    --azul: #addaff;
 }
-
- * {
-    margin: 0;
+*{
     padding: 0;
+    margin: 0;
     box-sizing: border-box;
 }
 
-body {
-    font-family: "Comfortaa", sans-serif;
-    background-color: #badda8;
-    color: #333;
-    align-items: center;
-    text-align: center;
-}
-
-header {
-    background-color: #2f5911;
-    padding: 1rem;
-}
-
-nav {
+body{
+    height: 100vh;
+    width: 100vw;
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     align-items: center;
 }
 
-nav img {
-    max-width: 100px;
-    height: auto;
-}
-
-nav .logo p{
-    color: #fff;
-    font-size: 2rem;
-    margin-right: 10px;
-}
-
-
- nav div {
+header {
+    height: 15vh;
+    width: 100vw;
     display: flex;
+    justify-content: space-around;
     align-items: center;
-    gap: 10px;
+    background-color: var(--verde-claro);
 }
-nav ul {
-    display: flex;
-    gap: 1rem;
-    list-style: none;
+
+.logo img{
+    width: 20%;
 }
- 
-nav ul li a {
-    color: #fff;
+
+.logo a{
     text-decoration: none;
-    font-size: 1.1rem;
-    transition: color 0.3s ease;
-}
-
-nav ul li a:hover {
-    color: #ffb74d;
-}
-
-nav .perfil span{
-    color:white;
-    font-size: 1.5rem;
-}
-
-.sair{
-    background-color: #162040;
-    border: none;
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-} 
-
-.sair:hover{
-    background-color: #24356b;
-}
-
-main {
-    padding: 2rem;
-    text-align: center;
-    align-items: center;
     display: flex;
+    align-items: center;
     justify-content: center;
-    flex-direction: column;
+}
+.logo{
+    width: 60vw;
 }
 
-h2 {
-    font-size: 2rem;
-    color: #162040;
-    margin-bottom: 1rem;
-    animation: fadeIn 1.5s ease;
-}
-
-p{
-    font-size: 1.5rem;
-    margin: 1rem 0;
-    line-height: 1.6;
-    color: #162040;
-}
-
-ul li {
-    font-size: 1.2rem;
-    margin: 0;
-    line-height: 1.6;
-    color: #162040;
-    margin-bottom: 0.8rem;
-}
-
-ul {
-    padding-left: 1.5rem;
-    text-align: left;
-}
-
-footer {
-    background-color: #2f5911;
-    color: white;
-    padding: 1rem;
-    text-align: center;
-    position: fixed;
-    width: 100%;
-    bottom: 0;
-}
-
-/* Responsividade */
-@media (max-width: 900px) {
-    nav ul {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    nav ul li a {
-        font-size: 1rem;
-    }
-
-    main {
-        padding: 1rem;
-    }
-
-    h2 {
-        font-size: 1.5rem;
-    }
-
-    p, ul li {
-        font-size: 1rem;
-    }
-}
-
-.user-options {
-    position: fixed;
-    top: 0;
-    right: -100%;
-    width: 300px;
-    height: 100%;
-    background-color: var(--azul-claro);
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
-    z-index: 1000;
+nav{
     display: flex;
-    flex-direction: column;
-    padding: 1rem;
-    transition: right 0.3s ease-in-out;
+    width: 100vw;
+    height: 10vh;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.user-options.active {
-    right: 0;
+.menu-items{
+    display: flex;
+    width: 30vw;
+    justify-content: space-between;
 }
 
-.user-options.hidden {
-    right: -100%;
-}
-
-.user-options .close-btn {
-    align-self: flex-end;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: var(--azul-escuro);
-    cursor: pointer;
-}
-
-.user-options ul {
+ul{
     list-style: none;
-    margin-top: 1rem;
-    padding: 0;
 }
 
-.user-options ul li {
-    margin: 1rem 0;
-}
-
-.user-options ul li a {
+li a{
     text-decoration: none;
-    color: var(--azul-escuro);
-    font-size: 1.2rem;
-    transition: color 0.3s ease;
 }
 
-.user-options ul li a:hover {
-    color: var(--verde-escuro);
-}
-
-/* Estilos para o modo escuro */
-body.dark-mode {
-    background-color: #333;
-    color: #fff;
-}
-
-body.dark-mode header {
-    background-color: #444;
-}
-
-body.dark-mode footer {
-    background-color: #444;
-}
-
-.dark-mode-icon {
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    transition: transform 0.3s ease, filter 0.3s ease;
-}
-
-.dark-mode-icon:hover {
-    transform: scale(1.2);
-}
-
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+.perfil{
+    width: 10vw;
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
 }
 
-.modal.hidden {
+.hidden{
     display: none;
-}
-
-.modal-content {
-    background: #fff;
-    border-radius: 10px;
-    padding: 2rem;
-    width: 80%;
-    max-width: 600px;
-    text-align: center;
-    position: relative;
-}
-
-.modal-content h2 {
-    color: var(--azul-petroleo);
-    margin-bottom: 1rem;
-}
-
-.modal-content p, .modal-content ul {
-    color: #333;
-    font-size: 1rem;
-    margin: 1rem 0;
-    text-align: left;
-}
-
-.modal-content ul {
-    list-style-type: disc;
-    padding-left: 1.5rem;
-}
-
-.modal-content .close-modal {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: var(--azul-escuro);
-    transition: color 0.3s ease;
-}
-
-.modal-content .close-modal:hover {
-    color: var(--verde-claro);
-}
-
-/* Animações */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
 }

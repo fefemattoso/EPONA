@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const usuario = JSON.parse(localStorage.getItem('usuario'));  
     const token = localStorage.getItem('token');  
 
+    checarDados()
+
     function verificarTokenExpirado(token) {
         if (!token) return true; // Se o token não existe, consideramos expirado  
     
@@ -86,8 +88,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     sair.addEventListener("click", () => {
-        const usuario = JSON.parse(localStorage.getItem('usuario'));
-        localStorage.removeItem(usuario);
+        localStorage.removeItem("usuario");
+        localStorage.removeItem("token");
+
 
         window.location.href = "./login.html";
         });
@@ -100,5 +103,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     preencherNome()
-    checarDados()
+    
 })
