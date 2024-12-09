@@ -46,13 +46,13 @@
         <p>&copy; 2024 Epona. Todos os direitos reservados.</p>
     </footer>
 
-    <div class="blur hidden"> <!-- Menu sanduiche -->
+    <div class="blur hidden"> <!-- Fundo desfocado -->
         <div id="user-options" class="user-options hidden">
             <p class="close-btn">X</p>
             <ul>
                 <li id="termos">Termos de Serviço</li>
                 <li>
-                    <p>Iluminação: </p>
+                    <p>Iluminação:</p>
                     <img id="dark-mode-icon" src="../images/moon.png" alt="Modo Escuro" class="dark-mode-icon">
                 </li>
                 <li>
@@ -61,6 +61,7 @@
             </ul>
         </div>
     </div>
+    
     <!-- Modal de Termos de Serviço -->
     <div id="terms-modal" class="modal hidden">
         <div class="modal-content">
@@ -82,6 +83,54 @@
 
 
     <script src="../js/home.js"></script>
+    <script>// Elementos do Modal
+        const termsModal = document.getElementById('terms-modal');
+        const closeModalButton = document.querySelector('.close-modal');
+        
+        // Mostrar o Modal
+        document.getElementById('termos').addEventListener('click', () => {
+            termsModal.style.display = 'flex'; // Exibe o modal
+        });
+        
+        // Fechar o Modal
+        closeModalButton.addEventListener('click', () => {
+            termsModal.style.display = 'none'; // Oculta o modal
+        });
+        
+        // Fechar o Modal clicando fora dele
+        window.addEventListener('click', (e) => {
+            if (e.target === termsModal) {
+                termsModal.style.display = 'none';
+            }
+        });
+
+        // Elementos do Modal do Menu
+const blur = document.querySelector('.blur');
+const userOptions = document.getElementById('user-options');
+const closeButton = document.querySelector('.close-btn');
+
+// Mostrar o Menu como Modal
+document.querySelector('.perfil').addEventListener('click', () => {
+    blur.style.display = 'flex'; // Exibe o fundo desfocado
+    userOptions.style.display = 'flex'; // Exibe o modal
+});
+
+// Fechar o Modal
+closeButton.addEventListener('click', () => {
+    blur.style.display = 'none'; // Oculta o fundo desfocado
+    userOptions.style.display = 'none'; // Oculta o modal
+});
+
+// Fechar o Modal clicando fora dele
+window.addEventListener('click', (e) => {
+    if (e.target === blur) {
+        blur.style.display = 'none';
+        userOptions.style.display = 'none';
+    }
+});
+
+        
+        </script>
 </body>
 
 </html>

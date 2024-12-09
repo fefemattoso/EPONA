@@ -1,75 +1,73 @@
-/* Estilização geral */
-body {
-    font-family: "Comfortaa", sans-serif;
-    background-color: #badda8;
-    color: #333;
-    align-items: center;
-    text-align: center;
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;700&display=swap');
+:root {
+    --verde: #62A084;
+    --verde-claro: #B6D2AA;
+    --bege: #FFF8DD;
+    --rosa: #FFC5C7;
+    --verde-escuro: #255140;
+    --azul: #addaff;
 }
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Comfortaa", sans-serif;
+    color: var(--verde-escuro);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--bege);
+}
+
+/* Header */
 header {
-    background-color: #2f5911;
-    padding: 1rem;
+    background-color: var(--verde);
+    color: var(--bege);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 1rem 2rem;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    /* height: 20vh; */
 }
 
 nav {
     display: flex;
     justify-content: space-between;
-    align-items: center;
 }
 
-nav img {
-    max-width: 100px;
+.logo img {
+    width: 150px;
     height: auto;
+    margin-right: 100px;
 }
 
-nav .logo p{
-    color: #fff;
-    font-size: 2rem;
-    margin-right: 10px;
-}
-
-
- nav div {
+.menu-items {
     display: flex;
-    align-items: center;
-    gap: 10px;
+    gap: 1.5rem;
+    margin-right: 30px;
 }
-nav ul {
-    display: flex;
-    gap: 1rem;
-    list-style: none;
-}
- 
-nav ul li a {
-    color: #fff;
+
+.menu-items a {
     text-decoration: none;
-    font-size: 1.1rem;
+    color: var(--bege);
+    font-weight: bold;
     transition: color 0.3s ease;
 }
 
-nav ul li a:hover {
-    color: #ffb74d;
+.menu-items a:hover {
+    color: var(--azul);
 }
 
-nav .perfil span{
-    color:white;
-    font-size: 1.5rem;
-}
-
-nav .perfil button{
-    background-color: #162040;
-    border: none;
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
+.perfil {
+    display: flex;
+    align-items: center;
     font-size: 1rem;
-    transition: background-color 0.3s ease;
-} 
-
-nav .perfil button:hover{
-    background-color: #24356b;
+    font-weight: bold;
 }
 
 
