@@ -231,6 +231,12 @@ document.addEventListener('DOMContentLoaded', () => {
         addAtividadeModal.style.display = 'flex';
     });
 
+    const cancel = document.getElementById('cancel');
+    cancel.addEventListener('click', (e) => {
+        e.preventDefault();
+        addAtividadeModal.style.display = 'none';
+    })
+
     // Formulário de adicionar atividade  
     const addAtividadeForm = document.getElementById('addAtividadeForm');
     addAtividadeForm.addEventListener('submit', async (e) => {
