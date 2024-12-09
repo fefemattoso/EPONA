@@ -1,41 +1,45 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
-import { auth } from '../firebaseconfig';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { db } from '../firebaseconfig';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
+import { collection, addDoc} from 'firebase/firestore'
 
 function Login({ onLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isRegistering, setIsRegistering] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    const auth = getAuth()
+    console.log("tentando logar com:", email, password)
     if (email && password) {
-      signInWithEmailAndPassword(auth, email, password)
-        .then(() => {
+      try{
+        const userCredential = await signInWithEmailAndPassword(auth, email, password)
+        const user = userCredential.user
           console.log('Usuário logado com sucesso');
-          onLogin(email);
-        })
-        .catch((error) => {
-          console.error('Erro ao fazer login: ', error);
-          alert('Falha no login, verifique suas credenciais.');
-        });
+          onLogin(email, user.uid);
+      } catch (error){
+        console.error('Erro ao realizar login: ', error);
+        alert('Falha no login, verifique suas credenciais.');
+      }
+        
     } else {
       alert('Por favor, insira suas credenciais.');
     }
   };
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     if (email && password) {
-      createUserWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          console.log('Usuário cadastrado com sucesso');
-          alert('Usuário cadastrado com sucesso!');
-          setIsRegistering(false);  // Volta para tela de login após cadastro
-        })
-        .catch((error) => {
-          console.error('Erro ao fazer cadastro: ', error);
-          alert('Falha no cadastro, verifique suas informações.');
-        });
+      const auth = getAuth()
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+      const user = userCredential.user  
+
+      await addDoc(collection(db, 'epona-mobile'), {
+        uid: user.uid,
+        email: user.email,
+      })
+      alert('Cadastrado com sucesso')
+      setIsRegistering(false);  // Volta para tela de login após cadastro
     } else {
       alert('Por favor, insira suas credenciais.');
     }

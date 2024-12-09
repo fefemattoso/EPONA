@@ -12,14 +12,8 @@ import {
   Modal,
 } from 'react-native';
 import { db } from '../firebaseconfig';
-import {
-  collection,
-  addDoc,
-  getDocs,
-  updateDoc,
-  deleteDoc,
-  doc,
-} from 'firebase/firestore';
+import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, query, where } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth'; // Importar autenticação
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default function DailyTasks({ isDarkMode }) {
@@ -36,6 +30,9 @@ export default function DailyTasks({ isDarkMode }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [itemToDelete, setItemToDelete] = useState(null);
 
+  const auth = getAuth(); // Instância da autenticação
+  const user = auth.currentUser; // Usuário autenticado
+
   // Adicionar ou atualizar tarefa
   const adicionarOuAtualizarItem = async () => {
     if (!nomeItem.trim() || !descItem.trim()) {
@@ -43,14 +40,29 @@ export default function DailyTasks({ isDarkMode }) {
       return;
     }
 
+    if (!user) {
+      alert('Usuário não autenticado.');
+      return;
+    }
+
     setLoading(true);
     try {
       if (editingItemId) {
         const itemRef = doc(db, 'Tasks', editingItemId);
-        await updateDoc(itemRef, { nome: nomeItem, descricao: descItem, isRead });
+        await updateDoc(itemRef, {
+          nome: nomeItem,
+          descricao: descItem,
+          isRead,
+          uid: user.uid,
+        });
         setEditingItemId(null);
       } else {
-        await addDoc(collection(db, 'Tasks'), { nome: nomeItem, descricao: descItem, isRead });
+        await addDoc(collection(db, 'Tasks'), {
+          nome: nomeItem,
+          descricao: descItem,
+          isRead,
+          uid: user.uid,
+        });
       }
       setNomeItem('');
       setDescItem('');
@@ -63,9 +75,15 @@ export default function DailyTasks({ isDarkMode }) {
 
   // Buscar tarefas do banco de dados
   const fetchItems = async () => {
+    if (!user) {
+      alert('Usuário não autenticado.');
+      return;
+    }
+
     setLoading(true);
     try {
-      const querySnapshot = await getDocs(collection(db, 'Tasks'));
+      const q = query(collection(db, 'Tasks'), where('uid', '==', user.uid));
+      const querySnapshot = await getDocs(q);
       const itemsList = querySnapshot.docs.map(doc => ({
         ...doc.data(),
         id: doc.id,
@@ -81,7 +99,7 @@ export default function DailyTasks({ isDarkMode }) {
     }
   };
 
-  // Atualizar estado da tarefa (completa ou pendente)
+  // Atualizar estado da tarefa
   const handleTaskCompletion = async (item, valor) => {
     const today = new Date().toISOString().split('T')[0];
     const taskLog = taskCompletionLog[item.id] || {};
@@ -120,8 +138,14 @@ export default function DailyTasks({ isDarkMode }) {
 
   // Excluir tarefa
   const excluirItem = async () => {
+    if (!user) {
+      alert('Usuário não autenticado.');
+      return;
+    }
+
     if (itemToDelete) {
-      await deleteDoc(doc(db, 'Tasks', itemToDelete));
+      const itemRef = doc(db, 'Tasks', itemToDelete);
+      await deleteDoc(itemRef);
       fetchItems();
     }
     setModalVisible(false);
@@ -137,7 +161,6 @@ export default function DailyTasks({ isDarkMode }) {
   useEffect(() => {
     fetchItems();
   }, []);
-
   // Cores para tema claro e escuro
   const colors = isDarkMode
     ? {

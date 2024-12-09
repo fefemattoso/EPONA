@@ -14,6 +14,7 @@ import {
 import { db } from '../firebaseconfig';
 import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
 export default function CustomList({ isDarkMode }) {
   const [nomeItem, setnomeItem] = useState('');
@@ -22,50 +23,79 @@ export default function CustomList({ isDarkMode }) {
   const [editingItemId, setEditingItemId] = useState(null);
   const fadeAnim = useState(new Animated.Value(0))[0];
   const [isRead, setIsRead] = useState(false);
+  const [user, setUser] = useState(null);
+
+  const styles = createStyles(isDarkMode);
+
+  useEffect(() => {
+    const auth = getAuth();
+
+    const unsubscribe = onAuthStateChanged(auth, (authenticatedUser) => {
+      if (authenticatedUser) {
+        setUser(authenticatedUser);
+        fetchItems(authenticatedUser.uid); // Carrega os itens do usuário autenticado
+      } else {
+        alert('Por favor, faça login para acessar esta funcionalidade.');
+        setUser(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const adicionarOuAtualizarItem = async () => {
+    if (!user) return; // Garante que o usuário está autenticado
+  
     try {
       setLoading(true);
-
       if (editingItemId) {
+        // Atualiza o documento existente
         const ItemRef = doc(db, 'Items', editingItemId);
         await updateDoc(ItemRef, {
           nome: nomeItem,
+          uid: user.uid,
           isRead: isRead,
         });
         alert('Item atualizado com sucesso!');
-        setEditingItemId(null);
+        setEditingItemId(null); // Limpa o estado de edição
       } else {
+        // Adiciona um novo documento
         await addDoc(collection(db, 'Items'), {
           nome: nomeItem,
+          uid: user.uid,
           isRead: isRead,
         });
         alert('Item adicionado com sucesso!');
       }
-
+  
       setnomeItem('');
       setIsRead(false);
-      fetchItems();
+      fetchItems(user.uid); // Atualiza a lista
     } catch (e) {
-      console.error("Erro ao salvar Item: ", e);
+      console.error('Erro ao salvar Item: ', e);
     } finally {
       setLoading(false);
     }
   };
+  
 
-  const fetchItems = async () => {
+  const fetchItems = async (uid) => {
     try {
       const querySnapshot = await getDocs(collection(db, 'Items'));
-      const ItemsList = querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      }));
+      const ItemsList = querySnapshot.docs
+        .map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }))
+        .filter((item) => item.uid === uid); // Filtra os itens do usuário autenticado
+  
       setItems(ItemsList);
       Animated.timing(fadeAnim, { toValue: 1, duration: 1000, useNativeDriver: true }).start();
     } catch (e) {
-      console.error("Erro ao buscar Items: ", e);
+      console.error('Erro ao buscar Items: ', e);
     }
   };
+  
 
   const editarItem = (Item) => {
     setnomeItem(Item.nome);
@@ -74,22 +104,27 @@ export default function CustomList({ isDarkMode }) {
   };
 
   const excluirItem = async (ItemId) => {
+    if (!user) return; // Garante que o usuário está autenticado
+
     try {
       await deleteDoc(doc(db, 'Items', ItemId));
       alert('Item excluído com sucesso!');
-      fetchItems();
+      fetchItems(user.uid);
     } catch (e) {
-      console.error("Erro ao excluir Item: ", e);
+      console.error('Erro ao excluir Item: ', e);
     }
   };
 
-  useEffect(() => {
-    fetchItems();
-  }, []);
+  if (!user) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Acesso Negado</Text>
+        <Text style={styles.label}>Você precisa estar autenticado para acessar essa funcionalidade.</Text>
+      </View>
+    );
+  }
 
-  const [menuVisible, setMenuVisible] = useState(false);
-
-  const styles = createStyles(isDarkMode);
+  
 
   return (
     <ScrollView style={styles.container}>
@@ -105,9 +140,9 @@ export default function CustomList({ isDarkMode }) {
       />
 
       <Button
-        title={loading ? "Salvando..." : editingItemId ? "Atualizar Item" : "Adicionar Item"}
+        title={loading ? 'Salvando...' : editingItemId ? 'Atualizar Item' : 'Adicionar Item'}
         onPress={adicionarOuAtualizarItem}
-        color={isDarkMode ? "#6FAF7F" : "#162040"}
+        color={isDarkMode ? '#6FAF7F' : '#162040'}
       />
 
       <Text style={styles.sectionTitle}>Itens</Text>
@@ -132,38 +167,21 @@ export default function CustomList({ isDarkMode }) {
                   onValueChange={(valor) => {
                     const ItemRef = doc(db, 'Items', item.id);
                     updateDoc(ItemRef, { isRead: valor });
-                    fetchItems();
+                    fetchItems(user.uid);
                   }}
-                  trackColor={{ false: "#767577", true: "#81b0ff" }}
-                  thumbColor={item.isRead ? "#4CAF50" : "#f4f3f4"}
+                  trackColor={{ false: '#767577', true: '#81b0ff' }}
+                  thumbColor={item.isRead ? '#4CAF50' : '#f4f3f4'}
                   ios_backgroundColor="#3e3e3e"
                 />
               </View>
 
               <View style={styles.actionButtons}>
-                <TouchableOpacity
-                  onPress={() => setMenuVisible(!menuVisible)}
-                  style={styles.actionButton}
-                >
-                  <Icon name="ellipsis-h" size={25} color={isDarkMode ? "#AAA" : "#547699"} />
+                <TouchableOpacity onPress={() => editarItem(item)} style={styles.actionButton}>
+                  <Icon name="edit" size={25} color="#547699" />
                 </TouchableOpacity>
-
-                {menuVisible && (
-                  <View style={styles.menu}>
-                    <TouchableOpacity
-                      onPress={() => editarItem(item)}
-                      style={styles.actionButton}
-                    >
-                      <Icon name="edit" size={25} color="#547699" />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => excluirItem(item.id)}
-                      style={styles.actionButton}
-                    >
-                      <Icon name="trash" size={25} color="#F44336" />
-                    </TouchableOpacity>
-                  </View>
-                )}
+                <TouchableOpacity onPress={() => excluirItem(item.id)} style={styles.actionButton}>
+                  <Icon name="trash" size={25} color="#F44336" />
+                </TouchableOpacity>
               </View>
             </View>
           )}
@@ -174,7 +192,7 @@ export default function CustomList({ isDarkMode }) {
     </ScrollView>
   );
 }
-
+ 
 const createStyles = (isDarkMode) =>
   StyleSheet.create({
     container: {

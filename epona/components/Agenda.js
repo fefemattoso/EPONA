@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { db } from '../firebaseconfig';
+import { getAuth } from 'firebase/auth';
 import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 
 LocaleConfig.locales['br'] = {
@@ -46,26 +47,40 @@ const App = ({ isDarkMode }) => {
 
   const fetchDatesFromFirebase = async () => {
     try {
-      const querySnapshot = await getDocs(collection(db, 'Dates'));
-      const marked = {};
-      querySnapshot.forEach(docSnapshot => {
-        const { date, descricao } = docSnapshot.data();
-        marked[date] = {
-          marked: true,
-          selected: false,
-          customStyles: {
-            container: { backgroundColor: isDarkMode ? '#62a084' : 'green' },
-            text: { color: isDarkMode ? '#FFFFFF' : 'white' },
-          },
-          descricao,
-          id: docSnapshot.id,
-        };
-      });
-      setMarkedDates(marked);
+      const auth = getAuth();  // Get the current authenticated user
+      const user = auth.currentUser;  // Get the logged-in user
+  
+      if (user) {
+        const querySnapshot = await getDocs(collection(db, 'Dates'));
+        const marked = {};
+  
+        querySnapshot.forEach(docSnapshot => {
+          const { date, descricao, uid } = docSnapshot.data();
+          
+          // Only add events that belong to the current user
+          if (uid === user.uid) {
+            marked[date] = {
+              marked: true,
+              selected: false,
+              customStyles: {
+                container: { backgroundColor: isDarkMode ? '#62a084' : 'green' },
+                text: { color: isDarkMode ? '#FFFFFF' : 'white' },
+              },
+              descricao,
+              id: docSnapshot.id,
+            };
+          }
+        });
+  
+        setMarkedDates(marked);
+      } else {
+        alert('Usuário não autenticado');
+      }
     } catch (e) {
       console.error('Erro ao buscar as datas: ', e);
     }
   };
+  
 
   const filterEventsByMonth = () => {
     const events = Object.keys(markedDates)
@@ -94,11 +109,15 @@ const App = ({ isDarkMode }) => {
     setCurrentMonth(month.month);
   };
 
-  const saveDateToFirebase = async () => {
-    try {
+const saveDateToFirebase = async () => {
+  try {
+    const auth = getAuth();  // Get the current authenticated user
+    const user = auth.currentUser;  // Get the logged-in user
+    if (user) {
       const docRef = await addDoc(collection(db, 'Dates'), {
         date: selected,
         descricao,
+        uid: user.uid,  // Save the user UID with the event
       });
 
       setMarkedDates({
@@ -117,10 +136,14 @@ const App = ({ isDarkMode }) => {
       alert('Data cadastrada com sucesso!');
       setModalVisible(false);
       setDescricao('');
-    } catch (e) {
-      console.error('Erro ao salvar a data: ', e);
+    } else {
+      alert('Usuário não autenticado');
     }
-  };
+  } catch (e) {
+    console.error('Erro ao salvar a data: ', e);
+  }
+};
+
 
   const updateDescriptionInFirebase = async () => {
     try {

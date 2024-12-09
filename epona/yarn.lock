@@ -2558,6 +2558,11 @@
     firebase "10.12.2"
     superstruct "^0.6.2"
 
+"@react-native-firebase/firestore@^21.6.1":
+  version "21.6.1"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/firestore/-/firestore-21.6.1.tgz#228122fc2cd380f403f8984570b0ae6fa47c030a"
+  integrity sha512-i3RQM11zTRCYc7/KdD0MiCm7UyyTecDXG/89lEv5hvVJMS6ltIfK+0rDheSpBzYlK4kNoK765jnvVAQxIFEqbA==
+
 "@react-native-firebase/storage@^20.5.0":
   version "20.5.0"
   resolved "https://registry.yarnpkg.com/@react-native-firebase/storage/-/storage-20.5.0.tgz#ec6e0a4e01f7ca68b1f5f7d8312e43313fd7abce"
