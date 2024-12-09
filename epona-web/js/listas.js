@@ -184,8 +184,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 itemCard.innerHTML = `
            <input type="checkbox" ${isChecked} onclick="atualizarItemConcluido(${item.id}, this.checked)" id="concluido${item.id}">
         <p>${item.descricao}</p>
-        <div class="acoes">
-            <button class="deletar" onclick="deletarItem(${item.id})">Deletar</button>
+        <div class="acoes" style="background-color: none">
+            <button class="deletar" style="background-color: none" onclick="deletarItem(${item.id})"><p style="color:red;">&#128465;</p></button>
         </div>
             `
 
