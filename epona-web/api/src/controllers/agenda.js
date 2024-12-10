@@ -46,7 +46,7 @@ const readById = async (req, res) => {
         const eventos = await prisma.agenda.findMany({
             where: {
                 usuarioId: parseInt(req.params.usuarioId)
-            } 
+            }
         });
         return res.json(eventos);
     } catch (error) {
@@ -61,7 +61,10 @@ const readUpcoming = async (req, res) => {
         const now = new Date();
         const eventosProximos = await prisma.agenda.findMany({
             where: {
-                data: { gte: now }, // Eventos futuros
+                usuarioId: parseInt(req.params.usuarioId),
+                data: {
+                    gte: now, // Eventos futuros
+                },
             },
             orderBy: { data: 'asc' },
         });
@@ -74,12 +77,12 @@ const readUpcoming = async (req, res) => {
 // Atualizar um evento
 const update = async (req, res) => {
     try {
-        const {titulo, descricao} = req.body;
+        const { titulo, descricao } = req.body;
         const agenda = await prisma.agenda.update({
             where: {
                 id: parseInt(req.params.id)
             },
-            data: {titulo, descricao},
+            data: { titulo, descricao },
         });
         return res.status(202).json(agenda);
     } catch (error) {

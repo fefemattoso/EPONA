@@ -100,7 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
             notas.forEach(nota => {
                 let notaCard = document.createElement('div');
                 notaCard.classList.add('notaCard');
-                nota.concluido ? 'notaCard.classList.add("concluido")' : ''
                 notaCard.innerHTML = `
                     <div class="headerCard">
                         <h3>${nota.titulo}</h3>
