@@ -363,3 +363,48 @@ footer {
     transform: rotate(90deg);
     color: var(--rosa);
 }
+
+.dark-mode main{
+    background-color: var(--verde-escuro);
+    color: var(--verde-escuro);
+}
+
+
+.dark-mode header {
+    background-color: #444;
+}
+
+.dark-mode footer {
+    background-color: #444;
+}
+
+.dark-mode-icon {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.dark-mode-icon:hover {
+    transform: scale(1.2);
+}
+
+.dark-mode p {
+    color: #FFF8DD;
+}
+
+.dark-mode li {
+    color: #FFF8DD;
+}
+
+.dark-mode section {
+    background-color: var(--verde);
+}
+
+.dark-mode h1, h2, h3, h4 {
+    color: var(--bege);
+}
+
+.dark-mode div.notaCard {
+    background-color: #444;
+}
