@@ -165,7 +165,7 @@ export default function DailyTasks({ isDarkMode }) {
   const colors = isDarkMode
     ? {
         background: '#1e3d31',
-        text: '#FFFFFF',
+        input: '#1e3d31',
         card: '#1E1E1E',
         border: '#333333',
         button: '#ffc4c7',
@@ -174,10 +174,17 @@ export default function DailyTasks({ isDarkMode }) {
         switchThumb: '#ffc4c7',
         modalBackground: '#1E1E1E',
         modalText: '#FFFFFF',
+        title: '#ffffff',
+        sectionTitle: '#ffffff',
+        xp: '#ffffff',
+        label: '#ffffff',
+        itemTitle: '#ffffff',
+        itemDesc: '#ffffff',
+        itemStatus: '#ffffff',
       }
     : {
         background: '#fff8dd',
-        text: '#1e3d31',
+        input: '#1e3d31',
         card: '#addaff',
         border: '#e3dab6',
         button: '#255140',
@@ -186,6 +193,12 @@ export default function DailyTasks({ isDarkMode }) {
         switchThumb: '#FFD700',
         modalBackground: '#FFFFFF',
         modalText: '#000000',
+        title: '#000000',
+        sectionTitle: '#000000',
+        xp: '#000000',
+        itemTitle: '#000000',
+        itemDesc: '#000000',
+        itemStatus: '#000000',
       };
 
   const styles = getStyles(colors);
@@ -306,17 +319,17 @@ const getStyles = colors =>
     title: {
       fontSize: 26,
       fontWeight: 'bold',
-      color: colors.text,
+      color: colors.title,
       textAlign: 'center',
     },
     xp: {
       textAlign: 'center',
       fontSize: 18,
-      color: colors.text,
+      color: colors.xp,
     },
     label: {
       fontSize: 16,
-      color: colors.text,
+      color: colors.label,
       marginBottom: 8,
     },
     input: {
@@ -327,7 +340,7 @@ const getStyles = colors =>
       backgroundColor: 'white',
       marginBottom: 15,
       height: 40,
-      color: colors.text,
+      color: colors.input,
     },
     button: {
       backgroundColor: colors.button,
@@ -343,7 +356,7 @@ const getStyles = colors =>
     sectionTitle: {
       fontSize: 20,
       fontWeight: 'bold',
-      color: colors.text,
+      color: colors.sectionTitle,
       marginBottom: 10,
     },
     item: {
@@ -361,16 +374,16 @@ const getStyles = colors =>
     itemTitle: {
       fontSize: 16,
       fontWeight: 'bold',
-      color: colors.text,
+      color: colors.itemTitle,
     },
     itemDesc: {
       fontSize: 14,
-      color: colors.text,
+      color: colors.itemDesc,
       marginTop: 5,
     },
     itemStatus: {
       fontSize: 12,
-      color: colors.text,
+      color: colors.itemStatus,
       marginTop: 5,
     },
     itemActions: {
