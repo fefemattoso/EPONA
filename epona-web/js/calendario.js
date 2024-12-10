@@ -215,7 +215,7 @@ const eventsContainer = document.getElementById('events-container');
 // Exibir eventos próximos
 async function fetchEventosProximos() {
     await checarDados();
-    const eventos = await fetch('http://localhost:3000/agendas/proximos', {
+    const eventos = await fetch(`http://localhost:3000/agendas/proximos/${usuario.id}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -253,11 +253,12 @@ async function fetchTodosEventos() {
 
     // Obtém todos os elementos com a classe 'day'
     const diasCalendario = document.querySelectorAll('.day');
-
+    let hoje = document.querySelector('.today');
+    hoje.style.backgroundColor = "lightblue";
     todosEventos.forEach(evento => {
         // Extraímos a data do evento no formato 'YYYY-MM-DD'
         const eventoDia = evento.data.split('T')[0];
-
+        
         // Iteramos sobre todos os dias do calendário
         diasCalendario.forEach(diaCalendario => {
             // Comparando a data do evento com o atributo data-date do dia
@@ -266,8 +267,7 @@ async function fetchTodosEventos() {
                 diaCalendario.style.backgroundColor = "lightgreen";
                 diaCalendario.id = evento.id
                 diaCalendario.classList.add('temEvento');
-                let hoje = document.querySelector('.today');
-                hoje.style.backgroundColor = "lightblue";
+                
             }
         });
     });

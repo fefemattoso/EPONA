@@ -14,7 +14,7 @@ router.put('/senha',Usuario.senha)
 router.post('/login', Usuario.login)
 
 router.post('/usuario', Usuario.create);
-router.get('/usuario',validaAcesso, Usuario.read);
+router.get('/usuario',Usuario.read);
 router.get('/usuario/:id',validaAcesso, Usuario.read);
 router.put('/usuario',validaAcesso, Usuario.update);
 router.delete('/usuario/:id',validaAcesso, Usuario.del);
@@ -32,7 +32,7 @@ router.delete('/atividade/:id',validaAcesso, Atividade.del);
 router.post('/agenda',validaAcesso, Agenda.create);
 router.get('/agenda',validaAcesso, Agenda.read);
 router.get('/agenda/:id',validaAcesso, Agenda.read);
-router.get('/agendas/proximos',validaAcesso, Agenda.readUpcoming);
+router.get('/agendas/proximos/:usuarioId',validaAcesso, Agenda.readUpcoming);
 router.get('/agendausuario/:usuarioId',validaAcesso, Agenda.readById);
 router.put('/agenda/:id',validaAcesso, Agenda.update);
 router.delete('/agenda/:id',validaAcesso, Agenda.del);
