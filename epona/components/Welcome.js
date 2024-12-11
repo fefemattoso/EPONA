@@ -18,7 +18,7 @@ const Welcome = ({ onContinue, onVisitorAccess }) => {
   return (
     <View style={styles.welcomeContainer}>
       {/* <Image source={require('../assets/planta2.png')} style={styles.leafTopLeft} /> */}
-      <Text style={styles.title}>Welcome to</Text>
+      <Text style={styles.title}>Bem-vindo ao</Text>
       <Image source={require('../assets/NEW/logotipo2.png')} style={styles.epona} />
       <Image source={require('../assets/logo.png')} style={styles.icon} />
       <Text style={styles.subtitle}>Seu assistente pessoal para gerenciar tarefas e lembretes</Text>

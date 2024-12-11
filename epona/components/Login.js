@@ -47,7 +47,7 @@ function Login({ onLogin }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{isRegistering ? 'Cadastrar' : 'Login'} in Epona</Text>
+      <Text style={styles.title}>{isRegistering ? 'Cadastro' : 'Login'}</Text>
 
       <View style={styles.formContainer}>
         <TextInput
