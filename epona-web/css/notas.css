@@ -18,6 +18,10 @@
     box-sizing: border-box;
 }
 
+h1, h2, h3, h4, p, li {
+    color: #255140;
+}
+
 body {
     font-family: "Comfortaa", sans-serif;
     color: var(--verde-escuro);
@@ -79,6 +83,10 @@ main{
     align-items: center;
 }
 
+h3 {
+    color: #255140;
+}
+
 section {
     background-color: var(--rosa);
     padding: 1.5rem;
@@ -117,7 +125,6 @@ ul li {
 }
 
 ul li::before {
-    content: "✔";
     font-size: 1rem;
     color: var(--verde);
 }
@@ -134,7 +141,7 @@ ul li::before {
 
 /* Botões */
 button {
-    background-color: #162040;
+    background-color: var(--verde-escuro);
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -235,4 +242,5 @@ button.confirmar:hover {
     margin: 10px 0;
     font-size: 1rem;
     line-height: 1.5;
+    color: #255140;
 }

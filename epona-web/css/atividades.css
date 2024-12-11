@@ -17,6 +17,10 @@
     box-sizing: border-box;
 }
 
+h1, h2, h3, h4, p, li {
+    color: #255140;
+}
+
 body {
     font-family: "Comfortaa", sans-serif;
     color: var(--verde-escuro);
@@ -86,7 +90,7 @@ main {
 section {
     background-color: var(--rosa);
     padding: 1.5rem;
-    border-radius: 10px;
+    border-radius: 25px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
     transition: transform 0.3s ease;
@@ -120,7 +124,6 @@ ul li {
 }
 
 ul li::before {
-    content: "✔";
     font-size: 1rem;
     color: var(--verde);
 }
@@ -206,6 +209,10 @@ button.confirmar:hover {
     max-width: 500px;
     width: 100%;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.modal h2 {
+    color: var(--verde-escuro);
 }
 
 .hidden {
@@ -352,4 +359,144 @@ button.confirmar:hover {
     background-color: gray;
 }
 
+/* Estilização do Menu Sanduíche como Modal */
+.blur {
+    display: none; /* Inicialmente oculto */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    backdrop-filter: blur(4px); /* Fundo desfocado */
+    background-color: rgba(0, 0, 0, 0.5); /* Fundo escuro semitransparente */
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
 
+.user-options {
+    background: var(--bege); /* Fundo principal do modal */
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3); /* Sombra */
+    width: 90%; /* Largura para dispositivos menores */
+    max-width: 400px; /* Limite de largura */
+    position: relative;
+    text-align: center;
+    animation: fadeIn 0.3s ease-in-out; /* Animação de entrada */
+}
+
+.user-options ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--verde-escuro);
+}
+
+.user-options ul li {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.user-options ul li p {
+    margin: 0;
+}
+
+.user-options ul li img {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+
+.user-options ul li button {
+    background: var(--verde);
+    color: var(--bege);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.user-options ul li button:hover {
+    background: var(--verde-claro);
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5rem;
+    color: var(--verde-escuro);
+    cursor: pointer;
+    border: none;
+    background: none;
+    /* transition: transform 0.2s ease; */
+}
+
+.ranking {
+    background-color: #62A084;
+    height: 20vh;
+    width: 20vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 25px;
+}
+
+.dark-mode main{
+    background-color: var(--verde-escuro);
+    color: var(--verde-escuro);
+}
+
+
+.dark-mode header {
+    background-color: #444;
+}
+
+.dark-mode footer {
+    background-color: #444;
+}
+
+.dark-mode-icon {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.dark-mode-icon:hover {
+    transform: scale(1.2);
+}
+
+.dark-mode p {
+    color: #FFF8DD;
+}
+
+.dark-mode li {
+    color: #000000;
+}
+
+.dark-mode section {
+    background-color: var(--verde);
+}
+
+.dark-mode h1, h2, h3, h4 {
+    color: var(--bege);
+}
+
+.dark-mode div.notaCard {
+    background-color: #444;
+}
+
+.dark-mode .btnRanking {
+    background-color: var(--verde-escuro);
+}
+
+.dark-mode .btnRanking:hover {
+    background-color: var(--verde-claro);
+}

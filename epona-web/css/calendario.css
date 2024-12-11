@@ -14,6 +14,10 @@ body, button, p, span, h1, h2, h3 {
     font-family: "Comfortaa", sans-serif;
 }
 
+h1, h2, h3, h4, p, li {
+    color: #255140;
+}
+
 /* Estilos gerais do corpo */
 body {
     font-family: "Comfortaa", sans-serif;
@@ -22,6 +26,13 @@ body {
     flex-direction: column;
     min-height: 100vh;
     background-color: var(--bege);
+}
+
+main{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
 }
 
 /* Header */
@@ -311,10 +322,37 @@ header {
     cursor: pointer;
     border: none;
     background: none;
-    transition: transform 0.2s ease;
+    /* transition: transform 0.2s ease; */
 }
 
-.close-btn:hover {
-    transform: rotate(90deg);
-    color: var(--rosa);
+.dark-mode h3, h4 {
+    color: var(--bege);
+}
+
+.dark-mode .event h4 {
+    color: var(--bege);
+}
+
+.events{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.event {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--verde);
+    border-radius: 25px;
+    width: fit-content;
+    min-width: 25%;
+    padding:10px;
+    margin: 5px 0;
+}
+
+.event h4 {
+    color: #255140;
 }

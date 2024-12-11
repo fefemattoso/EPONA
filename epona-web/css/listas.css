@@ -18,6 +18,10 @@
     box-sizing: border-box;
 }
 
+h1, h2, h3, h4, p, li {
+    color: #255140;
+}   
+
 body {
     font-family: "Comfortaa", sans-serif;
     color: var(--verde-escuro);
@@ -58,7 +62,7 @@ nav {
 
 .menu-items a {
     text-decoration: none;
-    color: var(--bege);
+    color: var(--verde-escuro);
     font-weight: bold;
     transition: color 0.3s ease;
 }
@@ -111,7 +115,6 @@ ul li {
 }
 
 ul li::before {
-    content: "✔";
     font-size: 1rem;
     color: var(--verde);
 }
@@ -121,7 +124,6 @@ main {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    margin-top: 50px;
 }
 
 /* Main Section */
@@ -177,7 +179,7 @@ h2 {
 
 /* Cards */
 .card {
-    background-color: #ffffff;
+    background-color: var(--verde-escuro);
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -224,7 +226,7 @@ h2 {
     z-index: 1000;
 }
 .modal-content {
-    background-color: #ffffff;
+    background-color: #ff2a2a;
     margin: 5% auto;
     padding: 20px;
     border-radius: 8px;
@@ -324,6 +326,12 @@ p{
     align-items: center;
 }
 
+.dark-mode .itemCard p {
+    display: flex;
+    align-items: center;
+    color: var(--verde-escuro);
+}
+
 /* Animações */
 @keyframes fadeIn {
     from {
@@ -336,4 +344,9 @@ p{
 
 .card h3 {
     pointer-events: none;
+}
+
+#btnExibirAddLista {
+    background-color: var(--bege);
+    color: var(--verde-escuro);
 }

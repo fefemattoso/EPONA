@@ -14,6 +14,10 @@
     box-sizing: border-box;
 }
 
+h1, h2, h3, h4, p, li {
+    color: #255140;
+}
+
 body {
     font-family: "Comfortaa", sans-serif;
     color: var(--verde-escuro);
@@ -117,7 +121,6 @@ ul li {
 }
 
 ul li::before {
-    content: "✔";
     font-size: 1rem;
     color: var(--verde);
 }
@@ -356,13 +359,13 @@ footer {
     cursor: pointer;
     border: none;
     background: none;
-    transition: transform 0.2s ease;
+    /* transition: transform 0.2s ease; */
 }
 
-.close-btn:hover {
+/* .close-btn:hover {
     transform: rotate(90deg);
     color: var(--rosa);
-}
+} */
 
 .dark-mode main{
     background-color: var(--verde-escuro);
@@ -389,12 +392,20 @@ footer {
     transform: scale(1.2);
 }
 
-.dark-mode p {
+.dark-mode p, h3, h4 {
     color: #FFF8DD;
 }
 
+.dark-mode .close-btn {
+    color: #255140;
+}
+
 .dark-mode li {
-    color: #FFF8DD;
+    color: var(--verde-escuro);
+}
+
+.ulmenu li {
+    color: #255140;
 }
 
 .dark-mode section {
@@ -406,5 +417,18 @@ footer {
 }
 
 .dark-mode div.notaCard {
-    background-color: #444;
+    background-color: var(--bege);
 }
+
+.dark-mode .btnRanking {
+    background-color: var(--verde-escuro);
+}
+
+.dark-mode .btnRanking:hover {
+    background-color: var(--verde-claro);
+}
+
+#terms-modal p {
+    color: #255140;
+}
+
