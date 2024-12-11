@@ -41,7 +41,7 @@ header {
 
 nav {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 .logo img {
@@ -74,6 +74,11 @@ nav {
     font-weight: bold;
 }
 
+main{
+    display: flex;
+    align-items: center;
+}
+
 section {
     background-color: var(--rosa);
     padding: 1.5rem;
@@ -81,6 +86,7 @@ section {
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
     transition: transform 0.3s ease;
+    width: 20vw;
 }
 
 section:hover {

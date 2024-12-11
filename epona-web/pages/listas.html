@@ -113,6 +113,51 @@
     </div>
 
     <script src="../js/listas.js" defer></script>
+    <script>// Elementos do Modal
+        const termsModal = document.getElementById('terms-modal');
+        const closeModalButton = document.querySelector('.close-modal');
+        
+        // Mostrar o Modal
+        document.getElementById('termos').addEventListener('click', () => {
+            termsModal.style.display = 'flex'; // Exibe o modal
+        });
+        
+        // Fechar o Modal
+        closeModalButton.addEventListener('click', () => {
+            termsModal.style.display = 'none'; // Oculta o modal
+        });
+        
+        // Fechar o Modal clicando fora dele
+        window.addEventListener('click', (e) => {
+            if (e.target === termsModal) {
+                termsModal.style.display = 'none';
+            }
+        });
+
+        // Elementos do Modal do Menu
+const blur = document.querySelector('.blur');
+const userOptions = document.getElementById('user-options');
+const closeButton = document.querySelector('.close-btn');
+
+// Mostrar o Menu como Modal
+document.querySelector('.perfil').addEventListener('click', () => {
+    blur.style.display = 'flex'; // Exibe o fundo desfocado
+    userOptions.style.display = 'flex'; // Exibe o modal
+});
+
+// Fechar o Modal
+closeButton.addEventListener('click', () => {
+    blur.style.display = 'none'; // Oculta o fundo desfocado
+    userOptions.style.display = 'none'; // Oculta o modal
+});
+
+// Fechar o Modal clicando fora dele
+window.addEventListener('click', (e) => {
+    if (e.target === blur) {
+        blur.style.display = 'none';
+        userOptions.style.display = 'none';
+    }
+});</script>
 </body>
 
 </html>

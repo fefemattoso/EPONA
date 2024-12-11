@@ -10,53 +10,56 @@ document.addEventListener('DOMContentLoaded', () => {
     const termsModal = document.getElementById('terms-modal');
     const closeModal = document.querySelector('.close-modal');
 
+ // Abrir o modal
+ termsLink.addEventListener('click', (e) => {
+    e.preventDefault(); // Previne o redirecionamento padrão
+    termsModal.classList.remove('hidden');
+});
 
-    termsLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        termsModal.classList.remove('hidden');
-    });
+// Fechar o modal
+closeModal.addEventListener('click', () => {
+    termsModal.classList.add('hidden');
+});
 
-    // Fechar o modal
-    closeModal.addEventListener('click', () => {
+// Fechar o modal ao clicar fora dele
+window.addEventListener('click', (e) => {
+    if (e.target === termsModal) {
         termsModal.classList.add('hidden');
-    });
-
-    // Fechar o modal ao clicar fora dele
-    window.addEventListener('click', (e) => {
-        if (e.target === termsModal) {
-            termsModal.classList.add('hidden');
-        }
-    });
-
-    const moonIcon = "../images/moon.png"; // Caminho do ícone da lua
-    const sunIcon = "../images/sun.png";
-    // Mostrar o menu lateral
-    userName.addEventListener("click", () => {
-        userOptions.classList.add("active");
-        userOptions.classList.remove("hidden");
-    });
-    // Fechar o menu lateral
-    closeBtn.addEventListener("click", () => {
-        userOptions.classList.add("hidden");
-        userOptions.classList.remove("active");
-    });
-
-    darkModeIcon.addEventListener("click", () => {
-        const isDarkMode = document.body.classList.toggle("dark-mode");
-        localStorage.setItem("darkMode", isDarkMode ? "enabled" : "disabled");
-        darkModeIcon.src = isDarkMode ? sunIcon : moonIcon; // Alterar o ícone
-        darkModeIcon.alt = isDarkMode ? "Modo Claro" : "Modo Escuro";
-    });
-
-    // Carregar o estado do modo escuro e o ícone correspondente
-    if (localStorage.getItem("darkMode") === "enabled") {
-        document.body.classList.add("dark-mode");
-        darkModeIcon.src = sunIcon; // Ícone do sol para modo escuro
-        darkModeIcon.alt = "Modo Claro";
-    } else {
-        darkModeIcon.src = moonIcon; // Ícone da lua para modo claro
-        darkModeIcon.alt = "Modo Escuro";
     }
+});
+
+const moonIcon = "../images/moon.png"; // Caminho do ícone da lua
+const sunIcon = "../images/sun.png";
+// Mostrar o menu lateral
+userName.addEventListener("click", () => {
+    userOptions.classList.add("active");
+    userOptions.classList.remove("hidden");
+    blur.classList.remove("hidden");
+});
+
+// Fechar o menu lateral
+closeBtn.addEventListener("click", () => {
+    userOptions.classList.add("hidden");
+    userOptions.classList.remove("active");
+    blur.classList.add("hidden");
+});
+
+darkModeIcon.addEventListener("click", () => {
+    const isDarkMode = document.body.classList.toggle("dark-mode");
+    localStorage.setItem("darkMode", isDarkMode ? "enabled" : "disabled");
+    darkModeIcon.src = isDarkMode ? sunIcon : moonIcon; // Alterar o ícone
+    darkModeIcon.alt = isDarkMode ? "Modo Claro" : "Modo Escuro";
+});
+
+// Carregar o estado do modo escuro e o ícone correspondente
+if (localStorage.getItem("darkMode") === "enabled") {
+    document.body.classList.add("dark-mode");
+    darkModeIcon.src = sunIcon; // Ícone do sol para modo escuro
+    darkModeIcon.alt = "Modo Claro";
+} else {
+    darkModeIcon.src = moonIcon; // Ícone da lua para modo claro
+    darkModeIcon.alt = "Modo Escuro";
+}
 
     // Função para verificar se o token está expirado
     function verificarTokenExpirado(token) {
