@@ -344,6 +344,7 @@ p{
 
 .card h3 {
     pointer-events: none;
+    color:var(--bege)
 }
 
 #btnExibirAddLista {
