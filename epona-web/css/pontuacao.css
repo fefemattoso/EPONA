@@ -91,3 +91,7 @@ main{
     border-radius: 25px;
     border:2px inset var(--azul)
 }
+
+.dark-mode .RankingTitulo{
+    color: var(--bege);
+}

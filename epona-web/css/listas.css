@@ -351,3 +351,15 @@ p{
     background-color: var(--bege);
     color: var(--verde-escuro);
 }
+
+.deletebtn, #cancelBtn{
+    padding:10px;
+    background-color: var(--rosa);
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+.dark-mode .textoDelete{
+color:var(--verde-escuro)
+}
