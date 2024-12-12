@@ -61,6 +61,7 @@ nav {
     color: var(--bege);
     font-weight: bold;
     transition: color 0.3s ease;
+    font-size: 1.25rem;
 }
 
 .menu-items a:hover {
@@ -70,7 +71,7 @@ nav {
 .perfil {
     display: flex;
     align-items: center;
-    font-size: 1rem;
+    font-size: 1.5rem;
     font-weight: bold;
 }
 
@@ -359,13 +360,7 @@ footer {
     cursor: pointer;
     border: none;
     background: none;
-    /* transition: transform 0.2s ease; */
 }
-
-/* .close-btn:hover {
-    transform: rotate(90deg);
-    color: var(--rosa);
-} */
 
 .dark-mode main{
     background-color: var(--verde-escuro);
@@ -428,7 +423,14 @@ footer {
     background-color: var(--verde-claro);
 }
 
+.dark-mode .apresentacaoEpona li{
+    color: var(--bege)
+}
+
 #terms-modal p {
     color: #255140;
 }
 
+#termos{
+    cursor: pointer;
+}

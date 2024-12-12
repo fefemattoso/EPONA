@@ -135,24 +135,12 @@ main {
     flex-direction: column;
 }
 
-/* .atvcard {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    margin-top: 50px;
-    height: 30vh;
-    background-color: var(--rosa);
-    border-radius: 25px;
-    min-height: 55vh;
-} */
-
 .atividades {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 20px;
-}
-
-#addAtividadeBtn {
-    margin-bottom: 10px;
+    min-width: 30%;
 }
 
 /* Botões */
@@ -165,7 +153,6 @@ button {
     cursor: pointer;
     font-size: 1rem;
     transition: background-color 0.3s ease;
-    margin-right: 10px;
 }
 
 button:hover {
@@ -281,7 +268,8 @@ button.confirmar:hover {
     background-color: var(--verde-claro);
     padding: 10px;
     border-radius: 15px;
-    margin-bottom: 20px;
+    margin: 10px 0;
+    width: 80%;
 }
 
 .card .headerCard {
@@ -350,7 +338,7 @@ button.confirmar:hover {
 .concluido {
     background-color: rosybrown;
     border-radius: 15px;
-    width: 20vw;
+    width: 80%;
     padding: 10px;
     margin-bottom: 25px;
 }
@@ -438,7 +426,6 @@ button.confirmar:hover {
 }
 
 .ranking {
-    background-color: #62A084;
     height: 20vh;
     width: 20vw;
     display: flex;
@@ -498,5 +485,16 @@ button.confirmar:hover {
 }
 
 .dark-mode .btnRanking:hover {
+    background-color: var(--verde);
+}
+
+.visualizarRanking {
     background-color: var(--verde-claro);
+}
+
+#atividadesList {
+    display: flex;
+    flex-direction: column ;
+    align-items: center;
+    width: 100%;
 }
