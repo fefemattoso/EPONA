@@ -193,6 +193,12 @@ button:hover {
     resize: vertical;
 }
 
+#confirmNotaClose {
+    display: flex;
+    justify-content: right;
+}
+
+
 /* Botões do modal */
 button.cancelar {
     background-color: #e74c3c;

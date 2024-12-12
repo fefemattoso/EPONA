@@ -214,7 +214,7 @@ async function checarDados() {
 
     function abrirModalDeletar(id){
         const confirmModal = document.getElementById('confirmModal');
-        confirmModal.style.display = 'block';
+        confirmModal.style.display = 'flex';
         const notaId = document.getElementById("notaId");
         notaId.value = id;
     }
