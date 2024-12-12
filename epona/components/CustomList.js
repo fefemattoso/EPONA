@@ -142,7 +142,7 @@ export default function CustomList({ isDarkMode }) {
       <Button
         title={loading ? 'Salvando...' : editingItemId ? 'Atualizar Item' : 'Adicionar Item'}
         onPress={adicionarOuAtualizarItem}
-        color={isDarkMode ? '#6FAF7F' : '#162040'}
+        color={isDarkMode ? '#6FAF7F' : '#255140'}
       />
 
       <Text style={styles.sectionTitle}>Itens</Text>

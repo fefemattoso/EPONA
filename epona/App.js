@@ -85,13 +85,7 @@ function App() {
                 {isDarkMode ? 'Light Mode' : 'Dark Mode'}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.dropdownItem}
-              onPress={() => navigation.navigate('Perfil')}
-            >
-              <Icon name="user" size={20} color="#255140" style={styles.icon} />
-              <Text style={styles.dropdownText}>Perfil</Text>
-            </TouchableOpacity>
+            
           </View>
         )}
       </View>
